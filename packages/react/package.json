@@ -1,0 +1,19 @@
+{
+  "name": "@repo/react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "exports": {
+    "./styles.css": "./src/styles.css",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "peerDependencies": {
+    "next": ">=16",
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true }
+  }
+}

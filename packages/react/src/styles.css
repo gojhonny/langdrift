@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@theme inline {
+  --color-ld-brand: var(--ld-brand);
+  --color-ld-intentional: var(--ld-intentional);
+  --color-ld-aligned: var(--ld-aligned);
+  --color-ld-unexplained: var(--ld-unexplained);
+  --color-ld-review: var(--ld-review);
+}
