@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+.next/
+out/
+dist/
+.turbo/
+coverage/
+
+# local environment
+.env
+.env.local
+.env.*.local
+!.env.template
+
+# logs
+*.log
+pnpm-debug.log*
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/*.local.json
+
+# PWA
+apps/mobile/dev-dist/
+apps/mobile/.vite/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

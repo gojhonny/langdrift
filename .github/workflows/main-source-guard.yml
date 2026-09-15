@@ -1,0 +1,16 @@
+name: Main source guard
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject changes coming directly from main
+        run: |
+          if [ "${{ github.head_ref }}" = "main" ]; then
+            echo "Pull requests must come from a feature branch."
+            exit 1
+          fi
