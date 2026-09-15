@@ -1,0 +1,21 @@
+:root {
+  --ld-brand: #f97316;
+
+  --ld-dark-bg: #0b0b0c;
+  --ld-dark-surface: #151517;
+  --ld-dark-text: #f5f5f5;
+  --ld-dark-muted: #a1a1aa;
+
+  --ld-light-bg: #fafafa;
+  --ld-light-surface: #ffffff;
+  --ld-light-ink: #171717;
+  --ld-light-hairline: #ebebeb;
+
+  --ld-intentional: #3b82f6;
+  --ld-aligned: #16a34a;
+  --ld-unexplained: #dc2626;
+  --ld-review: #a855f7;
+
+  --ld-control-radius: 6px;
+  --ld-card-radius: 12px;
+}

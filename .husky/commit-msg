@@ -1,0 +1,2 @@
+#!/bin/sh
+./cli/drift git commit-msg "$1"
