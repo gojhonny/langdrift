@@ -1,18 +1,28 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
 import '@repo/react/styles.css'
 import './globals.css'
+import { ConsoleShell } from './console-shell'
 
 export const metadata: Metadata = {
-  title: 'Dashboard · Lang Drift',
-  description: 'Product Vision and Drift intelligence workspace.'
+  title: 'LangDrift Console',
+  description: 'Product Vision, Drift, decisions, people, and evidence.',
+  applicationName: 'LangDrift',
+  icons: { icon: '/favicon.ico' }
+}
+
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+  themeColor: '#fafafa'
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-theme="light">
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ConsoleShell>{children}</ConsoleShell>
+      </body>
     </html>
   )
 }

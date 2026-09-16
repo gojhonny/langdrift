@@ -59,7 +59,7 @@ export function Brand({ className, compact = false, tone = 'light' }: BrandProps
     >
       <LogoMark size={compact ? 23 : 30} />
       <span style={{ ...wordmarkStyle, fontSize: compact ? 18 : 24 }}>
-        Lang Drift
+        LangDrift
       </span>
     </span>
   )

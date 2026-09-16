@@ -8,18 +8,18 @@ export const metadata: Metadata = {
   title: 'LangDrift — we still in charge',
   description:
     'Visual product intelligence for understanding how products evolve relative to their vision.',
-  applicationName: 'Lang Drift',
+  applicationName: 'LangDrift',
   icons: { icon: '/favicon.ico' }
 }
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-  themeColor: '#0b0b0c'
+  themeColor: '#f7f6f2'
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   )

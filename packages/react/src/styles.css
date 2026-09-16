@@ -1,5 +1,6 @@
 @import 'tailwindcss';
-@import '@repo/design-system/tokens.css';
+@import './tokens.css';
+@import './vendors/smoothui/smoothui.css';
 
 @theme inline {
   --color-ld-brand: var(--ld-brand);

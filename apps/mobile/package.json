@@ -12,8 +12,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@repo/design-system": "workspace:*",
     "@repo/react": "workspace:*",
+    "jotai": "^2.15.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
