@@ -114,12 +114,16 @@ export default function DashboardPage() {
               <h1>Product evolution</h1>
               <p>How reality moved relative to Product Vision.</p>
             </div>
-            <div className="range-control" aria-label="Time range" role="group">
+            <fieldset
+              aria-label="Time range"
+              className="range-control"
+              style={{ border: 0, margin: 0, minInlineSize: 0 }}
+            >
               <button type="button">30d</button>
               <button className="range-active" type="button">90d</button>
               <button type="button">1y</button>
               <button type="button">All</button>
-            </div>
+            </fieldset>
           </div>
 
           <section className="vision-card" aria-labelledby="vision-heading">
