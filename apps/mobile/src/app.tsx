@@ -1,7 +1,7 @@
-import { ChartLineUp } from '@phosphor-icons/react'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
+import { ChartLineUp } from '@repo/react/ui/icons'
 import {
   ProductVisionCurve,
   type VisionPoint
@@ -144,7 +144,7 @@ export function App() {
     if (!hasConversation) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     messageEndRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
-  }, [hasConversation, messages.length])
+  }, [hasConversation])
 
   useEffect(() => {
     if (!evolutionOpen) return
