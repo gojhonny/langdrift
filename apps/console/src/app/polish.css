@@ -51,6 +51,18 @@
   width: 30px;
 }
 
+.person-avatar {
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.person-avatar img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
 .account-dropdown a {
   align-items: center;
   border-radius: 7px;
