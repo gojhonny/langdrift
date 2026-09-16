@@ -1,0 +1,98 @@
+.account-flow-header-actions .account-header-link {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 6px 2px;
+  text-decoration: none;
+  text-transform: none;
+}
+
+.account-flow-header-actions .account-header-link:hover,
+.create-account-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.account-flow-header-actions .ld-theme-toggle {
+  border: 0;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.identity-stack {
+  align-self: start;
+  display: grid;
+  gap: 14px;
+}
+
+.social-login-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.social-login-stack > button {
+  align-items: center;
+  background: var(--ld-surface);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font-size: 11px;
+  gap: 10px;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.social-login-stack > button:hover {
+  border-color: color-mix(in srgb, currentColor 28%, var(--ld-hairline));
+}
+
+.auth-divider {
+  align-items: center;
+  color: var(--ld-muted);
+  display: grid;
+  font-size: 9px;
+  gap: 10px;
+  grid-template-columns: 1fr auto 1fr;
+  margin: 2px 0;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  background: var(--ld-hairline);
+  content: '';
+  height: 1px;
+}
+
+.create-account-link {
+  color: inherit;
+  font-size: 10px;
+  justify-self: start;
+  text-decoration: none;
+}
+
+.select-control {
+  display: block;
+  position: relative;
+}
+
+.select-control select {
+  appearance: none;
+  padding-right: 36px;
+  width: 100%;
+}
+
+.select-control > svg {
+  color: var(--ld-muted);
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}

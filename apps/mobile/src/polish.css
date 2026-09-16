@@ -1,0 +1,19 @@
+.mobile-header > .ld-theme-toggle {
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font-size: inherit;
+  padding: 0;
+  text-transform: none;
+}
+
+.mobile-glance > button,
+.mobile-largest-movement > button {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.mobile-largest-movement > button {
+  justify-self: end;
+}
