@@ -1,13 +1,15 @@
 import { AgentOrb } from '@repo/react/ui/agent-orb'
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
+import { ChartLineUp, X } from '@repo/react/ui/icons'
 import {
   ProductVisionCurve,
   type VisionPoint
 } from '@repo/react/ui/product-vision-curve'
+import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import {
   AIMessage,
-  AnimatedAvatarGroup,
-  BasicToast
+  AnimatedAvatarGroup
 } from '@repo/react/vendors/smoothui'
 import { useAtom } from 'jotai'
 import type { FormEvent } from 'react'
@@ -18,7 +20,6 @@ import {
   inputAtom,
   messagesAtom,
   themeAtom,
-  toastAtom,
   voiceStateAtom
 } from './state'
 import { StateLogger } from './state-logger'
@@ -32,6 +33,7 @@ interface VoiceIntent {
   prompt: string
 }
 
+// Illustrative frontend fixture data. The disclosure remains internal rather than customer-facing.
 const visionPoints: VisionPoint[] = [
   { label: 'Apr', value: 91 },
   { label: 'May', value: 88 },
@@ -40,8 +42,8 @@ const visionPoints: VisionPoint[] = [
     value: 84,
     event: {
       actors: [
-        { initials: 'AN', name: 'Ana', team: 'Product' },
-        { initials: 'CA', name: 'Carlos', team: 'Platform' }
+        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' },
+        { initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }
       ],
       classification: 'intentional',
       date: 'Jun 28',
@@ -57,7 +59,7 @@ const visionPoints: VisionPoint[] = [
     label: 'Jul',
     value: 79,
     event: {
-      actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
+      actors: [{ initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }],
       classification: 'unexplained',
       date: 'Jul 22',
       decision: 'Decision not found',
@@ -72,7 +74,7 @@ const visionPoints: VisionPoint[] = [
     label: 'Aug',
     value: 73,
     event: {
-      actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
+      actors: [{ initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }],
       classification: 'review',
       date: 'Aug 20',
       decision: 'Review pending',
@@ -88,13 +90,13 @@ const visionPoints: VisionPoint[] = [
 const intents: VoiceIntent[] = [
   {
     answer:
-      'In this demo period, Product Vision moved six points this week. Authentication was the largest contributor; four points were intentional evolution and two remain unexplained.',
+      'Product Vision moved six points this week. Authentication was the largest contributor; four points were intentional evolution and two remain unexplained.',
     id: 'drift_this_week',
     prompt: 'What changed this week?'
   },
   {
     answer:
-      'Product Vision is at 73%, down from the 91% demo baseline. Pricing moved intentionally, authentication is unexplained, and export behavior remains under review.',
+      'Product Vision is at 73%, down from the 91% baseline. Pricing moved intentionally, authentication is unexplained, and export behavior remains under review.',
     id: 'explain_product_vision',
     prompt: 'Why did Product Vision fall?'
   },
@@ -109,7 +111,7 @@ const intents: VoiceIntent[] = [
 function deterministicAnswer(question: string) {
   const knownIntent = intents.find((intent) => intent.prompt === question)
   return knownIntent?.answer ??
-    'This preview resolves bounded executive questions over Product Vision, Drift events, decisions, people, and linked evidence.'
+    'This experience resolves bounded executive questions over Product Vision, Drift events, decisions, people, and linked evidence.'
 }
 
 const voiceLabels = {
@@ -125,8 +127,10 @@ export function App() {
   const [messages, setMessages] = useAtom(messagesAtom)
   const [voiceState, setVoiceState] = useAtom(voiceStateAtom)
   const [evolutionOpen, setEvolutionOpen] = useAtom(evolutionOpenAtom)
-  const [toast, setToast] = useAtom(toastAtom)
   const messageEndRef = useRef<HTMLDivElement>(null)
+  const evolutionTriggerRef = useRef<HTMLButtonElement>(null)
+  const sheetRef = useRef<HTMLElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
   const hasConversation = messages.length > 1
 
   useEffect(() => {
@@ -141,15 +145,44 @@ export function App() {
     if (!hasConversation) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     messageEndRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
-  }, [hasConversation, messages.length])
+  }, [hasConversation])
 
   useEffect(() => {
     if (!evolutionOpen) return
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') setEvolutionOpen(false)
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeRef.current?.focus()
+
+    function handleKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setEvolutionOpen(false)
+        return
+      }
+      if (event.key !== 'Tab' || !sheetRef.current) return
+
+      const focusable = Array.from(
+        sheetRef.current.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      ).filter((element) => !element.hasAttribute('disabled'))
+
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last?.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first?.focus()
+      }
     }
-    window.addEventListener('keydown', closeOnEscape)
-    return () => window.removeEventListener('keydown', closeOnEscape)
+
+    window.addEventListener('keydown', handleKeydown)
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+      document.body.style.overflow = previousOverflow
+      evolutionTriggerRef.current?.focus()
+    }
   }, [evolutionOpen, setEvolutionOpen])
 
   function ask(question: string) {
@@ -193,18 +226,12 @@ export function App() {
       <header className="mobile-header">
         <div>
           <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
-          <span>Atlas Home Hub · Demo</span>
+          <span>Atlas Home Hub</span>
         </div>
-        <button
-          onClick={() => {
-            const next = theme === 'light' ? 'dark' : 'light'
-            setTheme(next)
-            setToast({ message: `${next} theme enabled`, open: true })
-          }}
-          type="button"
-        >
-          {theme === 'light' ? 'Dark' : 'Light'}
-        </button>
+        <ThemeToggle
+          onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          theme={theme}
+        />
       </header>
 
       <section className="mobile-inquiry" aria-labelledby="mobile-product-vision">
@@ -218,22 +245,15 @@ export function App() {
             <span>14 intentional</span>
             <span>4 unexplained</span>
           </p>
-          <button onClick={() => setEvolutionOpen(true)} type="button">
-            View evolution →
+          <button ref={evolutionTriggerRef} onClick={() => setEvolutionOpen(true)} type="button">
+            <ChartLineUp aria-hidden="true" size={14} /> View evolution
           </button>
         </div>
 
         <div className="conversation-orb">
           <button
             aria-label={voiceState === 'listening' ? 'Stop listening' : 'Start voice inquiry'}
-            onClick={() => {
-              const next = voiceState === 'listening' ? 'idle' : 'listening'
-              setVoiceState(next)
-              setToast({
-                message: next === 'listening' ? 'Listening for a product question' : 'Voice inquiry stopped',
-                open: true
-              })
-            }}
+            onClick={() => setVoiceState(voiceState === 'listening' ? 'idle' : 'listening')}
             type="button"
           >
             <AgentOrb
@@ -288,13 +308,13 @@ export function App() {
         </div>
         <AnimatedAvatarGroup
           people={[
-            { initials: 'AN', name: 'Ana', role: 'Product' },
-            { initials: 'CA', name: 'Carlos', role: 'Platform' }
+            { initials: 'AN', name: 'Ana', role: 'Product', src: aiAvatars.ana },
+            { initials: 'CA', name: 'Carlos', role: 'Platform', src: aiAvatars.carlos }
           ]}
           size={26}
         />
         <button onClick={() => setEvolutionOpen(true)} type="button">
-          View →
+          <ChartLineUp aria-hidden="true" size={14} /> Show evolution
         </button>
       </section>
 
@@ -304,6 +324,7 @@ export function App() {
             aria-label="Product Vision evolution"
             aria-modal="true"
             className="mobile-evolution-sheet"
+            ref={sheetRef}
             role="dialog"
           >
             <div className="mobile-sheet-handle" />
@@ -312,7 +333,9 @@ export function App() {
                 <span>Evolution</span>
                 <strong>Product Vision · 91% → 73%</strong>
               </div>
-              <button aria-label="Close evolution" onClick={() => setEvolutionOpen(false)} type="button">Close</button>
+              <button ref={closeRef} aria-label="Close evolution" onClick={() => setEvolutionOpen(false)} type="button">
+                <X aria-hidden="true" size={14} />
+              </button>
             </div>
             <ProductVisionCurve compact data={visionPoints} />
             <div className="mobile-sheet-event">
@@ -320,17 +343,9 @@ export function App() {
               <span>Ana + Carlos · Intentional Evolution</span>
               <p>Enterprise customers required a different packaging model.</p>
             </div>
-            <small>Illustrative data · final Product Vision formula remains open.</small>
           </section>
         </div>
       ) : null}
-
-      <BasicToast
-        message={toast.message}
-        onClose={() => setToast((current) => ({ ...current, open: false }))}
-        open={toast.open}
-        tone="info"
-      />
     </main>
   )
 }

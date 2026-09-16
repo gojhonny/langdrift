@@ -1,14 +1,13 @@
 'use client'
 
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import {
   ProductVisionCurve,
   type VisionDriftEvent,
   type VisionPoint
 } from '@repo/react/ui/product-vision-curve'
 import {
-  AIContextMeter,
   AnimatedAvatarGroup,
-  BasicToast,
   Header4,
   SmoothFooter
 } from '@repo/react/vendors/smoothui'
@@ -17,12 +16,13 @@ import { useEffect } from 'react'
 
 import {
   selectedPointAtom,
-  themeAtom,
-  toastAtom
+  themeAtom
 } from '../state'
 import { websiteLinks } from './app-links'
 import { StateLogger } from './state-logger'
+import { VoicePreview } from './voice-preview'
 
+// Illustrative frontend fixture data. This disclosure stays internal so development labels are not customer-facing.
 const visionPoints: VisionPoint[] = [
   {
     label: 'Apr',
@@ -30,14 +30,14 @@ const visionPoints: VisionPoint[] = [
     event: {
       actionHref: '#why',
       actionLabel: 'See baseline context',
-      actors: [{ initials: 'MR', name: 'Marina Reis', team: 'Leadership' }],
+      actors: [{ initials: 'MR', name: 'Marina Reis', src: aiAvatars.marina, team: 'Leadership' }],
       classification: 'baseline',
       date: 'Apr 02',
       decision: 'Vision baseline recorded',
       delta: 0,
       id: 'baseline',
       productArea: 'Vision',
-      reason: 'Leadership recorded the product direction used as the reference for this illustrative period.',
+      reason: 'Leadership recorded the product direction used as the reference for this period.',
       title: 'Vision baseline approved'
     }
   },
@@ -49,8 +49,8 @@ const visionPoints: VisionPoint[] = [
       actionHref: '#why',
       actionLabel: 'View decision context',
       actors: [
-        { initials: 'AN', name: 'Ana', team: 'Product' },
-        { initials: 'CA', name: 'Carlos', team: 'Platform' }
+        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' },
+        { initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }
       ],
       classification: 'intentional',
       date: 'Jun 28',
@@ -68,7 +68,7 @@ const visionPoints: VisionPoint[] = [
     event: {
       actionHref: '#why',
       actionLabel: 'Review context',
-      actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
+      actors: [{ initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }],
       classification: 'unexplained',
       date: 'Jul 22',
       decision: 'No matching product decision found',
@@ -85,7 +85,7 @@ const visionPoints: VisionPoint[] = [
     event: {
       actionHref: '#why',
       actionLabel: 'Inspect review state',
-      actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
+      actors: [{ initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }],
       classification: 'review',
       date: 'Aug 20',
       decision: 'Classification under review',
@@ -105,8 +105,8 @@ const attribution = [
     date: 'Jun 28',
     delta: '−9',
     people: [
-      { initials: 'AN', name: 'Ana', role: 'Product' },
-      { initials: 'CA', name: 'Carlos', role: 'Platform' }
+      { initials: 'AN', name: 'Ana', role: 'Product', src: aiAvatars.ana },
+      { initials: 'CA', name: 'Carlos', role: 'Platform', src: aiAvatars.carlos }
     ],
     status: 'Intentional Evolution'
   },
@@ -115,7 +115,7 @@ const attribution = [
     change: 'Authentication redesigned',
     date: 'Jul 22',
     delta: '−6',
-    people: [{ initials: 'CA', name: 'Carlos', role: 'Platform' }],
+    people: [{ initials: 'CA', name: 'Carlos', role: 'Platform', src: aiAvatars.carlos }],
     status: 'Unexplained Drift'
   },
   {
@@ -123,7 +123,7 @@ const attribution = [
     change: 'Export behavior changed',
     date: 'Aug 20',
     delta: '−3',
-    people: [{ initials: 'AN', name: 'Ana', role: 'Product' }],
+    people: [{ initials: 'AN', name: 'Ana', role: 'Product', src: aiAvatars.ana }],
     status: 'Under Review'
   }
 ]
@@ -131,7 +131,6 @@ const attribution = [
 export default function WebsitePage() {
   const [theme, setTheme] = useAtom(themeAtom)
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
-  const [toast, setToast] = useAtom(toastAtom)
   const currentTheme = useAtomValue(themeAtom)
   const activeEvent = visionPoints[selectedPoint]?.event ?? visionPoints.at(-1)?.event
   const selectedEventId = activeEvent?.id ?? 'exports'
@@ -141,14 +140,8 @@ export default function WebsitePage() {
     document.documentElement.style.colorScheme = currentTheme
   }, [currentTheme])
 
-  function notify(message: string, tone: 'info' | 'success' | 'warning' = 'info') {
-    setToast({ message, open: true, tone })
-  }
-
   function toggleTheme() {
-    const next = theme === 'light' ? 'dark' : 'light'
-    setTheme(next)
-    notify(`${next === 'dark' ? 'Dark' : 'Light'} theme enabled`)
+    setTheme(theme === 'light' ? 'dark' : 'light')
   }
 
   function selectCurveEvent(event: VisionDriftEvent) {
@@ -164,7 +157,7 @@ export default function WebsitePage() {
           <strong>73%</strong>
         </div>
         <div className="header-four-visual-meta">
-          <span>Illustrative movement</span>
+          <span>Vision movement</span>
           <strong>down from 91% · 14 intentional · 4 unexplained</strong>
         </div>
       </div>
@@ -228,7 +221,8 @@ export default function WebsitePage() {
                 people={activeEvent.actors.map((actor) => ({
                   initials: actor.initials,
                   name: actor.name,
-                  role: actor.team
+                  role: actor.team,
+                  src: actor.src
                 }))}
                 size={32}
               />
@@ -288,32 +282,7 @@ export default function WebsitePage() {
         </section>
 
         <section className="voice-band" id="voice">
-          <div>
-            <span className="section-kicker section-kicker-dark">Voice-first for inquiry</span>
-            <h2>Ask the product history, not the repository.</h2>
-            <p>
-              Executive Voice queries the same structured Product Vision, Drift,
-              decisions, people, and evidence represented in the visual layer.
-            </p>
-          </div>
-          <div className="voice-meter-card">
-            <span>Structured context</span>
-            <AIContextMeter
-              breakdown={[
-                { label: 'Vision', value: 18 },
-                { label: 'Decisions', value: 27 },
-                { label: 'Evidence', value: 46 }
-              ]}
-              limit={130}
-              used={91}
-            />
-            <button
-              onClick={() => notify('Demo inquiry: Product Vision moved because pricing, authentication, and exports changed.', 'success')}
-              type="button"
-            >
-              Ask why Product Vision moved
-            </button>
-          </div>
+          <VoicePreview />
         </section>
 
         <section className="report-section" id="report">
@@ -323,7 +292,7 @@ export default function WebsitePage() {
           </div>
           <article className="report-preview">
             <div className="report-preview-head">
-              <span>Weekly product evolution · illustrative</span>
+              <span>Weekly product evolution</span>
               <strong>Product Vision · 81 → 76</strong>
             </div>
             <dl>
@@ -333,7 +302,6 @@ export default function WebsitePage() {
               <div><dt>Status</dt><dd>Unexplained Drift</dd></div>
               <div><dt>Needs attention</dt><dd>Review authentication rationale</dd></div>
             </dl>
-            <small>Demo data · final Product Vision formula remains open.</small>
           </article>
         </section>
 
@@ -345,12 +313,6 @@ export default function WebsitePage() {
         </section>
       </main>
       <SmoothFooter />
-      <BasicToast
-        message={toast.message}
-        onClose={() => setToast((current) => ({ ...current, open: false }))}
-        open={toast.open}
-        tone={toast.tone}
-      />
     </>
   )
 }
