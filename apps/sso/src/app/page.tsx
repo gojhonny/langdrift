@@ -16,22 +16,25 @@ import { StateLogger } from './state-logger'
 
 const plans = [
   {
-    id: 'team',
-    name: 'Team',
-    eyebrow: 'Focused product view',
-    details: 'Vision, Drift, decisions, evidence, and team attribution.'
+    id: 'plan-01',
+    name: 'Plan 01',
+    eyebrow: 'Commercial configuration · TBD',
+    details: 'Name, pricing, limits, and exact entitlements remain open.',
+    dimensions: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   },
   {
-    id: 'executive',
-    name: 'Executive',
-    eyebrow: 'Leadership view + Voice',
-    details: 'Cross-team evolution, reports, and deterministic executive inquiry.'
+    id: 'plan-02',
+    name: 'Plan 02',
+    eyebrow: 'Commercial configuration · TBD',
+    details: 'This card previews plan structure without inventing commercial rules.',
+    dimensions: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   },
   {
-    id: 'organization',
-    name: 'Organization',
-    eyebrow: 'Portfolio governance',
-    details: 'Multiple products, SSO, role controls, and deeper evidence retention.'
+    id: 'plan-03',
+    name: 'Plan 03',
+    eyebrow: 'Commercial configuration · TBD',
+    details: 'Pricing will define final packaging and role-scoped Voice access.',
+    dimensions: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   }
 ]
 
@@ -53,7 +56,7 @@ export default function SsoPage() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     incrementAttempts((current) => current + 1)
-    notify('SSO handoff prepared. Authentication wiring remains backend-owned.')
+    notify('Account-flow preview advanced. Authentication provider remains an open architecture decision.')
   }
 
   return (
@@ -77,34 +80,46 @@ export default function SsoPage() {
 
       <section className="sso-grid">
         <div className="auth-column">
-          <span className="sso-kicker">Workspace access</span>
+          <span className="sso-kicker">Account access</span>
           <h1>Continue to LangDrift.</h1>
           <p>
-            Sign in with your work identity. The selected workspace plan is shown
-            before the authentication handoff.
+            This frontend demonstrates the acquisition and organization-entry surface.
+            The authentication provider and exact sign-in method are intentionally not fixed here.
           </p>
           <form onSubmit={submit}>
             <label>
-              Work email
-              <input name="email" placeholder="you@company.com" required type="email" />
+              Work identity
+              <input
+                aria-describedby="auth-method-note"
+                name="identity"
+                placeholder="you@company.com"
+                required
+                type="email"
+              />
             </label>
             <button className="sso-primary" type="submit">
-              Continue with SSO
+              Continue
             </button>
           </form>
+          <small id="auth-method-note">
+            Auth methods such as password, magic link, Google, GitHub, or enterprise SSO remain open decisions.
+          </small>
           <button
             className="sso-secondary"
-            onClick={() => notify('Magic link flow selected')}
+            onClick={() => notify('Organization setup preview selected: tenant + initial Owner + first product/project.')}
             type="button"
           >
-            Use a magic link instead
+            Preview organization setup
           </button>
         </div>
 
         <div className="plan-column">
           <div className="plan-heading">
             <span className="sso-kicker">Plans</span>
-            <h2>Choose the visibility layer your organization needs.</h2>
+            <h2>Preview the commercial structure without inventing the commercial rules.</h2>
+            <p>
+              Final plan names, prices, limits, and Voice entitlements are intentionally left for Pricing.
+            </p>
           </div>
           <div className="plan-stack">
             {plans.map((plan) => (
@@ -113,14 +128,19 @@ export default function SsoPage() {
                   className="plan-card-button"
                   onClick={() => {
                     setSelectedPlan(plan.id)
-                    notify(`${plan.name} plan selected`)
+                    notify(`${plan.name} structure preview selected`)
                   }}
                   type="button"
                 >
                   <span>{plan.eyebrow}</span>
                   <strong>{plan.name}</strong>
                   <p>{plan.details}</p>
-                  <small>{selectedPlan === plan.id ? 'Selected ✓' : 'Select plan'}</small>
+                  <ul>
+                    {plan.dimensions.map((dimension) => (
+                      <li key={dimension}>{dimension}</li>
+                    ))}
+                  </ul>
+                  <small>{selectedPlan === plan.id ? 'Preview selected ✓' : 'Select preview'}</small>
                 </button>
               </GlowHoverCard>
             ))}
