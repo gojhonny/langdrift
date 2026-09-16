@@ -1,5 +1,6 @@
 'use client'
 
+import { useReducedMotion } from 'motion/react'
 import {
   CartesianGrid,
   Line,
@@ -22,12 +23,16 @@ export interface VisionActor {
 }
 
 export interface VisionDriftEvent {
+  actionHref?: string
+  actionLabel?: string
   actors: VisionActor[]
   classification: DriftClassification
   date: string
+  decision?: string
   delta: number
   id: string
   productArea?: string
+  reason?: string
   title: string
 }
 
@@ -58,12 +63,27 @@ const classificationColors: Record<DriftClassification, string> = {
   unexplained: '#dc2626'
 }
 
+function fallbackReason(classification: DriftClassification) {
+  if (classification === 'intentional') return 'A recorded product decision explains this movement.'
+  if (classification === 'unexplained') return 'No matching product decision was found.'
+  if (classification === 'review') return 'The product rationale is still under review.'
+  return 'This point establishes the recorded Vision reference.'
+}
+
+function fallbackDecision(classification: DriftClassification) {
+  if (classification === 'intentional') return 'Decision recorded'
+  if (classification === 'unexplained') return 'Decision not found'
+  if (classification === 'review') return 'Review pending'
+  return 'Baseline recorded'
+}
+
 export function ProductVisionCurve({
   compact = false,
   data,
   onSelectEvent,
   selectedEventId
 }: ProductVisionCurveProps) {
+  const reduceMotion = useReducedMotion()
   const selectedEvent =
     data.find((point) => point.event?.id === selectedEventId)?.event ??
     [...data].reverse().find((point) => point.event)?.event
@@ -185,7 +205,7 @@ export function ProductVisionCurve({
                   </g>
                 )
               }}
-              isAnimationActive={!compact}
+              isAnimationActive={!compact && !reduceMotion}
               stroke="var(--ld-chart-line, #111)"
               strokeWidth={2}
               type="monotone"
@@ -196,18 +216,30 @@ export function ProductVisionCurve({
 
       {selectedEvent && !compact ? (
         <div aria-live="polite" className="product-vision-event-detail">
-          <div>
+          <div className="product-vision-event-copy">
             <span>{selectedEvent.date} · {selectedEvent.productArea ?? 'Product'}</span>
             <strong>{selectedEvent.title}</strong>
             <small>
               {selectedEvent.actors.map((actor) => actor.name).join(' + ')}
               {selectedEvent.actors[0]?.team ? ` · ${selectedEvent.actors[0].team}` : ''}
             </small>
+            <p>
+              <b>Why?</b>{' '}
+              {selectedEvent.reason ?? fallbackReason(selectedEvent.classification)}
+            </p>
+            <small className="product-vision-decision">
+              {selectedEvent.decision ?? fallbackDecision(selectedEvent.classification)}
+              {selectedEvent.actionHref && selectedEvent.actionLabel ? (
+                <> · <a href={selectedEvent.actionHref}>{selectedEvent.actionLabel} →</a></>
+              ) : null}
+            </small>
           </div>
-          <b>{selectedEvent.delta > 0 ? '+' : ''}{selectedEvent.delta}</b>
-          <span data-classification={selectedEvent.classification}>
-            {classificationLabels[selectedEvent.classification]}
-          </span>
+          <div className="product-vision-event-status">
+            <b>{selectedEvent.delta > 0 ? '+' : ''}{selectedEvent.delta}</b>
+            <span data-classification={selectedEvent.classification}>
+              {classificationLabels[selectedEvent.classification]}
+            </span>
+          </div>
         </div>
       ) : null}
     </section>
