@@ -3,8 +3,6 @@
 import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
 import { useEffect, useRef, useState } from 'react'
 
-import './voice-preview.css'
-
 const scriptedStates: AgentOrbState[] = ['listening', 'thinking', 'speaking', 'idle']
 
 export function VoicePreview() {

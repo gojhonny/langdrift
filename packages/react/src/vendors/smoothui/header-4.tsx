@@ -1,7 +1,6 @@
 'use client'
 
-import { ArrowRight } from '@phosphor-icons/react'
-import { ThemeToggle } from '../../ui/theme-toggle'
+import { ArrowRight, Moon, Sun } from '@phosphor-icons/react'
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
 
@@ -38,8 +37,15 @@ export function Header4({
           <a href="#pricing">Plans</a>
         </nav>
         <div className="header-four-actions">
+          <button
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            className="smooth-icon-button"
+            onClick={onThemeToggle}
+            type="button"
+          >
+            {theme === 'dark' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+          </button>
           {actions}
-          {onThemeToggle ? <ThemeToggle onToggle={onThemeToggle} theme={theme} /> : null}
         </div>
       </header>
       <div aria-hidden="true" className="header-four-grid" />

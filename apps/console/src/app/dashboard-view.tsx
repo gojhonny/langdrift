@@ -6,13 +6,11 @@ import {
   ShieldCheck,
   WarningDiamond
 } from '@phosphor-icons/react'
-import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import {
   ProductVisionCurve,
   type VisionDriftEvent,
   type VisionPoint
 } from '@repo/react/ui/product-vision-curve'
-import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { AnimatedAvatarGroup, FigmaComment } from '@repo/react/vendors/smoothui'
 
 import {
@@ -44,14 +42,12 @@ const visionPoints: VisionPoint[] = [
     label: 'Apr',
     value: 91,
     event: {
-      actors: [{ initials: 'MR', name: 'Marina Reis', src: aiAvatars.marina, team: 'Leadership' }],
+      actors: [{ initials: 'MR', name: 'Marina Reis', team: 'Leadership' }],
       classification: 'baseline',
       date: 'Apr 02',
-      decision: 'Vision baseline recorded',
       delta: 0,
       id: 'baseline',
       productArea: 'Vision',
-      reason: 'Leadership recorded the product direction used as the reference for this period.',
       title: 'Vision baseline approved'
     }
   },
@@ -61,16 +57,14 @@ const visionPoints: VisionPoint[] = [
     value: 84,
     event: {
       actors: [
-        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' },
-        { initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }
+        { initials: 'AN', name: 'Ana', team: 'Product' },
+        { initials: 'CA', name: 'Carlos', team: 'Platform' }
       ],
       classification: 'intentional',
       date: 'Jun 28',
-      decision: 'Decision recorded',
       delta: -9,
       id: 'pricing',
       productArea: 'Pricing',
-      reason: 'Enterprise customers required a different packaging model.',
       title: 'Pricing strategy changed'
     }
   },
@@ -78,14 +72,12 @@ const visionPoints: VisionPoint[] = [
     label: 'Jul',
     value: 79,
     event: {
-      actors: [{ initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }],
+      actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
       classification: 'unexplained',
       date: 'Jul 22',
-      decision: 'Decision not found',
       delta: -6,
       id: 'authentication',
       productArea: 'Authentication',
-      reason: 'No matching product decision was found.',
       title: 'Authentication redesigned'
     }
   },
@@ -93,14 +85,12 @@ const visionPoints: VisionPoint[] = [
     label: 'Aug',
     value: 73,
     event: {
-      actors: [{ initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }],
+      actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
       classification: 'review',
       date: 'Aug 20',
-      decision: 'Review pending',
       delta: -3,
       id: 'exports',
       productArea: 'Exports',
-      reason: 'Evidence exists, but the product rationale is still incomplete.',
       title: 'Export behavior changed'
     }
   }
@@ -136,6 +126,7 @@ function Heading({ section }: { section: ConsoleSection }) {
         <h1>{title}</h1>
         <p>{description}</p>
       </div>
+      <span className="demo-label">Demo workspace · illustrative data</span>
     </div>
   )
 }
@@ -159,6 +150,7 @@ function VisionPanel() {
   const setSelectedPoint = useConsoleStore((state) => state.setSelectedPoint)
   const range = useConsoleStore((state) => state.range)
   const setRange = useConsoleStore((state) => state.setRange)
+  const notify = useConsoleStore((state) => state.notify)
   const selectedEventId = visionPoints[selectedPoint]?.event?.id ?? 'exports'
 
   function selectEvent(event: VisionDriftEvent) {
@@ -179,7 +171,10 @@ function VisionPanel() {
             <button
               data-active={range === item}
               key={item}
-              onClick={() => setRange(item)}
+              onClick={() => {
+                setRange(item)
+                notify(`${item.toUpperCase()} range selected`)
+              }}
               type="button"
             >
               {item}
@@ -197,7 +192,7 @@ function VisionPanel() {
           author="Ana"
           initials="AN"
           message="Pricing was intentional. Authentication remains unexplained and exports are still under review."
-          src={aiAvatars.ana}
+          onOpenChange={(open) => notify(`Curve comment ${open ? 'opened' : 'closed'}`)}
           timestamp="Aug 20"
         />
       </div>
@@ -212,7 +207,7 @@ function MovementList() {
       <div className="section-card-heading">
         <div>
           <span className="card-kicker">Why did Product Vision move?</span>
-          <h2>Three movements explain the current state.</h2>
+          <h2>Three movements explain the current demo state.</h2>
         </div>
         <span className="movement-totals">14 intentional · 4 unexplained</span>
       </div>
@@ -228,8 +223,7 @@ function MovementList() {
               people={event.actors.map((actor) => ({
                 initials: actor.initials,
                 name: actor.name,
-                role: actor.team,
-                src: actor.src
+                role: actor.team
               }))}
               size={26}
             />
@@ -315,6 +309,7 @@ function BaselineProvenance() {
         <div><dt>Supersedes</dt><dd>Initial founder intent snapshot</dd></div>
         <div><dt>Reason</dt><dd>First organization-approved product reference.</dd></div>
       </dl>
+      <small>Illustrative provenance. Baseline approval semantics remain open product work.</small>
     </section>
   )
 }
@@ -424,7 +419,7 @@ function GroupedEvolution() {
           <ClassificationPill classification={event.classification} />
         </article>
       ))}
-      {filtered.length === 0 ? <p>No events match this filter.</p> : null}
+      {filtered.length === 0 ? <p>No demo events match this filter.</p> : null}
     </section>
   )
 }
@@ -477,18 +472,16 @@ function Decisions() {
 }
 
 function People() {
-  const people = [
-    [aiAvatars.ana, 'Ana', 'Product Director', '5 decisions · 3 approvals · owns Pricing'],
-    [aiAvatars.carlos, 'Carlos', 'Engineering Lead', '4 implementations · 2 reviews · owns Authentication'],
-    [aiAvatars.marina, 'Marina', 'CEO', '3 approvals · Vision owner'],
-    [aiAvatars.lia, 'Lia', 'Design Lead', '3 proposals · owns product navigation']
-  ]
-
   return (
     <section className="dashboard-card people-list">
-      {people.map(([src, name, role, detail]) => (
+      {[
+        ['AN', 'Ana', 'Product Director', '5 decisions · 3 approvals · owns Pricing'],
+        ['CA', 'Carlos', 'Engineering Lead', '4 implementations · 2 reviews · owns Authentication'],
+        ['MR', 'Marina', 'CEO', '3 approvals · Vision owner'],
+        ['LI', 'Lia', 'Design Lead', '3 proposals · owns product navigation']
+      ].map(([initials, name, role, detail]) => (
         <article key={name}>
-          <span className="person-avatar"><img alt={name} src={src} /></span>
+          <span className="person-avatar">{initials}</span>
           <div><strong>{name}</strong><span>{role}</span></div>
           <small>{detail}</small>
         </article>
@@ -504,6 +497,7 @@ function Reports() {
         <span className="card-kicker">Weekly executive digest</span>
         <h2>Product Vision moved from 79 to 73.</h2>
         <p>Authentication was the largest unresolved contributor. Export behavior remains under review. Pricing movement is linked to an approved decision.</p>
+        <small>Demo report · same structured truth as Overview and Voice.</small>
       </section>
       <section className="dashboard-card report-stat intentional">
         <CheckCircle aria-hidden="true" size={20} />
@@ -540,15 +534,24 @@ function Evidence() {
 function Settings() {
   const theme = useConsoleStore((state) => state.theme)
   const setTheme = useConsoleStore((state) => state.setTheme)
-
+  const notify = useConsoleStore((state) => state.notify)
   return (
     <section className="dashboard-card settings-list">
       <div>
         <span><strong>Appearance</strong><small>Light and dark are first-class product themes.</small></span>
-        <ThemeToggle onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')} theme={theme} />
+        <button onClick={() => {
+          const next = theme === 'light' ? 'dark' : 'light'
+          setTheme(next)
+          notify(`${next} theme selected`)
+        }} type="button">Use {theme === 'light' ? 'dark' : 'light'}</button>
       </div>
       <div>
-        <span><strong>Executive Voice</strong><small>Voice stays focused on structured product context.</small></span>
+        <span><strong>Demo workspace</strong><small>Illustrative values must remain disclosed until the real product model exists.</small></span>
+        <button onClick={() => notify('Demo disclosure confirmed', 'success')} type="button">Review</button>
+      </div>
+      <div>
+        <span><strong>Executive Voice</strong><small>Initial Voice stays deterministic over structured product context.</small></span>
+        <button onClick={() => notify('Voice policy opened')} type="button">View policy</button>
       </div>
     </section>
   )

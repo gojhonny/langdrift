@@ -14,15 +14,13 @@ export interface UserAccountAvatarProps {
   initials: string
   name: string
   onAction?: (action: 'account' | 'settings' | 'signout') => void
-  src?: string
 }
 
 export function UserAccountAvatar({
   detail,
   initials,
   name,
-  onAction,
-  src
+  onAction
 }: UserAccountAvatarProps) {
   const [open, setOpen] = useState(false)
   const reduceMotion = useReducedMotion()
@@ -35,9 +33,7 @@ export function UserAccountAvatar({
         onClick={() => setOpen((current) => !current)}
         type="button"
       >
-        <span className="account-avatar-circle">
-          {src ? <img alt="" aria-hidden="true" src={src} /> : initials}
-        </span>
+        <span className="account-avatar-circle">{initials}</span>
         <span className="account-avatar-copy">
           <strong>{name}</strong>
           {detail ? <small>{detail}</small> : null}

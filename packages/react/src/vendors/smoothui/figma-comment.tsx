@@ -9,7 +9,6 @@ export interface FigmaCommentProps {
   initials: string
   message: string
   onOpenChange?: (open: boolean) => void
-  src?: string
   timestamp?: string
 }
 
@@ -18,7 +17,6 @@ export function FigmaComment({
   initials,
   message,
   onOpenChange,
-  src,
   timestamp = 'Just now'
 }: FigmaCommentProps) {
   const [open, setOpen] = useState(false)
@@ -33,9 +31,7 @@ export function FigmaComment({
   return (
     <span className="figma-comment">
       <button aria-expanded={open} onClick={toggle} type="button">
-        <span className="figma-comment-avatar">
-          {src ? <img alt="" aria-hidden="true" src={src} /> : initials}
-        </span>
+        <span className="figma-comment-avatar">{initials}</span>
         <ChatCenteredDots aria-hidden="true" size={14} />
       </button>
       <AnimatePresence>

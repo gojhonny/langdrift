@@ -7,7 +7,6 @@ export interface AvatarPerson {
   initials: string
   name: string
   role?: string
-  src?: string
 }
 
 export interface AnimatedAvatarGroupProps {
@@ -41,11 +40,7 @@ export function AnimatedAvatarGroup({
           title={`${person.name}${person.role ? ` · ${person.role}` : ''}`}
           transition={{ duration: reduceMotion ? 0 : 0.18 }}
         >
-          {person.src ? (
-            <img alt="" aria-hidden="true" src={person.src} />
-          ) : (
-            person.initials
-          )}
+          {person.initials}
         </motion.span>
       ))}
     </fieldset>

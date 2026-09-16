@@ -19,5 +19,11 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: ./cli/drift doctor --ci
       - run: pnpm exec biome lint . --files-ignore-unknown=true
+      - name: Product language audit
+        run: sh .audits/product-language.sh
+      - name: Demo-data audit
+        run: sh .audits/demo-data.sh
+      - name: Surface contract audit
+        run: sh .audits/surface-contracts.sh
       - run: pnpm typecheck
       - run: pnpm build
