@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'motion/react'
 import type { MouseEvent, ReactNode } from 'react'
 
 export interface GlowHoverCardProps {
@@ -20,11 +21,11 @@ export function GlowHoverCard({
   }
 
   return (
-    <div
+    <motion.div
       className={`glow-card ${selected ? 'glow-card-selected' : ''} ${className}`}
       onMouseMove={move}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
