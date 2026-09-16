@@ -138,6 +138,7 @@ export function ProductVisionCurve({
 
                 const actor = event.actors[0]
                 const activate = () => onSelectEvent?.(event)
+                const avatarClipId = `vision-avatar-${event.id}`
 
                 return (
                   // biome-ignore lint/a11y/useSemanticElements: Recharts dot markers render inside SVG and cannot contain an HTML button.
@@ -175,14 +176,22 @@ export function ProductVisionCurve({
                           strokeWidth={2}
                         />
                         {actor?.src ? (
-                          <image
-                            height="20"
-                            href={actor.src}
-                            preserveAspectRatio="xMidYMid slice"
-                            width="20"
-                            x={cx - 10}
-                            y={cy - 34}
-                          />
+                          <>
+                            <defs>
+                              <clipPath id={avatarClipId} clipPathUnits="userSpaceOnUse">
+                                <circle cx={cx} cy={cy - 24} r={10} />
+                              </clipPath>
+                            </defs>
+                            <image
+                              clipPath={`url(#${avatarClipId})`}
+                              height="20"
+                              href={actor.src}
+                              preserveAspectRatio="xMidYMid slice"
+                              width="20"
+                              x={cx - 10}
+                              y={cy - 34}
+                            />
+                          </>
                         ) : (
                           <text
                             fill="var(--ld-surface, #fff)"
