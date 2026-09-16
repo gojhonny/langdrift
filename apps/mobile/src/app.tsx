@@ -1,8 +1,7 @@
-import { X } from '@phosphor-icons/react'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
-import { ChartLineUp } from '@repo/react/ui/icons'
+import { ChartLineUp, X } from '@repo/react/ui/icons'
 import {
   ProductVisionCurve,
   type VisionPoint
