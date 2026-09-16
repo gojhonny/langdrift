@@ -67,11 +67,12 @@ export function ProductVisionCurve({
   const selectedEvent =
     data.find((point) => point.event?.id === selectedEventId)?.event ??
     [...data].reverse().find((point) => point.event)?.event
+  const lastPoint = data[data.length - 1]
 
   return (
     <section className={`product-vision-curve ${compact ? 'product-vision-curve-compact' : ''}`}>
       <p className="ld-visually-hidden">
-        Product Vision moves from {data[0]?.value ?? 0}% to {data.at(-1)?.value ?? 0}%.
+        Product Vision moves from {data[0]?.value ?? 0}% to {lastPoint?.value ?? 0}%.
         Important events are available as keyboard-focusable points on the curve.
       </p>
       <div className="product-vision-chart" style={{ height: compact ? 128 : 230 }}>
@@ -126,6 +127,7 @@ export function ProductVisionCurve({
                 const activate = () => onSelectEvent?.(event)
 
                 return (
+                  // biome-ignore lint/a11y/useSemanticElements: Recharts dot markers render inside SVG and cannot contain an HTML button.
                   <g
                     aria-label={`${event.title}, ${event.delta} Product Vision, ${classificationLabels[event.classification]}, ${event.date}`}
                     className="product-vision-event-dot"
