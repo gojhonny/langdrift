@@ -143,6 +143,15 @@ export function App() {
     messageEndRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
   }, [hasConversation, messages.length])
 
+  useEffect(() => {
+    if (!evolutionOpen) return
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setEvolutionOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [evolutionOpen, setEvolutionOpen])
+
   function ask(question: string) {
     const trimmed = question.trim()
     if (!trimmed) return
@@ -290,12 +299,11 @@ export function App() {
       </section>
 
       {evolutionOpen ? (
-        <div className="mobile-sheet-backdrop" role="presentation" onClick={() => setEvolutionOpen(false)}>
+        <div className="mobile-sheet-backdrop">
           <section
             aria-label="Product Vision evolution"
             aria-modal="true"
             className="mobile-evolution-sheet"
-            onClick={(event) => event.stopPropagation()}
             role="dialog"
           >
             <div className="mobile-sheet-handle" />
