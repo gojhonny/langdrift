@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 
 import '@repo/react/styles.css'
 import './globals.css'
+import './brand.css'
 
 export const metadata: Metadata = {
   title: 'LangDrift — we still in charge',
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'light dark',
-  themeColor: '#f7f6f2'
+  themeColor: '#fbfbfa'
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
