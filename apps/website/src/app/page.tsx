@@ -127,6 +127,13 @@ const attribution = [
   }
 ]
 
+const trustedPeople = [
+  { initials: 'MR', name: 'Marina', role: 'Founder', src: aiAvatars.marina },
+  { initials: 'AN', name: 'Ana', role: 'Product', src: aiAvatars.ana },
+  { initials: 'CA', name: 'Carlos', role: 'Platform', src: aiAvatars.carlos },
+  { initials: 'LI', name: 'Lia', role: 'Design', src: aiAvatars.lia }
+]
+
 export default function WebsitePage() {
   const [theme, setTheme] = useAtom(themeAtom)
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
@@ -168,6 +175,13 @@ export default function WebsitePage() {
     </div>
   )
 
+  const heroSupporting = (
+    <div className="hero-trust-row">
+      <AnimatedAvatarGroup people={trustedPeople} size={30} />
+      <span>Built for founders and product teams that want to know what changed — and why.</span>
+    </div>
+  )
+
   return (
     <>
       <StateLogger />
@@ -183,6 +197,7 @@ export default function WebsitePage() {
             </div>
           }
           onThemeToggle={toggleTheme}
+          supporting={heroSupporting}
           theme={theme}
           visual={heroVisual}
         />
