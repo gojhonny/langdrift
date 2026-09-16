@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  AppleLogo,
-  CaretDown,
-  GithubLogo,
-  GoogleLogo
-} from '@phosphor-icons/react'
+import { AppleLogo, CaretDown, GithubLogo, GoogleLogo } from '@repo/react/ui/icons'
 import { Brand } from '@repo/react/ui/brand'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { GlowHoverCard } from '@repo/react/vendors/smoothui'
@@ -54,7 +49,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
   const [theme, setTheme] = useAtom(themeAtom)
   const [email, setEmail] = useAtom(accountEmailAtom)
   const [organization, setOrganization] = useAtom(organizationNameAtom)
-  const [selectedPlan, setSelectedPlan] = useAtom(selectedPlanAtom)
+  const [, setSelectedPlan] = useAtom(selectedPlanAtom)
   const setSetupStep = useSetAtom(setupStepAtom)
   const incrementAttempts = useSetAtom(signInAttemptsAtom)
   const currentIndex = flowIndex(step)
