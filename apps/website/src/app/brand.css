@@ -117,6 +117,23 @@
   text-decoration: none;
 }
 
+.header-four-supporting {
+  margin-top: 28px;
+}
+
+.hero-trust-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.hero-trust-row > span {
+  color: var(--ld-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  max-width: 300px;
+}
+
 .header-four-visual {
   background: var(--ld-surface);
   border-color: var(--ld-hairline);
@@ -186,6 +203,10 @@
   .header-four-cta {
     justify-content: center;
   }
+
+  .hero-trust-row {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 760px) {
@@ -222,5 +243,10 @@
   .header-four .smooth-primary-button,
   .header-four .smooth-text-link {
     justify-content: center;
+  }
+
+  .hero-trust-row {
+    align-items: flex-start;
+    text-align: left;
   }
 }
