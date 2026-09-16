@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 import '@repo/react/styles.css'
 import './globals.css'
 import './product-experience.css'
-import './polish.css'
 import { ConsoleShell } from './console-shell'
 
 export const metadata: Metadata = {

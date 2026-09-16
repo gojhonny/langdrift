@@ -19,7 +19,6 @@ export type DriftClassification =
 export interface VisionActor {
   initials: string
   name: string
-  src?: string
   team?: string
 }
 
@@ -99,8 +98,16 @@ export function ProductVisionCurve({
       <div className="product-vision-chart" style={{ height: compact ? 128 : 230 }}>
         <ResponsiveContainer height="100%" width="100%">
           <LineChart data={data} margin={{ bottom: 4, left: -20, right: 24, top: 34 }}>
-            <CartesianGrid stroke="var(--ld-chart-grid, #e8e8e8)" vertical={false} />
-            <XAxis axisLine={false} dataKey="label" fontSize={10} tickLine={false} />
+            <CartesianGrid
+              stroke="var(--ld-chart-grid, #e8e8e8)"
+              vertical={false}
+            />
+            <XAxis
+              axisLine={false}
+              dataKey="label"
+              fontSize={10}
+              tickLine={false}
+            />
             <YAxis
               axisLine={false}
               domain={['dataMin - 4', 'dataMax + 4']}
@@ -174,27 +181,16 @@ export function ProductVisionCurve({
                           stroke="var(--ld-chart-surface, #fff)"
                           strokeWidth={2}
                         />
-                        {actor?.src ? (
-                          <image
-                            height="20"
-                            href={actor.src}
-                            preserveAspectRatio="xMidYMid slice"
-                            width="20"
-                            x={cx - 10}
-                            y={cy - 34}
-                          />
-                        ) : (
-                          <text
-                            fill="var(--ld-surface, #fff)"
-                            fontSize="7"
-                            fontWeight="700"
-                            textAnchor="middle"
-                            x={cx}
-                            y={cy - 21.5}
-                          >
-                            {actor?.initials ?? 'LD'}
-                          </text>
-                        )}
+                        <text
+                          fill="var(--ld-surface, #fff)"
+                          fontSize="7"
+                          fontWeight="700"
+                          textAnchor="middle"
+                          x={cx}
+                          y={cy - 21.5}
+                        >
+                          {actor?.initials ?? 'LD'}
+                        </text>
                         <text
                           fill="var(--ld-muted, #71717a)"
                           fontSize="8"

@@ -5,16 +5,15 @@ import '@neongate-ai/orbz/browser'
 
 import {
   normalizeOrbzSize,
+  type OrbzPresetName,
   type OrbzReducedMotion,
   type OrbzSize,
   type OrbzState
 } from '@neongate-ai/orbz'
 
-import { LANGDRIFT_ORB_CONFIG, type LangDriftOrbColors } from './orb-config'
-
 export interface AgentOrbProps {
-  colors?: Partial<LangDriftOrbColors>
   paused?: boolean
+  preset?: OrbzPresetName
   reducedMotion?: OrbzReducedMotion
   size?: OrbzSize
   speed?: number
@@ -22,26 +21,20 @@ export interface AgentOrbProps {
 }
 
 export function AgentOrb({
-  colors,
   paused = false,
-  reducedMotion = LANGDRIFT_ORB_CONFIG.reducedMotion,
+  preset = 'peach',
+  reducedMotion = 'system',
   size = '160px',
-  speed = LANGDRIFT_ORB_CONFIG.speed,
+  speed = 0.9,
   state = 'idle'
 }: AgentOrbProps) {
-  const palette = { ...LANGDRIFT_ORB_CONFIG.colors, ...colors }
-
   return (
     // The Orbz host is decorative. Interaction belongs to the surrounding control.
     // biome-ignore lint/a11y/noAriaHiddenOnFocusable: custom elements are conservatively treated as focusable.
     <orb-z
       aria-hidden="true"
-      color-accent={palette.accent}
-      color-background={palette.background}
-      color-highlight={palette.highlight}
-      color-primary={palette.primary}
-      color-secondary={palette.secondary}
       paused={paused}
+      preset={preset}
       reduced-motion={reducedMotion}
       size={normalizeOrbzSize(size)}
       speed={speed}

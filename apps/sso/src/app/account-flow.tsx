@@ -1,9 +1,7 @@
 'use client'
 
-import { AppleLogo, CaretDown, GithubLogo, GoogleLogo } from '@repo/react/ui/icons'
 import { Brand } from '@repo/react/ui/brand'
-import { ThemeToggle } from '@repo/react/ui/theme-toggle'
-import { GlowHoverCard } from '@repo/react/vendors/smoothui'
+import { BasicToast, GlowHoverCard } from '@repo/react/vendors/smoothui'
 import { useAtom, useSetAtom } from 'jotai'
 import { useRouter } from 'next/navigation'
 import type { FormEvent } from 'react'
@@ -15,7 +13,8 @@ import {
   selectedPlanAtom,
   setupStepAtom,
   signInAttemptsAtom,
-  themeAtom
+  themeAtom,
+  toastAtom
 } from '../state'
 import { ssoLinks } from './app-links'
 import { StateLogger } from './state-logger'
@@ -34,12 +33,6 @@ const flowSteps = [
   { href: '/setup', id: 'setup', label: 'Setup' }
 ] as const
 
-const socialProviders = [
-  { icon: GoogleLogo, id: 'google', label: 'Continue with Google' },
-  { icon: GithubLogo, id: 'github', label: 'Continue with GitHub' },
-  { icon: AppleLogo, id: 'apple', label: 'Continue with Apple' }
-] as const
-
 function flowIndex(step: AccountFlowStep) {
   return flowSteps.findIndex((item) => item.id === step)
 }
@@ -49,7 +42,8 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
   const [theme, setTheme] = useAtom(themeAtom)
   const [email, setEmail] = useAtom(accountEmailAtom)
   const [organization, setOrganization] = useAtom(organizationNameAtom)
-  const [, setSelectedPlan] = useAtom(selectedPlanAtom)
+  const [selectedPlan, setSelectedPlan] = useAtom(selectedPlanAtom)
+  const [toast, setToast] = useAtom(toastAtom)
   const setSetupStep = useSetAtom(setupStepAtom)
   const incrementAttempts = useSetAtom(signInAttemptsAtom)
   const currentIndex = flowIndex(step)
@@ -58,6 +52,10 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
     document.documentElement.dataset.theme = theme
     document.documentElement.style.colorScheme = theme
   }, [theme])
+
+  function notify(message: string) {
+    setToast({ message, open: true })
+  }
 
   function submitIdentity(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -68,16 +66,6 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
       return
     }
 
-    setSetupStep('account')
-    router.push('/create-organization')
-  }
-
-  function continueWithProvider() {
-    incrementAttempts((current) => current + 1)
-    if (step === 'sign-in') {
-      window.location.assign(ssoLinks.console)
-      return
-    }
     setSetupStep('account')
     router.push('/create-organization')
   }
@@ -101,15 +89,15 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
     ],
     'select-plan': [
       'Choose how to start.',
-      'Packaging is being finalized. Continue with product setup now.'
+      'Packaging is being finalized. Continue with the product setup without inventing commercial limits.'
     ],
     setup: [
       'Set up your first product.',
-      'Name the product you want LangDrift to understand first. Integrations come next.'
+      'Name the product you want LangDrift to understand first. Integrations come after this step.'
     ],
     'sign-in': [
       'Sign in to LangDrift.',
-      'Continue with your work identity to access your product workspace.'
+      'Use your work identity to continue to your product workspace.'
     ],
     'sign-up': [
       'Create your LangDrift account.',
@@ -126,13 +114,20 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
           <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
         </a>
         <div className="account-flow-header-actions">
-          <a className="account-header-link" href={step === 'sign-in' ? '/sign-up' : '/sign-in'}>
+          <a href={step === 'sign-in' ? '/sign-up' : '/sign-in'}>
             {step === 'sign-in' ? 'Create account' : 'Sign in'}
           </a>
-          <ThemeToggle
-            onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            theme={theme}
-          />
+          <button
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            onClick={() => {
+              const next = theme === 'light' ? 'dark' : 'light'
+              setTheme(next)
+              notify(`${next} theme enabled`)
+            }}
+            type="button"
+          >
+            Theme · {theme}
+          </button>
         </div>
       </header>
 
@@ -174,37 +169,26 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
         </div>
 
         {step === 'sign-in' || step === 'sign-up' ? (
-          <div className="identity-stack">
-            {step === 'sign-in' ? (
-              <div className="social-login-stack">
-                {socialProviders.map(({ icon: Icon, id, label }) => (
-                  <button key={id} onClick={continueWithProvider} type="button">
-                    <Icon aria-hidden="true" size={18} weight="fill" />
-                    {label}
-                  </button>
-                ))}
-                <div className="auth-divider"><span>or</span></div>
-              </div>
-            ) : null}
-
-            <form className="account-flow-form" onSubmit={submitIdentity}>
-              <label>
-                Work email
-                <input
-                  autoComplete="email"
-                  onChange={(event) => setEmail(event.currentTarget.value)}
-                  placeholder="you@company.com"
-                  required
-                  type="email"
-                  value={email}
-                />
-              </label>
-              <button className="sso-primary" type="submit">
-                {step === 'sign-in' ? 'Continue with email' : 'Create account'}
-              </button>
-              {step === 'sign-in' ? <a className="create-account-link" href="/sign-up">Create account</a> : null}
-            </form>
-          </div>
+          <form className="account-flow-form" onSubmit={submitIdentity}>
+            <label>
+              Work email
+              <input
+                autoComplete="email"
+                onChange={(event) => setEmail(event.currentTarget.value)}
+                placeholder="you@company.com"
+                required
+                type="email"
+                value={email}
+              />
+            </label>
+            <button className="sso-primary" type="submit">
+              {step === 'sign-in' ? 'Continue' : 'Create account'}
+            </button>
+            <small>
+              Additional sign-in methods can appear here when authentication is configured.
+            </small>
+            {step === 'sign-in' ? <a href="/sign-up">Create account →</a> : null}
+          </form>
         ) : null}
 
         {step === 'create-organization' ? (
@@ -221,14 +205,11 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
             </label>
             <label>
               Your role
-              <span className="select-control">
-                <select defaultValue="owner">
-                  <option value="owner">Owner / Founder</option>
-                  <option value="executive">Executive</option>
-                  <option value="other">Other</option>
-                </select>
-                <CaretDown aria-hidden="true" size={14} />
-              </span>
+              <select defaultValue="owner">
+                <option value="owner">Owner / Founder</option>
+                <option value="executive">Executive</option>
+                <option value="other">Other</option>
+              </select>
             </label>
             <button className="sso-primary" type="submit">Create organization</button>
           </form>
@@ -241,9 +222,10 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                 <span>Packaging in progress</span>
                 <strong>Start with LangDrift</strong>
                 <p>
-                  Final pricing and limits are not published yet. Teams, People, Products,
-                  Voice, History, and Integrations will be part of the packaging model.
+                  Final pricing and limits are not published yet. The commercial model will describe Teams,
+                  People, Products, Voice access, History, and Integrations when it is ready.
                 </p>
+                <small>No price or entitlement is implied.</small>
               </div>
             </GlowHoverCard>
             <button className="sso-primary account-flow-next" onClick={continuePlan} type="button">
@@ -267,16 +249,30 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
             </div>
             <div>
               <span>Plan</span>
-              <strong>Packaging to be confirmed</strong>
+              <strong>{selectedPlan === 'packaging-pending' ? 'Packaging to be confirmed' : 'Packaging to be confirmed'}</strong>
             </div>
             <label>
               First product
               <input name="product" placeholder="Atlas Home Hub" required />
             </label>
             <button className="sso-primary" type="submit">Open LangDrift</button>
+            <button
+              className="sso-secondary"
+              onClick={() => notify('Invitations can be completed later from the workspace.')}
+              type="button"
+            >
+              Invite team later
+            </button>
           </form>
         ) : null}
       </section>
+
+      <BasicToast
+        message={toast.message}
+        onClose={() => setToast((current) => ({ ...current, open: false }))}
+        open={toast.open}
+        tone="info"
+      />
     </main>
   )
 }

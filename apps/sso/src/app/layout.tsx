@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 import '@repo/react/styles.css'
 import './globals.css'
 import './flow.css'
-import './polish.css'
 
 export const metadata: Metadata = {
   title: 'LangDrift — Account',
