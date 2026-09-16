@@ -98,6 +98,13 @@ const visionPoints: VisionPoint[] = [
   }
 ]
 
+const classificationLabels = {
+  baseline: 'Baseline',
+  intentional: 'Intentional Evolution',
+  review: 'Under Review',
+  unexplained: 'Unexplained Drift'
+} as const
+
 const attribution = [
   {
     area: 'Pricing',
@@ -191,41 +198,50 @@ export default function WebsitePage() {
         <section className="why-section" id="why">
           <div className="why-title">
             <span className="section-kicker">Know why</span>
-            <h2>The movement stays attached to its reason.</h2>
+            <h2>Every movement keeps its context.</h2>
             <p>
-              Select a point in the curve and LangDrift keeps the executive explanation,
-              people, decision state, and classification together.
+              Select a marked point in the Product Vision curve to see what changed,
+              its impact, why it happened, who was involved, and the recorded decision state.
             </p>
           </div>
           {activeEvent ? (
             <article className="reason-card">
-              <div className="reason-date">{activeEvent.date}</div>
-              <div className="reason-main">
-                <h3>{activeEvent.title}</h3>
-                <dl>
-                  <div>
-                    <dt>Why</dt>
-                    <dd>{activeEvent.reason}</dd>
-                  </div>
-                  <div>
-                    <dt>Decision</dt>
-                    <dd>{activeEvent.decision}</dd>
-                  </div>
-                  <div>
-                    <dt>Product area</dt>
-                    <dd>{activeEvent.productArea ?? 'Product'}</dd>
-                  </div>
-                </dl>
+              <div className="reason-summary">
+                <div>
+                  <span>Selected movement</span>
+                  <h3>{activeEvent.title}</h3>
+                  <p>{activeEvent.date} · {activeEvent.productArea ?? 'Product'}</p>
+                </div>
+                <div className="reason-impact">
+                  <strong>{activeEvent.delta > 0 ? '+' : ''}{activeEvent.delta}</strong>
+                  <span data-classification={activeEvent.classification}>
+                    {classificationLabels[activeEvent.classification]}
+                  </span>
+                </div>
               </div>
-              <AnimatedAvatarGroup
-                people={activeEvent.actors.map((actor) => ({
-                  initials: actor.initials,
-                  name: actor.name,
-                  role: actor.team,
-                  src: actor.src
-                }))}
-                size={32}
-              />
+              <div className="reason-details">
+                <div>
+                  <span>Why it moved</span>
+                  <p>{activeEvent.reason}</p>
+                </div>
+                <div>
+                  <span>Decision state</span>
+                  <strong>{activeEvent.decision}</strong>
+                </div>
+                <div>
+                  <span>Who was involved</span>
+                  <AnimatedAvatarGroup
+                    people={activeEvent.actors.map((actor) => ({
+                      initials: actor.initials,
+                      name: actor.name,
+                      role: actor.team,
+                      src: actor.src
+                    }))}
+                    size={32}
+                  />
+                  <small>{activeEvent.actors.map((actor) => actor.name).join(' + ')}</small>
+                </div>
+              </div>
             </article>
           ) : null}
         </section>

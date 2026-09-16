@@ -11,7 +11,8 @@
 }
 
 .account-flow-header-actions .account-header-link:hover,
-.create-account-link:hover {
+.create-account-link:hover,
+.login-five-heading a:hover {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -54,9 +55,11 @@
 
 .auth-status {
   color: var(--ld-muted);
+  display: block;
   font-size: 10px;
   line-height: 1.45;
   margin: 0;
+  text-align: center;
 }
 
 .auth-divider {
@@ -102,4 +105,182 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.login-five-shell {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: calc(100vh - 74px);
+  padding: 52px 24px 80px;
+}
+
+.login-five-card {
+  display: grid;
+  gap: 22px;
+  max-width: 430px;
+  width: 100%;
+}
+
+.login-five-heading {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.login-five-heading h1 {
+  font-size: 28px;
+  font-weight: 550;
+  letter-spacing: -.03em;
+  margin: 0;
+}
+
+.login-five-heading p,
+.login-five-heading small {
+  color: var(--ld-muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.login-five-heading a {
+  color: var(--ld-ink);
+  text-decoration: none;
+}
+
+.login-five-form {
+  display: grid;
+  gap: 10px;
+}
+
+.login-five-form label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.login-five-form input {
+  background: var(--ld-surface);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: inherit;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.login-five-providers {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.login-five-providers button {
+  align-items: center;
+  background: var(--ld-surface);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 7px;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.login-five-providers button span {
+  font-size: 10px;
+}
+
+.login-five-providers button:hover {
+  background: color-mix(in srgb, var(--ld-surface) 88%, var(--ld-ink) 4%);
+}
+
+.plan-selection-shell {
+  margin: 54px auto 0;
+  max-width: 1180px;
+  padding: 0 28px 88px;
+}
+
+.plan-selection-heading {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 28px;
+  max-width: 620px;
+}
+
+.plan-selection-heading h1 {
+  font-size: clamp(42px, 5vw, 64px);
+  font-weight: 400;
+  letter-spacing: -.045em;
+  line-height: 1;
+  margin: 0;
+}
+
+.plan-selection-heading p {
+  color: var(--ld-muted);
+  margin: 0;
+}
+
+.plan-selection-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.plan-selection-card {
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  min-height: 330px;
+  padding: 24px;
+}
+
+.plan-selection-card > div {
+  display: grid;
+  gap: 12px;
+}
+
+.plan-selection-card > div > span {
+  color: var(--ld-muted);
+  font-family: var(--ld-font-mono);
+  font-size: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.plan-selection-card h2 {
+  font-size: 30px;
+  font-weight: 520;
+  letter-spacing: -.035em;
+  margin: 0;
+}
+
+.plan-selection-card p {
+  color: var(--ld-muted);
+  font-size: 11px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.plan-selection-card > button {
+  background: var(--ld-ink);
+  border: 0;
+  border-radius: 8px;
+  color: var(--ld-surface);
+  cursor: pointer;
+  margin-top: auto;
+  min-height: 42px;
+}
+
+.plan-selection-grid > :nth-child(2) .plan-selection-card > button {
+  background: #f97316;
+  color: #171717;
+}
+
+@media (max-width: 760px) {
+  .login-five-shell { min-height: calc(100vh - 64px); padding-inline: 18px; }
+  .login-five-providers { grid-template-columns: 1fr; }
+  .plan-selection-shell { margin-top: 34px; padding-inline: 18px; }
+  .plan-selection-grid { grid-template-columns: 1fr; }
+  .plan-selection-card { min-height: 230px; }
 }
