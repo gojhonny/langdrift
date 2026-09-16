@@ -159,13 +159,13 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
       <section className="console-workspace">
         <header className="console-topbar">
-          <div className="console-breadcrumb" aria-label="Breadcrumb">
+          <nav className="console-breadcrumb" aria-label="Breadcrumb">
             <span>LangDrift</span>
             <span>/</span>
             <strong>{state.selectedProduct}</strong>
             <span>/</span>
             <strong>{currentSection}</strong>
-          </div>
+          </nav>
           <div className="console-actions">
             <Tooltip content="Ask LangDrift">
               <button
