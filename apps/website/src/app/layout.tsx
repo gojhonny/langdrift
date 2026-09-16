@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 
 import '@repo/react/styles.css'
 import './globals.css'
+import './followup.css'
 
 export const metadata: Metadata = {
   title: 'LangDrift — we still in charge',
