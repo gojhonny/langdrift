@@ -10,7 +10,7 @@ export interface WebsiteToast {
 }
 
 export const themeAtom = atom<WebsiteTheme>('light')
-export const selectedPointAtom = atom(4)
+export const selectedPointAtom = atom(2)
 export const toastAtom = atom<WebsiteToast>({
   message: '',
   open: false,
