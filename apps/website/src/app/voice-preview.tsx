@@ -47,7 +47,7 @@ export function VoicePreview() {
         <div className="voice-question">
           <span>“Why did Product Vision move this week?”</span>
           <button type="button" onClick={runPreview}>
-            Run preview
+            Ask this question
           </button>
         </div>
         <div aria-live="polite" className={`voice-answer ${showAnswer ? 'voice-answer-visible' : ''}`}>
