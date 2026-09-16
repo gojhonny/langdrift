@@ -1,0 +1,107 @@
+.ld-visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.product-vision-curve {
+  min-width: 0;
+}
+
+.product-vision-chart {
+  min-width: 0;
+  width: 100%;
+}
+
+.product-vision-event-dot {
+  cursor: pointer;
+  outline: none;
+}
+
+.product-vision-event-dot:focus-visible circle:first-child {
+  stroke: #f97316;
+  stroke-width: 4px;
+}
+
+.product-vision-event-detail {
+  align-items: center;
+  border-top: 1px solid var(--ld-hairline, #e8e8e8);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  margin-top: 10px;
+  padding-top: 12px;
+}
+
+.product-vision-event-detail > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.product-vision-event-detail > div > span,
+.product-vision-event-detail > div > small {
+  color: var(--ld-muted, #71717a);
+  font-size: 9px;
+}
+
+.product-vision-event-detail > div > strong {
+  font-size: 11px;
+}
+
+.product-vision-event-detail > b {
+  font-family: var(--ld-font-mono, monospace);
+  font-size: 12px;
+}
+
+.product-vision-event-detail > span {
+  border: 1px solid var(--ld-hairline, #e8e8e8);
+  border-radius: 999px;
+  font-size: 8px;
+  padding: 5px 7px;
+  white-space: nowrap;
+}
+
+.product-vision-event-detail > span[data-classification='intentional'] {
+  color: #3b82f6;
+}
+
+.product-vision-event-detail > span[data-classification='unexplained'] {
+  color: #dc2626;
+}
+
+.product-vision-event-detail > span[data-classification='review'] {
+  color: #a855f7;
+}
+
+.product-vision-event-detail > span[data-classification='baseline'] {
+  color: var(--ld-muted, #71717a);
+}
+
+.product-vision-curve-compact .recharts-cartesian-axis-tick-value {
+  font-size: 9px;
+}
+
+@media (max-width: 620px) {
+  .product-vision-event-detail {
+    align-items: start;
+    grid-template-columns: 1fr auto;
+  }
+
+  .product-vision-event-detail > span {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-vision-event-dot {
+    transition: none;
+  }
+}

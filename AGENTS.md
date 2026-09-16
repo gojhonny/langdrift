@@ -1,64 +1,145 @@
-# Lang Drift — Repository Agent Context
+# LangDrift — Repository Agent Context
 
 ## Product
 
-Lang Drift is a multi-tenant visual product-intelligence platform for founders, CEOs, and leadership. It explains how a product changes over time relative to the vision and recorded decisions that shaped it.
+LangDrift is a multi-tenant visual product-intelligence platform for founders, CEOs, and leadership. It explains how a product changes over time relative to the vision and recorded decisions that shaped it.
 
 The primary executive question is:
 
 > How far has the product drifted from the vision we intended to build?
 
+The executive product sequence is:
+
+```text
+Product Vision
+  → how did it move?
+  → why?
+  → who?
+  → was it intentional?
+  → show me more
+```
+
+## Current repository maturity
+
+Implemented frontend surfaces:
+
+- Website
+- Console / Dashboard
+- SSO / Auth / Plans preview
+- Mobile / PWA
+- shared React UI
+
+Current maturity:
+
+- frontend prototype / demo;
+- no canonical backend contract yet;
+- Product Vision values are illustrative demo data;
+- Product Vision formula remains open;
+- Pricing, limits, billing cadence, and exact Voice entitlements remain open;
+- auth provider and exact auth methods remain open.
+
+Do not present an open implementation choice as canonical product policy.
+
 ## Canonical language
 
 - **Vision:** intended product direction.
-- **Product Vision:** explainable, decomposable, auditable executive index of alignment with recorded vision, decisions, implementation, and evidence. It is not an AI probability.
+- **Product Vision:** explainable, decomposable, auditable executive state/index of the current product relative to recorded vision and decisions. It is not an AI probability.
 - **Drift:** movement between intended direction and current product reality; drift is not automatically negative.
 - **Intentional Evolution:** consciously decided change with recorded rationale and responsibility.
 - **Unexplained Drift:** meaningful change without a clearly recorded product decision or rationale.
 - **Unknown / Under Review:** detected difference not yet classifiable with confidence.
+- **Attribution:** people, teams, agents, and actions connected to a change.
 
-Do not reintroduce the superseded term “Product Integrity.” Use **Product Vision**.
+Do not reintroduce the superseded term **Product Integrity** except when explicitly discussing historical terminology. Use **Product Vision**.
 
 ## Product principles
 
 1. Executive first.
 2. Visual-first for truth.
 3. Voice-first for inquiry.
-4. Explain every number.
+4. Explain every important number.
 5. Evolution is not automatically failure.
 6. Attribution matters.
 7. Deterministic first.
 8. Methodology agnostic.
 9. Technical complexity stays underneath.
-10. Same data, different abstraction by role.
+10. Same truth, different abstraction by role.
 11. Important scores are auditable.
 12. Important changes are attributable when possible.
+13. Product UI should feel analytical, not magical.
+14. The Product Vision / Drift Curve is a signature visual.
+15. The Voice Orb is a signature interaction surface.
+16. Orange is brand identity, not warning/error severity.
 
 ## Architecture direction
 
 Prefer:
 
 ```text
-structured artifacts
-  -> deterministic rules / audits
-  -> normalized events
-  -> product model
-  -> executive visualization
+structured sources
+  → deterministic ingestion
+  → rules / audits
+  → normalized events
+  → product model
+  → Product Vision / Drift
+  → executive views
+  → deterministic Voice query
 ```
 
 Canonical principle: **reason over changes, not repositories**.
 
-The frontend scaffold must not invent a backend contract. There is no backend app in this repository yet.
+The frontend must not invent a backend contract. There is no backend/API workspace in this repository yet.
 
-## Workspace boundaries
+## Surface boundaries
 
-- `apps/website`: public acquisition surface. Cohere-inspired composition, Lang Drift tokens.
-- `apps/console`: authenticated dashboard/product. Vercel-inspired precision, Lang Drift tokens.
-- `apps/sso`: sign-in/sign-up/SSO boundary, visually adjacent to the Website family.
-- `apps/mobile`: installed PWA/mobile executive experience, same product language as the authenticated app.
-- `packages/react`: shared tokens, styles, and future React UI primitives. SmoothUI is the preferred metric/data-motion source.
-- `.agents`: harness artifact folders. Keep placeholders only until the harness redesign is finalized.
-- `.audits`: audit placeholder only until the harness redesign is finalized.
+### Website
+
+Public acquisition and explanation.
+
+- Cohere-inspired composition + LangDrift tokens.
+- First viewport must explain Product Vision movement visually.
+- Marketing language uses founder outcomes, not internal route taxonomy.
+- Technical infrastructure remains secondary.
+
+### Console / Dashboard
+
+Authenticated analytical product.
+
+- Vercel-inspired precision + LangDrift tokens.
+- Primary navigation stays shallow: Overview, Evolution, Decisions, People, Reports, then Settings.
+- Evidence is contextual drill-down, not a primary executive destination.
+- Team/Product Area are dimensions/groupings.
+- Intentional/Unexplained/Under Review are classifications/filters.
+- Product Vision must expose its movement and provenance.
+
+### Mobile / PWA
+
+Installed executive companion.
+
+- Glance first. Ask second. Analyze on demand.
+- Product Vision summary and Orb belong above the fold.
+- Full curve is available through detail, not dominant on home.
+- Mobile uses tap equivalents rather than desktop hover assumptions.
+
+### SSO / Auth / Plans
+
+Acquisition/identity family adjacent to Website.
+
+- Do not invent provider strategy, plan names, prices, limits, or billing cadence.
+- Represent account → organization → plan/trial → product setup progressively.
+- Keep technical integration out of the first identity form.
+
+### Shared React UI
+
+- First-party LangDrift concepts belong under `packages/react/src/ui`.
+- SmoothUI/shadcn/Orbz are implementation foundations, not product-domain vocabulary.
+- Promote Product Vision Curve, Drift Event, Attribution, Vision Summary, Executive Report, and Voice Inquiry as first-party concepts when shared.
+
+## Demo data policy
+
+Until a real data model exists, values such as `73%`, `91%`, `14 points`, or `4 points` must live inside an explicitly demo/illustrative context.
+
+Never imply that illustrative values define the final Product Vision formula.
 
 ## Canonical colors
 
@@ -78,14 +159,27 @@ Unexplained Drift        #DC2626
 Unknown / Review         #A855F7
 ```
 
-Orange is brand identity, not warning/error/drift severity. Semantic colors must retain their meanings.
+Orange is LangDrift identity/focus. It is not generic warning/error/drift severity.
 
-## Implementation constraints for this scaffold
+## Repository constraints
 
 - Repository automation scripts are POSIX `.sh` files.
 - No `.codex` directory.
 - No `ai` workspace.
-- No backend / API workspace.
-- No product pages or React components in this scaffolding PR.
-- Keep `.agents` and `.audits` as empty structure with `.gitkeep` placeholders.
+- No backend/API workspace until architecture explicitly introduces one.
 - Do not silently turn design references into copied branding.
+- Preserve light/dark support and accessibility across surfaces.
+- Jotai owns Website/SSO/Mobile state; Zustand owns Console state.
+- Important state changes remain inspectable through the existing state loggers.
+
+## Verification
+
+A frontend change is not repository-ready until it passes:
+
+```text
+drift doctor --ci
+Biome lint
+typecheck
+build
+surface/product audits where applicable
+```

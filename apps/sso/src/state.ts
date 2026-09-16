@@ -2,12 +2,18 @@ import { atom } from 'jotai'
 import type { Atom, createStore } from 'jotai/vanilla'
 
 export const themeAtom = atom<'dark' | 'light'>('light')
-export const selectedPlanAtom = atom('executive')
+export const selectedPlanAtom = atom('plan-01')
 export const signInAttemptsAtom = atom(0)
+export const accountEmailAtom = atom('')
+export const organizationNameAtom = atom('')
+export const setupStepAtom = atom<'account' | 'organization' | 'plan' | 'product' | 'setup'>('account')
 export const toastAtom = atom({ message: '', open: false })
 
 const atoms: Record<string, Atom<unknown>> = {
+  accountEmailAtom,
+  organizationNameAtom,
   selectedPlanAtom,
+  setupStepAtom,
   signInAttemptsAtom,
   themeAtom,
   toastAtom
@@ -23,14 +29,16 @@ export function subscribeToAtoms(store: ReturnType<typeof createStore>) {
     return store.sub(target, () => {
       const latest = store.get(target)
       if (Object.is(previous, latest)) return
+      const safeLatest = name === 'accountEmailAtom' ? '[redacted identity]' : latest
+      const safePrevious = name === 'accountEmailAtom' ? '[redacted identity]' : previous
       console.log('LangDrift atoms:', {
         atom: name,
-        latest,
-        previous,
-        state: { ...Object.fromEntries(state), [name]: latest }
+        latest: safeLatest,
+        previous: safePrevious,
+        state: { ...Object.fromEntries(state), [name]: safeLatest }
       })
       previous = latest
-      state.set(name, latest)
+      state.set(name, safeLatest)
     })
   })
 

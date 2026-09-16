@@ -7,20 +7,20 @@ import type { ReactNode } from 'react'
 import { Brand } from '../../ui/brand'
 import { ChromaText } from './chroma-text'
 
-const tiles = Array.from({ length: 400 }, (_, index) => `hero-tile-${index}`)
-
 export interface Header4Props {
   actions?: ReactNode
   eyebrow?: string
   onThemeToggle?: () => void
   theme?: 'dark' | 'light'
+  visual?: ReactNode
 }
 
 export function Header4({
   actions,
   eyebrow = 'Visual-first for truth · Voice-first for inquiry',
   onThemeToggle,
-  theme = 'light'
+  theme = 'light',
+  visual
 }: Header4Props) {
   const reduceMotion = useReducedMotion()
 
@@ -48,11 +48,7 @@ export function Header4({
           {actions}
         </div>
       </header>
-      <div aria-hidden="true" className="header-four-grid">
-        {tiles.map((tile) => (
-          <span key={tile} />
-        ))}
-      </div>
+      <div aria-hidden="true" className="header-four-grid" />
       <motion.div
         animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
         className="header-four-copy"
@@ -64,22 +60,32 @@ export function Header4({
       >
         <span className="header-four-eyebrow">{eyebrow}</span>
         <h1>
-          How far has your product <ChromaText>drifted from your vision?</ChromaText>
+          Why did your Product Vision fall from <ChromaText>91% to 73%?</ChromaText>
         </h1>
         <p>
-          LangDrift makes Product Vision movement legible: what changed, when it
-          changed, why it changed, who moved it, and whether the evolution was
-          intentional or unexplained.
+          LangDrift shows how your product moved from the vision you intended —
+          what changed, who moved it, why it happened, and whether the change was
+          intentional.
         </p>
         <div className="header-four-cta">
           <a className="smooth-primary-button" href="#product">
             See what moved <ArrowRight aria-hidden="true" size={15} />
           </a>
           <a className="smooth-text-link" href="#why">
-            How LangDrift explains change
+            How it works
           </a>
         </div>
       </motion.div>
+      {visual ? (
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className="header-four-visual"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 18 }}
+          transition={{ delay: reduceMotion ? 0 : 0.18, duration: reduceMotion ? 0 : 0.45 }}
+        >
+          {visual}
+        </motion.div>
+      ) : null}
     </section>
   )
 }

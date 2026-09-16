@@ -10,6 +10,7 @@ export interface ConversationMessage {
 export const themeAtom = atom<'dark' | 'light'>('light')
 export const inputAtom = atom('')
 export const voiceStateAtom = atom<'idle' | 'listening'>('idle')
+export const evolutionOpenAtom = atom(false)
 export const messagesAtom = atom<ConversationMessage[]>([
   {
     id: 'welcome',
@@ -20,6 +21,7 @@ export const messagesAtom = atom<ConversationMessage[]>([
 export const toastAtom = atom({ message: '', open: false })
 
 const atoms: Record<string, Atom<unknown>> = {
+  evolutionOpenAtom,
   inputAtom,
   messagesAtom,
   themeAtom,

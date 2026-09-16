@@ -1,0 +1,197 @@
+.account-flow-shell {
+  min-height: 100vh;
+}
+
+.account-flow-header-actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.account-flow-header-actions a,
+.account-flow-header-actions button {
+  background: transparent;
+  border: 1px solid var(--ld-hairline);
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--ld-font-mono);
+  font-size: 9px;
+  padding: 8px 12px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.account-flow-progress {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 44px auto 0;
+  max-width: 880px;
+  padding: 0 28px;
+}
+
+.account-flow-progress a {
+  border-top: 1px solid var(--ld-hairline);
+  color: inherit;
+  display: grid;
+  font-size: 10px;
+  gap: 8px;
+  padding: 10px 6px;
+  text-decoration: none;
+}
+
+.account-flow-progress a span {
+  color: var(--ld-muted);
+  font-family: var(--ld-font-mono);
+  font-size: 8px;
+}
+
+.account-flow-card {
+  display: grid;
+  gap: 48px;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  margin: 56px auto 0;
+  max-width: 980px;
+  padding: 0 28px 80px;
+}
+
+.account-flow-copy h1 {
+  font-size: clamp(44px, 6vw, 72px);
+  font-weight: 400;
+  letter-spacing: -.045em;
+  line-height: .96;
+  margin: 16px 0;
+}
+
+.account-flow-copy p {
+  color: var(--ld-muted);
+  line-height: 1.55;
+}
+
+.account-flow-form,
+.setup-preview {
+  align-self: start;
+  background: var(--ld-surface);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 16px;
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.account-flow-form label,
+.setup-preview label {
+  display: grid;
+  font-size: 11px;
+  gap: 7px;
+}
+
+.account-flow-form input,
+.account-flow-form select,
+.setup-preview input {
+  background: var(--ld-bg);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: inherit;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.account-flow-form small {
+  color: var(--ld-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.account-flow-form a,
+.account-flow-next {
+  color: inherit;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.account-plan-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.account-plan-card {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 7px;
+  min-height: 150px;
+  padding: 18px;
+  text-align: left;
+  width: 100%;
+}
+
+.account-plan-card > span,
+.account-plan-card > small {
+  color: var(--ld-muted);
+  font-family: var(--ld-font-mono);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.account-plan-card strong {
+  font-size: 21px;
+  font-weight: 520;
+}
+
+.account-plan-card p {
+  color: var(--ld-muted);
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.setup-preview > div:not(.setup-actions) {
+  border-bottom: 1px solid var(--ld-hairline);
+  display: grid;
+  gap: 4px;
+  padding-bottom: 12px;
+}
+
+.setup-preview > div > span {
+  color: var(--ld-muted);
+  font-family: var(--ld-font-mono);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.setup-preview > div > strong {
+  font-size: 11px;
+}
+
+.setup-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.setup-actions button {
+  background: transparent;
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  min-height: 38px;
+  padding: 0 11px;
+}
+
+@media (max-width: 760px) {
+  .account-flow-progress {
+    overflow-x: auto;
+    padding-inline: 18px;
+  }
+
+  .account-flow-card {
+    gap: 28px;
+    grid-template-columns: 1fr;
+    margin-top: 36px;
+    padding-inline: 18px;
+  }
+}

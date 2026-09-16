@@ -3,10 +3,11 @@ import type { ReactNode } from 'react'
 
 import '@repo/react/styles.css'
 import './globals.css'
+import './flow.css'
 
 export const metadata: Metadata = {
-  title: 'LangDrift — Sign in',
-  description: 'Access your LangDrift product intelligence workspace.',
+  title: 'LangDrift — Account',
+  description: 'Access and set up your LangDrift organization.',
   applicationName: 'LangDrift',
   icons: { icon: '/favicon.ico' }
 }
