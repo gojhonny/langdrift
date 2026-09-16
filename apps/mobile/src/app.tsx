@@ -12,7 +12,7 @@ import {
   AnimatedAvatarGroup
 } from '@repo/react/vendors/smoothui'
 import { useAtom } from 'jotai'
-import type { FormEvent, KeyboardEvent as ReactKeyboardEvent } from 'react'
+import type { FormEvent } from 'react'
 import { useEffect, useRef } from 'react'
 
 import {
@@ -212,10 +212,6 @@ export function App() {
     ask(input)
   }
 
-  function closeSheetOnBackdrop(event: ReactKeyboardEvent<HTMLDivElement>) {
-    if (event.key === 'Escape') setEvolutionOpen(false)
-  }
-
   const orbState =
     voiceState === 'querying'
       ? 'thinking'
@@ -322,11 +318,7 @@ export function App() {
       </section>
 
       {evolutionOpen ? (
-        <div
-          className="mobile-sheet-backdrop"
-          onKeyDown={closeSheetOnBackdrop}
-          role="presentation"
-        >
+        <div className="mobile-sheet-backdrop">
           <section
             aria-label="Product Vision evolution"
             aria-modal="true"
