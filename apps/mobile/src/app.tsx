@@ -1,3 +1,4 @@
+// Illustrative product values are frontend fixtures; this is not the Product Vision scoring contract.
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
@@ -148,6 +149,7 @@ export function App() {
 
   useEffect(() => {
     if (!evolutionOpen) return
+
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     closeRef.current?.focus()
