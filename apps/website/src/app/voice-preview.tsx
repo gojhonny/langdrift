@@ -3,6 +3,8 @@
 import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
 import { useEffect, useRef, useState } from 'react'
 
+import './voice-preview.css'
+
 const scriptedStates: AgentOrbState[] = ['listening', 'thinking', 'speaking', 'idle']
 
 export function VoicePreview() {
@@ -48,7 +50,7 @@ export function VoicePreview() {
             Run preview
           </button>
         </div>
-        <div className={`voice-answer ${showAnswer ? 'voice-answer-visible' : ''}`}>
+        <div aria-live="polite" className={`voice-answer ${showAnswer ? 'voice-answer-visible' : ''}`}>
           <div className="voice-answer-stat">
             <strong>−9 pts</strong>
             <span>largest move</span>
