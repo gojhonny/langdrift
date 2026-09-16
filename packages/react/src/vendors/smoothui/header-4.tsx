@@ -12,6 +12,7 @@ export interface Header4Props {
   actions?: ReactNode
   eyebrow?: string
   onThemeToggle?: () => void
+  supporting?: ReactNode
   theme?: 'dark' | 'light'
   visual?: ReactNode
 }
@@ -20,6 +21,7 @@ export function Header4({
   actions,
   eyebrow = 'Visual-first for truth · Voice-first for inquiry',
   onThemeToggle,
+  supporting,
   theme = 'light',
   visual
 }: Header4Props) {
@@ -71,6 +73,7 @@ export function Header4({
               How it works
             </a>
           </div>
+          {supporting ? <div className="header-four-supporting">{supporting}</div> : null}
         </motion.div>
         {visual ? (
           <motion.div
