@@ -1,10 +1,10 @@
 export const LANGDRIFT_ORB_CONFIG = {
   colors: {
-    accent: '#FB923C',
-    background: '#FFF7ED',
-    highlight: '#FFF1E6',
-    primary: '#FDBA8C',
-    secondary: '#FED7AA'
+    accent: '#EA580C',
+    background: '#1B0D05',
+    highlight: '#FFF0E6',
+    primary: '#F97316',
+    secondary: '#FB923C'
   },
   reducedMotion: 'system',
   speed: 0.82
