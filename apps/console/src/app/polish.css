@@ -1,54 +1,35 @@
-.console-orb-action {
-  display: inline-flex;
-  position: relative;
+.console-actions .shadcn-tooltip,
+.console-account .shadcn-tooltip {
+  align-items: center;
 }
 
-.console-orb-action > button {
+.console-orb-button,
+.console-profile-button {
   align-items: center;
   background: transparent;
   border: 0;
-  border-radius: 0;
+  color: inherit;
   cursor: pointer;
   display: inline-flex;
-  height: 36px;
+  height: 31px;
   justify-content: center;
   padding: 0;
-  width: 36px;
+  width: 31px;
 }
 
-.console-orb-action > button:focus-visible {
+.console-orb-button:focus-visible,
+.console-profile-button:focus-visible {
+  border-radius: 999px;
   outline: 2px solid var(--ld-brand, #f97316);
   outline-offset: 2px;
 }
 
-.console-orb-tooltip {
-  background: var(--ld-ink);
-  border-radius: 6px;
-  color: var(--ld-surface);
-  font-size: 9px;
-  left: 50%;
-  opacity: 0;
-  padding: 5px 7px;
-  pointer-events: none;
-  position: absolute;
-  top: calc(100% + 7px);
-  transform: translate(-50%, -2px);
-  transition: opacity 120ms ease, transform 120ms ease;
-  white-space: nowrap;
-  z-index: 40;
-}
-
-.console-orb-action:hover .console-orb-tooltip,
-.console-orb-action:focus-within .console-orb-tooltip {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.console-account > button img {
+.console-profile-button img {
   border-radius: 999px;
-  height: 30px;
+  display: block;
+  height: 28px;
   object-fit: cover;
-  width: 30px;
+  width: 28px;
 }
 
 .person-avatar {
@@ -75,4 +56,85 @@
 
 .account-dropdown a:hover {
   background: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+.voice-drawer-orb-wrap > button {
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.voice-drawer-prompts {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.voice-drawer-prompts button {
+  background: var(--ld-surface-subtle);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 7px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 9px;
+  min-height: 34px;
+  padding: 7px 9px;
+  text-align: left;
+}
+
+.voice-drawer-answer {
+  background: var(--ld-surface-subtle);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 8px;
+  color: var(--ld-muted);
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  padding: 11px;
+  text-align: left;
+  width: 100%;
+}
+
+.voice-drawer-composer {
+  border-top: 1px solid var(--ld-hairline);
+  display: grid;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.voice-drawer-composer label {
+  color: var(--ld-muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.voice-drawer-composer > div {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr auto;
+}
+
+.voice-drawer-composer input {
+  background: var(--ld-bg);
+  border: 1px solid var(--ld-hairline);
+  border-radius: 7px;
+  color: inherit;
+  min-height: 36px;
+  min-width: 0;
+  padding: 0 9px;
+}
+
+.voice-drawer-composer button {
+  background: #f97316;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  min-width: 54px;
+  padding-inline: 10px;
 }
