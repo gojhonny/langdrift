@@ -180,7 +180,6 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             <MagnifyingGlass aria-hidden="true" size={15} />
             <input
               aria-label="Search product intelligence"
-              autoFocus
               onChange={(event) => state.setSearchQuery(event.currentTarget.value)}
               placeholder="Search decisions, people, evidence…"
               value={state.searchQuery}
