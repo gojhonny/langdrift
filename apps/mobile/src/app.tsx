@@ -1,6 +1,9 @@
-import { CompactDriftChart } from '@repo/react/vendors/shadcn'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { Brand } from '@repo/react/ui/brand'
+import {
+  ProductVisionCurve,
+  type VisionPoint
+} from '@repo/react/ui/product-vision-curve'
 import {
   AIMessage,
   AnimatedAvatarGroup,
@@ -11,6 +14,7 @@ import type { FormEvent } from 'react'
 import { useEffect } from 'react'
 
 import {
+  evolutionOpenAtom,
   inputAtom,
   messagesAtom,
   themeAtom,
@@ -19,23 +23,87 @@ import {
 } from './state'
 import { StateLogger } from './state-logger'
 
-const curve = [
-  { label: 'Apr', value: 100 },
-  { label: 'May', value: 95 },
-  { label: 'Jun', value: 95 },
-  { label: 'Jul', value: 85 },
-  { label: 'Aug', value: 73 }
+interface VoiceIntent {
+  answer: string
+  id:
+    | 'drift_this_week'
+    | 'explain_product_vision'
+    | 'unexplained_changes'
+  prompt: string
+}
+
+const visionPoints: VisionPoint[] = [
+  { label: 'Apr', value: 91 },
+  { label: 'May', value: 88 },
+  {
+    label: 'Jun',
+    value: 84,
+    event: {
+      actors: [
+        { initials: 'AN', name: 'Ana', team: 'Product' },
+        { initials: 'CA', name: 'Carlos', team: 'Platform' }
+      ],
+      classification: 'intentional',
+      date: 'Jun 28',
+      delta: -9,
+      id: 'pricing',
+      productArea: 'Pricing',
+      title: 'Pricing strategy changed'
+    }
+  },
+  {
+    label: 'Jul',
+    value: 79,
+    event: {
+      actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
+      classification: 'unexplained',
+      date: 'Jul 22',
+      delta: -6,
+      id: 'authentication',
+      productArea: 'Authentication',
+      title: 'Authentication redesigned'
+    }
+  },
+  {
+    label: 'Aug',
+    value: 73,
+    event: {
+      actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
+      classification: 'review',
+      date: 'Aug 20',
+      delta: -3,
+      id: 'exports',
+      productArea: 'Exports',
+      title: 'Export behavior changed'
+    }
+  }
 ]
 
-const answers: Record<string, string> = {
-  'How much did we drift this week?':
-    'In this demo period, Product Vision moved six points. Authentication was the largest contributor; four points were intentional evolution and two remain unexplained.',
-  'Why did Product Vision fall?':
-    'Three high-impact movements explain most of the demo change: pricing strategy −9, authentication −6, and export rules −3.',
-  'Which changes are unexplained?':
-    'Authentication is currently classified as unexplained drift. Export rules remain under review rather than being treated as unexplained by default.',
-  'Who changed pricing?':
-    'Ana and Carlos changed pricing on Aug 14. The recorded reason was enterprise packaging requirements.'
+const intents: VoiceIntent[] = [
+  {
+    answer:
+      'In this demo period, Product Vision moved six points this week. Authentication was the largest contributor; four points were intentional evolution and two remain unexplained.',
+    id: 'drift_this_week',
+    prompt: 'What changed this week?'
+  },
+  {
+    answer:
+      'Product Vision is at 73%, down from the 91% demo baseline. Pricing moved intentionally, authentication is unexplained, and export behavior remains under review.',
+    id: 'explain_product_vision',
+    prompt: 'Why did Product Vision fall?'
+  },
+  {
+    answer:
+      'Authentication is currently classified as Unexplained Drift. Export behavior remains Under Review rather than being treated as unexplained by default.',
+    id: 'unexplained_changes',
+    prompt: 'Which changes are unexplained?'
+  }
+]
+
+function deterministicAnswer(question: string) {
+  const knownIntent = intents.find((intent) => intent.prompt === question)
+  return knownIntent?.answer ??
+    'This prototype only resolves known executive intents over Product Vision, Drift events, decisions, people, and linked evidence.'
 }
 
 export function App() {
@@ -43,6 +111,7 @@ export function App() {
   const [input, setInput] = useAtom(inputAtom)
   const [messages, setMessages] = useAtom(messagesAtom)
   const [voiceState, setVoiceState] = useAtom(voiceStateAtom)
+  const [evolutionOpen, setEvolutionOpen] = useAtom(evolutionOpenAtom)
   const [toast, setToast] = useAtom(toastAtom)
 
   useEffect(() => {
@@ -56,9 +125,7 @@ export function App() {
   function ask(question: string) {
     const trimmed = question.trim()
     if (!trimmed) return
-    const answer =
-      answers[trimmed] ??
-      'I can answer from Product Vision, Drift events, decisions, people, and linked evidence. This preview stays inside that structured context.'
+    const answer = deterministicAnswer(trimmed)
     const stamp = Date.now().toString()
     setMessages((current) => [
       ...current,
@@ -77,7 +144,10 @@ export function App() {
     <main className="mobile-shell">
       <StateLogger />
       <header className="mobile-header">
-        <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
+        <div>
+          <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
+          <span>Atlas Home Hub · Demo</span>
+        </div>
         <button
           onClick={() => {
             const next = theme === 'light' ? 'dark' : 'light'
@@ -90,41 +160,30 @@ export function App() {
         </button>
       </header>
 
-      <section aria-labelledby="mobile-product-vision" className="mobile-overview">
-        <div className="mobile-overview-head">
-          <div>
-            <span>Atlas Home Hub · Demo</span>
-            <h1 id="mobile-product-vision">Product Vision</h1>
-          </div>
-          <strong>73%</strong>
+      <section aria-labelledby="mobile-product-vision" className="mobile-glance">
+        <div>
+          <span>Product Vision</span>
+          <h1 id="mobile-product-vision">73%</h1>
+          <strong>↓ 6 this week</strong>
         </div>
-        <CompactDriftChart activeIndex={4} data={curve} height={112} />
-        <div className="mobile-status-row">
-          <span className="mobile-status intentional">14 · Intentional Evolution</span>
-          <span className="mobile-status unexplained">4 · Unexplained Drift</span>
-        </div>
-        <article className="mobile-top-change">
-          <div>
-            <small>Top demo movement · Pricing</small>
-            <strong>Pricing strategy changed</strong>
-            <span>Aug 14 · −9 · Intentional Evolution</span>
-          </div>
-          <AnimatedAvatarGroup
-            people={[
-              { initials: 'AN', name: 'Ana', role: 'Product' },
-              { initials: 'CA', name: 'Carlos', role: 'Engineering' }
-            ]}
-            size={26}
-          />
-        </article>
-        <div className="mobile-review-note">
-          <strong>Needs review</strong>
-          <span>Export rules changed · −3 · Unknown / Under Review</span>
-        </div>
-        <small className="mobile-demo-note">
-          Illustrative data only. The final Product Vision formula remains open.
-        </small>
+        <p>
+          <span>14 intentional</span>
+          <span>4 unexplained</span>
+        </p>
+        <button
+          onClick={() => setEvolutionOpen((open) => !open)}
+          type="button"
+        >
+          {evolutionOpen ? 'Hide evolution' : 'View evolution →'}
+        </button>
       </section>
+
+      {evolutionOpen ? (
+        <section aria-label="Product Vision evolution" className="mobile-evolution-detail">
+          <ProductVisionCurve compact data={visionPoints} />
+          <small>Illustrative data · final Product Vision formula remains open.</small>
+        </section>
+      ) : null}
 
       <section aria-label="LangDrift conversation" className="conversation">
         <div className="conversation-orb">
@@ -144,13 +203,21 @@ export function App() {
             type="button"
           >
             <AgentOrb
-              size="78px"
+              size="88px"
               speed={voiceState === 'listening' ? 1.15 : 0.55}
               state={voiceState === 'listening' ? 'listening' : 'idle'}
             />
           </button>
           <span>{voiceState === 'listening' ? 'Listening…' : 'Ask LangDrift'}</span>
-          <small>Voice queries the same structured product truth shown above.</small>
+          <small>“What changed this week?”</small>
+        </div>
+
+        <div aria-label="Suggested executive questions" className="quick-prompts">
+          {intents.map((intent) => (
+            <button key={intent.id} onClick={() => ask(intent.prompt)} type="button">
+              {intent.prompt}
+            </button>
+          ))}
         </div>
 
         <div className="message-list">
@@ -158,14 +225,6 @@ export function App() {
             <AIMessage key={message.id} role={message.role}>
               {message.text}
             </AIMessage>
-          ))}
-        </div>
-
-        <div className="quick-prompts">
-          {Object.keys(answers).map((question) => (
-            <button key={question} onClick={() => ask(question)} type="button">
-              {question}
-            </button>
           ))}
         </div>
 
@@ -181,6 +240,30 @@ export function App() {
             <button type="submit">Ask</button>
           </div>
         </form>
+      </section>
+
+      <section className="mobile-largest-movement">
+        <div>
+          <span>Largest movement</span>
+          <strong>Pricing strategy changed · −9</strong>
+          <small>Jun 28 · Intentional Evolution</small>
+        </div>
+        <AnimatedAvatarGroup
+          people={[
+            { initials: 'AN', name: 'Ana', role: 'Product' },
+            { initials: 'CA', name: 'Carlos', role: 'Platform' }
+          ]}
+          size={26}
+        />
+        <button
+          onClick={() => {
+            setEvolutionOpen(true)
+            setToast({ message: 'Evolution detail opened', open: true })
+          }}
+          type="button"
+        >
+          View →
+        </button>
       </section>
 
       <BasicToast
