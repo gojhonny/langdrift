@@ -9,25 +9,18 @@ import {
   AIContextMeter,
   AnimatedAvatarGroup,
   BasicToast,
-  FigmaComment,
   Header4,
-  Pricing2,
-  Scrubber,
-  SmoothFooter,
-  UserAccountAvatar,
-  type PricingPlan
+  SmoothFooter
 } from '@repo/react/vendors/smoothui'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import {
-  accountActionAtom,
-  commentOpenAtom,
-  selectedPlanAtom,
   selectedPointAtom,
   themeAtom,
   toastAtom
 } from '../state'
+import { websiteLinks } from './app-links'
 import { StateLogger } from './state-logger'
 
 const visionPoints: VisionPoint[] = [
@@ -35,12 +28,16 @@ const visionPoints: VisionPoint[] = [
     label: 'Apr',
     value: 91,
     event: {
+      actionHref: '#why',
+      actionLabel: 'See baseline context',
       actors: [{ initials: 'MR', name: 'Marina Reis', team: 'Leadership' }],
       classification: 'baseline',
       date: 'Apr 02',
+      decision: 'Vision baseline recorded',
       delta: 0,
       id: 'baseline',
       productArea: 'Vision',
+      reason: 'Leadership recorded the product direction used as the reference for this illustrative period.',
       title: 'Vision baseline approved'
     }
   },
@@ -49,15 +46,19 @@ const visionPoints: VisionPoint[] = [
     label: 'Jun',
     value: 84,
     event: {
+      actionHref: '#why',
+      actionLabel: 'View decision context',
       actors: [
         { initials: 'AN', name: 'Ana', team: 'Product' },
         { initials: 'CA', name: 'Carlos', team: 'Platform' }
       ],
       classification: 'intentional',
       date: 'Jun 28',
+      decision: 'Decision recorded',
       delta: -9,
       id: 'pricing',
       productArea: 'Pricing',
+      reason: 'Enterprise customers required a different packaging model.',
       title: 'Pricing strategy changed'
     }
   },
@@ -65,12 +66,16 @@ const visionPoints: VisionPoint[] = [
     label: 'Jul',
     value: 79,
     event: {
+      actionHref: '#why',
+      actionLabel: 'Review context',
       actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
       classification: 'unexplained',
       date: 'Jul 22',
+      decision: 'No matching product decision found',
       delta: -6,
       id: 'authentication',
       productArea: 'Authentication',
+      reason: 'LangDrift found implementation evidence, but no matching recorded product decision.',
       title: 'Authentication redesigned'
     }
   },
@@ -78,45 +83,18 @@ const visionPoints: VisionPoint[] = [
     label: 'Aug',
     value: 73,
     event: {
+      actionHref: '#why',
+      actionLabel: 'Inspect review state',
       actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
       classification: 'review',
       date: 'Aug 20',
+      decision: 'Classification under review',
       delta: -3,
       id: 'exports',
       productArea: 'Exports',
+      reason: 'Evidence shows the behavior changed, but the product rationale is not complete yet.',
       title: 'Export behavior changed'
     }
-  }
-]
-
-const changes = visionPoints.map((point) => ({
-  delta: point.event?.delta ?? 0,
-  detail: point.event?.title ?? `${point.label} Product Vision snapshot`,
-  event: point.event,
-  status: point.event?.classification ?? 'baseline'
-}))
-
-const plans: PricingPlan[] = [
-  {
-    id: 'plan-01',
-    name: 'Plan 01',
-    price: 'Pricing · TBD',
-    description: 'Commercial name, price, and limits are intentionally not defined yet.',
-    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
-  },
-  {
-    id: 'plan-02',
-    name: 'Plan 02',
-    price: 'Pricing · TBD',
-    description: 'The final packaging will be defined by Pricing without changing the product truth.',
-    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
-  },
-  {
-    id: 'plan-03',
-    name: 'Plan 03',
-    price: 'Pricing · TBD',
-    description: 'This card demonstrates the acquisition surface, not a committed entitlement model.',
-    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   }
 ]
 
@@ -150,25 +128,13 @@ const attribution = [
   }
 ]
 
-const founderOutcomes = [
-  ['See the movement', 'Watch Product Vision evolve over time.'],
-  ['Know why', 'Every important movement stays connected to a decision and reason.'],
-  ['Know who', 'See the people and teams behind the change.'],
-  ['Separate evolution from drift', 'Intentional decisions stay distinct from unexplained changes.'],
-  ['Ask instead of digging', 'Executive Voice queries the same structured product history.'],
-  ['Keep proof underneath', 'Drill into evidence only when you need to verify the conclusion.']
-]
-
 export default function WebsitePage() {
   const [theme, setTheme] = useAtom(themeAtom)
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
-  const [selectedPlan, setSelectedPlan] = useAtom(selectedPlanAtom)
   const [toast, setToast] = useAtom(toastAtom)
-  const setCommentOpen = useSetAtom(commentOpenAtom)
-  const setAccountAction = useSetAtom(accountActionAtom)
   const currentTheme = useAtomValue(themeAtom)
-  const active = changes[selectedPoint] ?? changes[changes.length - 1]
-  const selectedEventId = active.event?.id ?? 'exports'
+  const activeEvent = visionPoints[selectedPoint]?.event ?? visionPoints.at(-1)?.event
+  const selectedEventId = activeEvent?.id ?? 'exports'
 
   useEffect(() => {
     document.documentElement.dataset.theme = currentTheme
@@ -185,23 +151,13 @@ export default function WebsitePage() {
     notify(`${next === 'dark' ? 'Dark' : 'Light'} theme enabled`)
   }
 
-  function handleAccountAction(action: 'account' | 'settings' | 'signout') {
-    setAccountAction(action)
-    notify(`${action === 'signout' ? 'Sign out' : action} action selected`)
-  }
-
-  function choosePlan(plan: string) {
-    setSelectedPlan(plan)
-    notify(`${plans.find((item) => item.id === plan)?.name ?? plan} preview selected`, 'success')
-  }
-
   function selectCurveEvent(event: VisionDriftEvent) {
     const index = visionPoints.findIndex((point) => point.event?.id === event.id)
     if (index >= 0) setSelectedPoint(index)
   }
 
   const heroVisual = (
-    <div>
+    <div className="hero-product-card">
       <div className="header-four-visual-head">
         <div className="header-four-visual-score">
           <span>Product Vision</span>
@@ -223,100 +179,61 @@ export default function WebsitePage() {
   return (
     <>
       <StateLogger />
-      <a className="skip-link" href="#product">
-        Skip to product
+      <a className="skip-link" href="#why">
+        Skip to product explanation
       </a>
       <main id="top">
         <Header4
           actions={
-            <UserAccountAvatar
-              detail="Preview"
-              initials="JS"
-              name="Jonny"
-              onAction={handleAccountAction}
-            />
+            <div className="public-auth-actions">
+              <a className="public-sign-in" href={websiteLinks.signIn}>Sign in</a>
+              <a className="smooth-primary-button" href={websiteLinks.signUp}>Get started</a>
+            </div>
           }
           onThemeToggle={toggleTheme}
           theme={theme}
           visual={heroVisual}
         />
 
-        <section className="curve-section" id="product">
-          <div className="curve-copy">
-            <span className="section-kicker">Visual-first for truth</span>
-            <h2>The curve itself tells the story.</h2>
-            <p>
-              Product Vision movement stays attached to the event, person, product
-              area, classification, and decision context that explain it. Demo values
-              illustrate the experience, not a final scoring formula.
-            </p>
-          </div>
-          <div className="curve-card">
-            <div className="curve-card-top">
-              <div>
-                <span>Product Vision</span>
-                <strong>73%</strong>
-              </div>
-              <div className="curve-summary">
-                <span>14 points · intentional evolution</span>
-                <span>4 points · unexplained drift</span>
-              </div>
-            </div>
-            <ProductVisionCurve
-              data={visionPoints}
-              onSelectEvent={selectCurveEvent}
-              selectedEventId={selectedEventId}
-            />
-            <Scrubber
-              label="Timeline"
-              max={visionPoints.length - 1}
-              onChange={setSelectedPoint}
-              value={selectedPoint}
-            />
-            <div className="chart-comment">
-              <FigmaComment
-                author="Ana"
-                initials="AN"
-                message="Pricing was intentional. Authentication remains unexplained and export behavior is still under review."
-                onOpenChange={setCommentOpen}
-                timestamp="Aug 20"
-              />
-            </div>
-          </div>
-        </section>
-
         <section className="why-section" id="why">
           <div className="why-title">
             <span className="section-kicker">Know why</span>
-            <h2>Change stays useful when the reason stays attached.</h2>
+            <h2>The movement stays attached to its reason.</h2>
+            <p>
+              Select a point in the curve and LangDrift keeps the executive explanation,
+              people, decision state, and classification together.
+            </p>
           </div>
-          <article className="reason-card">
-            <div className="reason-date">Jun 28</div>
-            <div className="reason-main">
-              <h3>Ana + Carlos changed the pricing strategy.</h3>
-              <dl>
-                <div>
-                  <dt>Reason</dt>
-                  <dd>Enterprise customers required a different packaging model.</dd>
-                </div>
-                <div>
-                  <dt>Impact</dt>
-                  <dd>Pricing, onboarding and billing.</dd>
-                </div>
-                <div>
-                  <dt>Decision</dt>
-                  <dd>Recorded ✓</dd>
-                </div>
-              </dl>
-            </div>
-            <AnimatedAvatarGroup
-              people={[
-                { initials: 'AN', name: 'Ana', role: 'Product' },
-                { initials: 'CA', name: 'Carlos', role: 'Platform' }
-              ]}
-              size={32}
-            />
-          </article>
+          {activeEvent ? (
+            <article className="reason-card">
+              <div className="reason-date">{activeEvent.date}</div>
+              <div className="reason-main">
+                <h3>{activeEvent.title}</h3>
+                <dl>
+                  <div>
+                    <dt>Why</dt>
+                    <dd>{activeEvent.reason}</dd>
+                  </div>
+                  <div>
+                    <dt>Decision</dt>
+                    <dd>{activeEvent.decision}</dd>
+                  </div>
+                  <div>
+                    <dt>Product area</dt>
+                    <dd>{activeEvent.productArea ?? 'Product'}</dd>
+                  </div>
+                </dl>
+              </div>
+              <AnimatedAvatarGroup
+                people={activeEvent.actors.map((actor) => ({
+                  initials: actor.initials,
+                  name: actor.name,
+                  role: actor.team
+                }))}
+                size={32}
+              />
+            </article>
+          ) : null}
         </section>
 
         <section className="attribution-section" id="attribution">
@@ -324,7 +241,7 @@ export default function WebsitePage() {
             <span className="section-kicker">Know who</span>
             <h2>Know who moved the product.</h2>
             <p>
-              Important movement stays attached to people, teams, product areas,
+              Important movement stays connected to people, teams, product areas,
               decisions, and review state without turning LangDrift into punitive surveillance.
             </p>
           </div>
@@ -346,47 +263,31 @@ export default function WebsitePage() {
           </div>
         </section>
 
-        <section className="features-section">
-          <div className="features-heading">
-            <span className="section-kicker">Founder outcomes</span>
-            <h2>See the movement. Ask why. Drill down only when needed.</h2>
+        <section className="intent-section" id="intent">
+          <div>
+            <span className="section-kicker">Intent matters</span>
+            <h2>Evolution is expected. Unexplained movement is different.</h2>
           </div>
-          <div className="feature-grid">
-            {founderOutcomes.map(([title, description], index) => (
-              <article key={title}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{title}</strong>
-                <p>{description}</p>
-              </article>
-            ))}
+          <div className="intent-grid">
+            <article>
+              <span>Intentional Evolution</span>
+              <strong>14 points</strong>
+              <p>Movement backed by a recorded decision, reason, and attributable actors.</p>
+            </article>
+            <article>
+              <span>Unexplained Drift</span>
+              <strong>4 points</strong>
+              <p>Meaningful movement without enough recorded product rationale.</p>
+            </article>
+            <article>
+              <span>Under Review</span>
+              <strong>1 event</strong>
+              <p>Evidence exists, but the relationship is not ready for a confident classification.</p>
+            </article>
           </div>
         </section>
 
-        <section className="report-section" id="report">
-          <div className="report-copy">
-            <span className="section-kicker">Executive report</span>
-            <h2>Explain movement without sending leadership into engineering history.</h2>
-            <p>
-              Reports translate structured product truth into the same Product Vision,
-              Drift, attribution, and decision language used everywhere else.
-            </p>
-          </div>
-          <article className="report-preview">
-            <div className="report-preview-head">
-              <span>Illustrative period</span>
-              <strong>Product Vision · 91 → 73</strong>
-            </div>
-            <dl>
-              <div><dt>Intentional evolution</dt><dd>14 points</dd></div>
-              <div><dt>Unexplained drift</dt><dd>4 points</dd></div>
-              <div><dt>Largest movement</dt><dd>Pricing · −9</dd></div>
-              <div><dt>Responsible</dt><dd>Ana + Carlos</dd></div>
-            </dl>
-            <small>Demo data · final Product Vision formula remains open.</small>
-          </article>
-        </section>
-
-        <section className="voice-band">
+        <section className="voice-band" id="voice">
           <div>
             <span className="section-kicker section-kicker-dark">Voice-first for inquiry</span>
             <h2>Ask the product history, not the repository.</h2>
@@ -396,7 +297,7 @@ export default function WebsitePage() {
             </p>
           </div>
           <div className="voice-meter-card">
-            <span>Deterministic context loaded</span>
+            <span>Structured context</span>
             <AIContextMeter
               breakdown={[
                 { label: 'Vision', value: 18 },
@@ -407,7 +308,7 @@ export default function WebsitePage() {
               used={91}
             />
             <button
-              onClick={() => notify('Voice preview opened from structured context', 'success')}
+              onClick={() => notify('Demo inquiry: Product Vision moved because pricing, authentication, and exports changed.', 'success')}
               type="button"
             >
               Ask why Product Vision moved
@@ -415,12 +316,33 @@ export default function WebsitePage() {
           </div>
         </section>
 
-        <Pricing2
-          onSelectPlan={choosePlan}
-          plans={plans}
-          selectedPlan={selectedPlan}
-          showBillingToggle={false}
-        />
+        <section className="report-section" id="report">
+          <div className="report-copy">
+            <span className="section-kicker">Executive output</span>
+            <h2>A report should read like a decision brief, not an engineering dump.</h2>
+          </div>
+          <article className="report-preview">
+            <div className="report-preview-head">
+              <span>Weekly product evolution · illustrative</span>
+              <strong>Product Vision · 81 → 76</strong>
+            </div>
+            <dl>
+              <div><dt>Largest movement</dt><dd>Authentication · −3</dd></div>
+              <div><dt>Why</dt><dd>No linked product decision</dd></div>
+              <div><dt>Who</dt><dd>Carlos · Platform</dd></div>
+              <div><dt>Status</dt><dd>Unexplained Drift</dd></div>
+              <div><dt>Needs attention</dt><dd>Review authentication rationale</dd></div>
+            </dl>
+            <small>Demo data · final Product Vision formula remains open.</small>
+          </article>
+        </section>
+
+        <section className="packaging-section" id="pricing">
+          <span className="section-kicker">Plans</span>
+          <h2>Built for founder-led teams and growing product organizations.</h2>
+          <p>Packaging is being finalized. Start with the product experience now.</p>
+          <a className="smooth-primary-button" href={websiteLinks.signUp}>Get started</a>
+        </section>
       </main>
       <SmoothFooter />
       <BasicToast
