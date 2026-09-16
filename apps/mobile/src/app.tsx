@@ -105,7 +105,7 @@ export function App() {
           ))}
         </div>
 
-        <div className="quick-prompts" aria-label="Suggested questions">
+        <div className="quick-prompts">
           {Object.keys(answers).map((question) => (
             <button key={question} onClick={() => ask(question)} type="button">
               {question}
