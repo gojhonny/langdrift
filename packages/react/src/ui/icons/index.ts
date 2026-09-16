@@ -3,5 +3,6 @@ export {
   CaretDown,
   ChartLineUp,
   GithubLogo,
-  GoogleLogo
+  GoogleLogo,
+  X
 } from '@phosphor-icons/react'
