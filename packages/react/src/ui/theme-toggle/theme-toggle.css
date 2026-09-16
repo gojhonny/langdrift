@@ -1,0 +1,22 @@
+.ld-theme-toggle {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  height: 34px;
+  justify-content: center;
+  padding: 0;
+  width: 34px;
+}
+
+.ld-theme-toggle:hover {
+  background: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+.ld-theme-toggle:focus-visible {
+  outline: 2px solid var(--ld-brand, #f97316);
+  outline-offset: 2px;
+}

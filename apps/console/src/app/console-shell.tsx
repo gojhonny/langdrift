@@ -8,16 +8,13 @@ import {
   Gear,
   GitBranch,
   House,
-  MagnifyingGlass,
-  Microphone,
-  Moon,
-  Sun,
   Users,
   X
 } from '@phosphor-icons/react'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
-import { BasicToast } from '@repo/react/vendors/smoothui'
+import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
@@ -43,9 +40,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   }, [state.theme])
 
   function switchTheme() {
-    const next = state.theme === 'light' ? 'dark' : 'light'
-    state.setTheme(next)
-    state.notify(`${next === 'dark' ? 'Dark' : 'Light'} theme enabled`)
+    state.setTheme(state.theme === 'light' ? 'dark' : 'light')
   }
 
   return (
@@ -74,10 +69,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map((product) => (
                 <button
                   key={product}
-                  onClick={() => {
-                    state.setSelectedProduct(product)
-                    state.notify(`${product} selected`)
-                  }}
+                  onClick={() => state.setSelectedProduct(product)}
                   type="button"
                 >
                   {product}
@@ -117,9 +109,6 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             <strong>{state.selectedProduct}</strong>
           </div>
           <div className="console-actions">
-            <button aria-label="Search" onClick={state.toggleSearch} type="button">
-              <MagnifyingGlass aria-hidden="true" />
-            </button>
             <button
               aria-label="Notifications"
               onClick={state.toggleNotifications}
@@ -127,31 +116,33 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             >
               <Bell aria-hidden="true" />
             </button>
-            <button aria-label="Change theme" onClick={switchTheme} type="button">
-              {state.theme === 'dark' ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
-            </button>
-            <button className="console-voice-button" onClick={state.toggleVoice} type="button">
-              <Microphone aria-hidden="true" size={14} /> Ask LangDrift
-            </button>
+            <ThemeToggle onToggle={switchTheme} theme={state.theme} />
+            <span className="console-orb-action">
+              <button aria-label="Ask LangDrift" onClick={state.toggleVoice} type="button">
+                <AgentOrb size="34px" speed={0.72} state="idle" />
+              </button>
+              <span className="console-orb-tooltip" role="tooltip">Ask LangDrift</span>
+            </span>
             <div className="console-account">
               <button
                 aria-expanded={state.accountMenuOpen}
                 onClick={state.toggleAccountMenu}
                 type="button"
               >
-                <span>JS</span>
+                <img alt="Jonny" src={aiAvatars.jonny} />
                 <CaretDown aria-hidden="true" size={11} />
               </button>
               {state.accountMenuOpen ? (
                 <div className="shell-dropdown account-dropdown">
-                  <button onClick={() => state.notify('Account profile opened')} type="button">
-                    Account
-                  </button>
-                  <button onClick={() => state.notify('Workspace switcher opened')} type="button">
-                    Switch workspace
-                  </button>
-                  <button onClick={() => state.notify('Sign out selected', 'warning')} type="button">
-                    Sign out
+                  <a href="/settings">Settings</a>
+                  <button
+                    onClick={() => {
+                      state.toggleAccountMenu()
+                      state.toggleProductMenu()
+                    }}
+                    type="button"
+                  >
+                    Switch product
                   </button>
                 </div>
               ) : null}
@@ -159,32 +150,11 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        {state.searchOpen ? (
-          <div className="topbar-panel search-panel">
-            <MagnifyingGlass aria-hidden="true" size={15} />
-            <input
-              aria-label="Search product intelligence"
-              onChange={(event) => state.setSearchQuery(event.currentTarget.value)}
-              placeholder="Search decisions, people, product areas…"
-              value={state.searchQuery}
-            />
-            <button aria-label="Close search" onClick={state.toggleSearch} type="button">
-              <X aria-hidden="true" size={14} />
-            </button>
-          </div>
-        ) : null}
-
         {state.notificationsOpen ? (
           <div className="topbar-panel notifications-panel">
             <strong>2 items need attention</strong>
             <span>Authentication is unexplained. Export behavior remains under review.</span>
-            <button
-              onClick={() => {
-                state.toggleNotifications()
-                state.notify('Attention items marked as reviewed', 'success')
-              }}
-              type="button"
-            >
+            <button onClick={state.toggleNotifications} type="button">
               Mark reviewed
             </button>
           </div>
@@ -199,24 +169,11 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             <span>Executive inquiry</span>
             <strong>Why did Product Vision fall?</strong>
             <p>Ask over the same structured events, decisions, people, and evidence shown visually.</p>
-            <button
-              onClick={() => state.notify('Deterministic Voice prompt selected', 'success')}
-              type="button"
-            >
-              Ask this question
-            </button>
           </div>
         ) : null}
 
         <div className="console-content">{children}</div>
       </section>
-
-      <BasicToast
-        message={state.toast.message}
-        onClose={state.closeToast}
-        open={state.toast.open}
-        tone={state.toast.tone}
-      />
     </main>
   )
 }
