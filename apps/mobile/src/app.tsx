@@ -212,13 +212,14 @@ export function App() {
           <small>“What changed this week?”</small>
         </div>
 
-        <div aria-label="Suggested executive questions" className="quick-prompts">
+        <fieldset className="quick-prompts">
+          <legend className="ld-visually-hidden">Suggested executive questions</legend>
           {intents.map((intent) => (
             <button key={intent.id} onClick={() => ask(intent.prompt)} type="button">
               {intent.prompt}
             </button>
           ))}
-        </div>
+        </fieldset>
 
         <div className="message-list">
           {messages.map((message) => (
