@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './ui/product-vision-curve/product-vision-curve.css';
 @import './vendors/smoothui/smoothui.css';
 
 @theme inline {
