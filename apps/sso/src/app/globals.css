@@ -31,19 +31,24 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .auth-column { max-width: 430px; }
 .sso-kicker { font-family: var(--ld-font-mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .auth-column h1 { font-size: clamp(48px, 6vw, 78px); font-weight: 400; letter-spacing: -.045em; line-height: .96; margin: 20px 0; }
-.auth-column > p { color: var(--ld-muted); line-height: 1.55; }
+.auth-column > p, .plan-heading > p { color: var(--ld-muted); line-height: 1.55; }
 .auth-column form { display: grid; gap: 12px; margin-top: 36px; }
 .auth-column label { display: grid; font-size: 11px; gap: 7px; }
 .auth-column input { background: var(--ld-surface); border: 1px solid var(--ld-hairline); border-radius: 8px; color: var(--ld-ink); min-height: 42px; padding: 0 12px; }
+.auth-column > small { color: var(--ld-muted); display: block; font-size: 9px; line-height: 1.5; margin-top: 10px; }
 .sso-primary, .sso-secondary { border-radius: 8px; cursor: pointer; min-height: 42px; }
 .sso-primary { background: var(--ld-ink); border: 0; color: var(--ld-surface); }
 .sso-secondary { background: transparent; border: 1px solid var(--ld-hairline); color: inherit; margin-top: 10px; width: 100%; }
 .plan-column { background: color-mix(in srgb, var(--ld-surface) 60%, transparent); border: 1px solid var(--ld-hairline); border-radius: 18px; padding: 26px; }
-.plan-heading h2 { font-size: clamp(28px, 3vw, 42px); font-weight: 400; letter-spacing: -.03em; line-height: 1.05; margin: 12px 0 28px; }
+.plan-heading h2 { font-size: clamp(28px, 3vw, 42px); font-weight: 400; letter-spacing: -.03em; line-height: 1.05; margin: 12px 0 14px; }
+.plan-heading > p { font-size: 12px; margin: 0 0 28px; }
 .plan-stack { display: grid; gap: 10px; }
 .plan-card-button { background: transparent; border: 0; color: inherit; cursor: pointer; display: grid; gap: 6px; padding: 18px; text-align: left; width: 100%; }
 .plan-card-button > span { color: var(--ld-muted); font-family: var(--ld-font-mono); font-size: 9px; text-transform: uppercase; }
 .plan-card-button strong { font-size: 22px; font-weight: 500; }
 .plan-card-button p { color: var(--ld-muted); font-size: 12px; line-height: 1.45; margin: 0; }
+.plan-card-button ul { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 8px 0 0; padding: 0; }
+.plan-card-button li { border: 1px solid var(--ld-hairline); border-radius: 999px; color: var(--ld-muted); font-family: var(--ld-font-mono); font-size: 8px; padding: 4px 7px; }
 .plan-card-button small { color: #f97316; font-size: 10px; margin-top: 7px; }
 @media (max-width: 820px) { .sso-grid { gap: 46px; grid-template-columns: 1fr; margin-top: 40px; padding-inline: 18px; } .sso-header { padding-inline: 18px; } .auth-column { max-width: none; } }
+@media (prefers-reduced-motion: reduce) { body { transition: none; } }
