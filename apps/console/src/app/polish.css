@@ -1,3 +1,146 @@
+:root {
+  --ld-bg: #09090b;
+  --ld-surface: #111214;
+  --ld-surface-subtle: #17181b;
+  --ld-ink: #f5f5f5;
+  --ld-muted: #96979f;
+  --ld-hairline: #26272b;
+  --ld-chart-grid: #292a2f;
+  --ld-chart-line: #f97316;
+  --ld-chart-point: #f97316;
+  --ld-chart-surface: #111214;
+  --ld-chart-tooltip: #15161a;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --ld-bg: #f5f5f3;
+  --ld-surface: #ffffff;
+  --ld-surface-subtle: #f2f2f0;
+  --ld-ink: #171717;
+  --ld-muted: #73737a;
+  --ld-hairline: #dededa;
+  --ld-chart-grid: #e7e7e3;
+  --ld-chart-line: #f97316;
+  --ld-chart-point: #f97316;
+  --ld-chart-surface: #ffffff;
+  --ld-chart-tooltip: #ffffff;
+  color-scheme: light;
+}
+
+.console-shell {
+  grid-template-columns: 182px minmax(0, 1fr);
+}
+
+.console-sidebar {
+  background: #0b0b0d;
+  border-right-color: #202126;
+  padding: 16px 10px 12px;
+}
+
+:root[data-theme='light'] .console-sidebar {
+  background: #f1f1ef;
+  border-right-color: var(--ld-hairline);
+}
+
+.console-brand {
+  padding: 8px 8px 18px;
+}
+
+.product-picker-trigger {
+  background: #151619;
+  border-color: #292a30;
+  border-radius: 7px;
+  min-height: 39px;
+}
+
+:root[data-theme='light'] .product-picker-trigger {
+  background: #fff;
+  border-color: var(--ld-hairline);
+}
+
+.product-letter {
+  background: #f97316;
+  border-radius: 5px;
+  color: #111;
+  height: 25px;
+  width: 25px;
+}
+
+.console-sidebar nav {
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.console-sidebar nav a,
+.console-settings {
+  border-radius: 6px;
+  color: #a1a1aa;
+  font-size: 11px;
+  min-height: 34px;
+  padding: 0 10px;
+  position: relative;
+}
+
+.console-sidebar nav a:hover,
+.console-settings:hover {
+  background: #151619;
+  color: #f4f4f5;
+}
+
+.console-sidebar .console-nav-active {
+  background: #18191d;
+  color: #fff;
+  font-weight: 600;
+}
+
+.console-sidebar .console-nav-active::before {
+  background: #f97316;
+  border-radius: 999px;
+  content: '';
+  height: 18px;
+  left: -10px;
+  position: absolute;
+  top: 8px;
+  width: 3px;
+}
+
+:root[data-theme='light'] .console-sidebar nav a:hover,
+:root[data-theme='light'] .console-settings:hover,
+:root[data-theme='light'] .console-sidebar .console-nav-active {
+  background: #fff;
+  color: #171717;
+}
+
+.console-topbar {
+  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--ld-bg) 88%, transparent);
+  height: 56px;
+  padding: 0 20px;
+}
+
+.console-breadcrumb {
+  font-size: 10px;
+}
+
+.console-actions {
+  gap: 8px;
+}
+
+.console-actions > button,
+.console-account > button,
+.ld-theme-toggle {
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+}
+
+.console-actions > button:hover,
+.console-account > button:hover,
+.ld-theme-toggle:hover {
+  background: color-mix(in srgb, currentColor 7%, transparent);
+}
+
 .console-orb-action {
   display: inline-flex;
   position: relative;
@@ -7,7 +150,7 @@
   align-items: center;
   background: transparent;
   border: 0;
-  border-radius: 0;
+  border-radius: 50%;
   cursor: pointer;
   display: inline-flex;
   height: 36px;
@@ -17,14 +160,14 @@
 }
 
 .console-orb-action > button:focus-visible {
-  outline: 2px solid var(--ld-brand, #f97316);
+  outline: 2px solid #f97316;
   outline-offset: 2px;
 }
 
 .console-orb-tooltip {
-  background: var(--ld-ink);
+  background: #f5f5f5;
   border-radius: 6px;
-  color: var(--ld-surface);
+  color: #111;
   font-size: 9px;
   left: 50%;
   opacity: 0;
@@ -44,7 +187,13 @@
   transform: translate(-50%, 0);
 }
 
+.console-account > button {
+  gap: 5px;
+  padding: 2px 4px 2px 2px;
+}
+
 .console-account > button img {
+  border: 1px solid #34353b;
   border-radius: 999px;
   height: 30px;
   object-fit: cover;
@@ -65,7 +214,141 @@
   background: color-mix(in srgb, currentColor 7%, transparent);
 }
 
+.console-content {
+  max-width: 1240px;
+  padding: 28px 26px 72px;
+}
+
+.dashboard-heading {
+  margin-bottom: 18px;
+}
+
+.dashboard-heading h1 {
+  font-size: 26px;
+  font-weight: 560;
+}
+
+.dashboard-heading p {
+  font-size: 11px;
+}
+
+.dashboard-card {
+  background: #111214;
+  border-color: #292a2f;
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .018);
+}
+
+:root[data-theme='light'] .dashboard-card {
+  background: #fff;
+  border-color: var(--ld-hairline);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .02);
+}
+
+.console-content:has(> .overview-score-grid) {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr);
+}
+
+.console-content:has(> .overview-score-grid) > .dashboard-heading,
+.console-content:has(> .overview-score-grid) > .overview-score-grid,
+.console-content:has(> .overview-score-grid) > .attention-grid {
+  grid-column: 1 / -1;
+}
+
+.console-content:has(> .overview-score-grid) > .signature-curve-card {
+  grid-column: 1;
+  margin: 0;
+}
+
+.console-content:has(> .overview-score-grid) > .movement-card {
+  grid-column: 2;
+  margin: 0;
+}
+
+.overview-score-grid {
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.overview-primary-score,
+.overview-explainer {
+  background: linear-gradient(180deg, #131417, #101113);
+  min-height: 112px;
+  padding: 14px;
+}
+
+:root[data-theme='light'] .overview-primary-score,
+:root[data-theme='light'] .overview-explainer {
+  background: #fff;
+}
+
+.overview-primary-score > strong {
+  font-size: 44px;
+}
+
+.overview-explainer > strong {
+  font-size: 27px;
+}
+
+.signature-curve-card,
+.movement-card {
+  min-height: 390px;
+  padding: 16px;
+}
+
+.signature-curve-card .product-vision-chart {
+  min-height: 220px;
+}
+
+.signature-curve-card .product-vision-event-detail {
+  min-height: 92px;
+}
+
+.movement-card {
+  align-self: stretch;
+}
+
+.movement-list article {
+  min-height: 68px;
+}
+
+.movement-list article > b {
+  color: #f97316;
+  font-size: 13px;
+}
+
+.movement-list article > div:nth-child(2) strong {
+  font-size: 11px;
+}
+
+.attention-grid {
+  gap: 12px;
+  margin-top: 0;
+}
+
+.attention-card {
+  background: linear-gradient(180deg, #121316, #101113);
+  min-height: 165px;
+}
+
+:root[data-theme='light'] .attention-card {
+  background: #fff;
+}
+
+.voice-drawer {
+  background: #0f1012;
+  border-left-color: #292a2f;
+}
+
+:root[data-theme='light'] .voice-drawer {
+  background: #fff;
+  border-left-color: var(--ld-hairline);
+}
+
 .person-avatar {
+  border: 1px solid var(--ld-hairline);
   border-radius: 999px;
   display: inline-flex;
   height: 36px;
@@ -77,4 +360,49 @@
   height: 100%;
   object-fit: cover;
   width: 100%;
+}
+
+@media (max-width: 980px) {
+  .console-shell {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .console-sidebar {
+    padding-inline: 8px;
+  }
+
+  .console-brand > span > span:last-child,
+  .product-picker-trigger > span:nth-child(2),
+  .console-sidebar nav a:not(.console-nav-active) {
+    overflow: hidden;
+  }
+
+  .console-sidebar nav a,
+  .console-settings {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .console-sidebar nav a svg,
+  .console-settings svg {
+    flex: none;
+  }
+
+  .console-sidebar nav a,
+  .console-settings {
+    font-size: 0;
+  }
+
+  .product-picker-trigger {
+    grid-template-columns: 1fr auto;
+  }
+
+  .console-content:has(> .overview-score-grid) {
+    grid-template-columns: 1fr;
+  }
+
+  .console-content:has(> .overview-score-grid) > .signature-curve-card,
+  .console-content:has(> .overview-score-grid) > .movement-card {
+    grid-column: 1;
+  }
 }
