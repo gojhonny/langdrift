@@ -11,8 +11,7 @@ export interface WebsiteToast {
 
 export const themeAtom = atom<WebsiteTheme>('light')
 export const selectedPointAtom = atom(4)
-export const annualBillingAtom = atom(true)
-export const selectedPlanAtom = atom('executive')
+export const selectedPlanAtom = atom('')
 export const commentOpenAtom = atom(false)
 export const accountActionAtom = atom<string | null>(null)
 export const toastAtom = atom<WebsiteToast>({
@@ -23,7 +22,6 @@ export const toastAtom = atom<WebsiteToast>({
 
 export const websiteAtoms: Record<string, Atom<unknown>> = {
   accountActionAtom,
-  annualBillingAtom,
   commentOpenAtom,
   selectedPlanAtom,
   selectedPointAtom,
