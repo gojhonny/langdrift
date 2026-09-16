@@ -79,25 +79,58 @@ const changes = [
 
 const plans: PricingPlan[] = [
   {
-    id: 'team',
-    name: 'Team',
-    price: 'For one product team',
-    description: 'A focused view of Vision, Drift, decisions, and evidence.',
-    features: ['1 product', '2 teams', 'Drift reports', 'Decision attribution']
+    id: 'plan-01',
+    name: 'Plan 01',
+    price: 'Pricing · TBD',
+    description: 'Commercial name, price, and limits are intentionally not defined yet.',
+    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   },
   {
-    id: 'executive',
-    name: 'Executive',
-    price: 'For product leadership',
-    description: 'Cross-team visibility with executive Voice inquiry.',
-    features: ['Multiple teams', 'Executive Voice', 'Team and area views', 'Reports']
+    id: 'plan-02',
+    name: 'Plan 02',
+    price: 'Pricing · TBD',
+    description: 'The final packaging will be defined by Pricing without changing the product truth.',
+    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
   },
   {
-    id: 'organization',
-    name: 'Organization',
-    price: 'For product portfolios',
-    description: 'Organization-wide product evolution and governance.',
-    features: ['Multiple products', 'SSO', 'Role controls', 'Evidence retention']
+    id: 'plan-03',
+    name: 'Plan 03',
+    price: 'Pricing · TBD',
+    description: 'This card demonstrates the acquisition surface, not a committed entitlement model.',
+    features: ['Teams · TBD', 'People · TBD', 'Products · TBD', 'Voice access · TBD']
+  }
+]
+
+const attribution = [
+  {
+    area: 'Pricing',
+    change: 'Pricing strategy changed',
+    date: 'Aug 14',
+    delta: '−9',
+    people: [
+      { initials: 'AN', name: 'Ana', role: 'Product' },
+      { initials: 'CA', name: 'Carlos', role: 'Engineering' }
+    ],
+    status: 'Intentional Evolution'
+  },
+  {
+    area: 'Authentication',
+    change: 'Authentication redesigned',
+    date: 'Jul 22',
+    delta: '−6',
+    people: [
+      { initials: 'CA', name: 'Carlos', role: 'Engineering' },
+      { initials: 'LI', name: 'Lia', role: 'Design' }
+    ],
+    status: 'Unexplained Drift'
+  },
+  {
+    area: 'Exports',
+    change: 'Export rules changed',
+    date: 'Aug 20',
+    delta: '−3',
+    people: [{ initials: 'AN', name: 'Ana', role: 'Product' }],
+    status: 'Under Review'
   }
 ]
 
@@ -134,7 +167,7 @@ export default function WebsitePage() {
 
   function choosePlan(plan: string) {
     setSelectedPlan(plan)
-    notify(`${plans.find((item) => item.id === plan)?.name ?? plan} plan selected`, 'success')
+    notify(`${plans.find((item) => item.id === plan)?.name ?? plan} preview selected`, 'success')
   }
 
   return (
@@ -163,7 +196,8 @@ export default function WebsitePage() {
             <h2>See the moment Product Vision moved.</h2>
             <p>
               One compact view connects the score change to the people, decision,
-              reason, and evidence behind it.
+              reason, and evidence behind it. Demo values illustrate the experience,
+              not a final scoring formula.
             </p>
           </div>
           <div className="curve-card">
@@ -241,6 +275,33 @@ export default function WebsitePage() {
           </article>
         </section>
 
+        <section className="attribution-section" id="attribution">
+          <div className="features-heading">
+            <span className="section-kicker">Attribution</span>
+            <h2>Know who moved the product.</h2>
+            <p>
+              Important movement stays attached to people, teams, product areas,
+              decisions, and review state without turning the product into punitive surveillance.
+            </p>
+          </div>
+          <div className="attribution-grid">
+            {attribution.map((event) => (
+              <article key={event.change}>
+                <div className="attribution-meta">
+                  <span>{event.date}</span>
+                  <span>{event.area}</span>
+                </div>
+                <h3>{event.change}</h3>
+                <div className="attribution-bottom">
+                  <AnimatedAvatarGroup people={event.people} />
+                  <strong>{event.delta}</strong>
+                  <span>{event.status}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="features-section">
           <div className="features-heading">
             <span className="section-kicker">One model, multiple views</span>
@@ -264,6 +325,30 @@ export default function WebsitePage() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section className="report-section" id="report">
+          <div className="report-copy">
+            <span className="section-kicker">Executive report</span>
+            <h2>Explain movement without sending leadership into engineering history.</h2>
+            <p>
+              Reports translate structured product truth into the same Product Vision,
+              Drift, attribution, and decision language used everywhere else.
+            </p>
+          </div>
+          <article className="report-preview">
+            <div className="report-preview-head">
+              <span>Illustrative period</span>
+              <strong>Product Vision · 100 → 73</strong>
+            </div>
+            <dl>
+              <div><dt>Intentional evolution</dt><dd>14 points</dd></div>
+              <div><dt>Unexplained drift</dt><dd>4 points</dd></div>
+              <div><dt>Largest movement</dt><dd>Pricing · −9</dd></div>
+              <div><dt>Responsible</dt><dd>Ana + Carlos</dd></div>
+            </dl>
+            <small>Demo data · final Product Vision formula remains open.</small>
+          </article>
         </section>
 
         <section className="voice-band">
@@ -299,7 +384,7 @@ export default function WebsitePage() {
           annual={annual}
           onBillingChange={(value) => {
             setAnnual(value)
-            notify(`${value ? 'Annual' : 'Monthly'} billing selected`)
+            notify(`${value ? 'Annual' : 'Monthly'} billing preview selected`)
           }}
           onSelectPlan={choosePlan}
           plans={plans}
