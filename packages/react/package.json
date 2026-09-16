@@ -12,11 +12,13 @@
     "./styles.css": "./src/styles.css",
     "./tokens.css": "./src/tokens.css",
     "./ui/agent-orb": "./src/ui/agent-orb/index.ts",
+    "./ui/ai-avatars": "./src/ui/ai-avatars/index.ts",
     "./ui/brand": "./src/ui/brand/index.ts",
     "./ui/drift-curve": "./src/ui/drift-curve/index.ts",
     "./ui/metric": "./src/ui/metric/index.ts",
     "./ui/product-vision-curve": "./src/ui/product-vision-curve/index.ts",
     "./ui/status-pill": "./src/ui/status-pill/index.ts",
+    "./ui/theme-toggle": "./src/ui/theme-toggle/index.ts",
     "./vendors/shadcn": "./src/vendors/shadcn/index.ts",
     "./vendors/smoothui": "./src/vendors/smoothui/index.ts",
     "./utilities": "./src/utilities/index.ts"
