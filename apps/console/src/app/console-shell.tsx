@@ -4,9 +4,6 @@ import {
   Bell,
   CaretDown,
   ChartLineUp,
-  CheckCircle,
-  ClockCounterClockwise,
-  Files,
   FileText,
   Gear,
   GitBranch,
@@ -14,13 +11,8 @@ import {
   MagnifyingGlass,
   Microphone,
   Moon,
-  Pulse,
-  SquaresFour,
   Sun,
-  Target,
   Users,
-  UsersThree,
-  WarningDiamond,
   X
 } from '@phosphor-icons/react'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
@@ -35,18 +27,10 @@ import { useConsoleStore } from './state'
 
 const navigation = [
   { href: '/overview', icon: House, label: 'Overview' },
-  { href: '/vision-baseline', icon: Target, label: 'Vision Baseline' },
-  { href: '/drift-graph', icon: ChartLineUp, label: 'Drift Graph' },
-  { href: '/drift-report', icon: FileText, label: 'Drift Report' },
-  { href: '/drift-timeline', icon: ClockCounterClockwise, label: 'Drift Timeline' },
-  { href: '/drift-events', icon: Pulse, label: 'Drift Events' },
-  { href: '/drift-by-team', icon: UsersThree, label: 'Drift by Team' },
-  { href: '/drift-by-product-area', icon: SquaresFour, label: 'Drift by Product Area' },
-  { href: '/intentional-drift', icon: CheckCircle, label: 'Intentional Drift' },
-  { href: '/unexplained-drift', icon: WarningDiamond, label: 'Unexplained Drift' },
+  { href: '/evolution', icon: ChartLineUp, label: 'Evolution' },
   { href: '/decisions', icon: GitBranch, label: 'Decisions' },
   { href: '/people', icon: Users, label: 'People' },
-  { href: '/evidence', icon: Files, label: 'Evidence' }
+  { href: '/reports', icon: FileText, label: 'Reports' }
 ]
 
 export function ConsoleShell({ children }: { children: ReactNode }) {
@@ -102,7 +86,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             </div>
           ) : null}
         </div>
-        <nav aria-label="Product intelligence navigation">
+        <nav aria-label="Executive product navigation">
           {navigation.map((item) => {
             const Icon = item.icon
             return (
@@ -181,7 +165,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             <input
               aria-label="Search product intelligence"
               onChange={(event) => state.setSearchQuery(event.currentTarget.value)}
-              placeholder="Search decisions, people, evidence…"
+              placeholder="Search decisions, people, product areas…"
               value={state.searchQuery}
             />
             <button aria-label="Close search" onClick={state.toggleSearch} type="button">
@@ -192,12 +176,12 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         {state.notificationsOpen ? (
           <div className="topbar-panel notifications-panel">
-            <strong>2 items need review</strong>
-            <span>Export rules changed without a final classification.</span>
+            <strong>2 items need attention</strong>
+            <span>Authentication is unexplained. Export behavior remains under review.</span>
             <button
               onClick={() => {
                 state.toggleNotifications()
-                state.notify('Notifications marked as reviewed', 'success')
+                state.notify('Attention items marked as reviewed', 'success')
               }}
               type="button"
             >
@@ -213,10 +197,10 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             </button>
             <AgentOrb size="88px" speed={0.72} state="idle" />
             <span>Executive inquiry</span>
-            <strong>What changed since Product Vision was approved?</strong>
-            <p>Ask over the same structured events, decisions, people, and evidence shown here.</p>
+            <strong>Why did Product Vision fall?</strong>
+            <p>Ask over the same structured events, decisions, people, and evidence shown visually.</p>
             <button
-              onClick={() => state.notify('Voice prompt selected from deterministic context', 'success')}
+              onClick={() => state.notify('Deterministic Voice prompt selected', 'success')}
               type="button"
             >
               Ask this question
