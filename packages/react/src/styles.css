@@ -4,6 +4,7 @@
 @import './ui/theme-toggle/theme-toggle.css';
 @import './vendors/smoothui/smoothui.css';
 @import './ui/product-experience.css';
+@import './ui/ui-consistency.css';
 
 @theme inline {
   --color-ld-brand: var(--ld-brand);
