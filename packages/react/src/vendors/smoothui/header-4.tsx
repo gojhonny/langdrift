@@ -18,7 +18,7 @@ export interface Header4Props {
 
 export function Header4({
   actions,
-  eyebrow = 'Visual intelligence for what changes',
+  eyebrow = 'Visual-first for truth · Voice-first for inquiry',
   onThemeToggle,
   theme = 'light'
 }: Header4Props) {
@@ -33,6 +33,7 @@ export function Header4({
         <nav aria-label="Primary navigation">
           <a href="#product">Product</a>
           <a href="#why">Why</a>
+          <a href="#attribution">Attribution</a>
           <a href="#pricing">Plans</a>
         </nav>
         <div className="header-four-actions">
@@ -63,11 +64,12 @@ export function Header4({
       >
         <span className="header-four-eyebrow">{eyebrow}</span>
         <h1>
-          Keep your product <ChromaText>aligned with vision</ChromaText> as it evolves.
+          How far has your product <ChromaText>drifted from your vision?</ChromaText>
         </h1>
         <p>
-          LangDrift shows what changed, why it changed, who changed it, and whether
-          evolution was intentional or unexplained.
+          LangDrift makes Product Vision movement legible: what changed, when it
+          changed, why it changed, who moved it, and whether the evolution was
+          intentional or unexplained.
         </p>
         <div className="header-four-cta">
           <a className="smooth-primary-button" href="#product">
