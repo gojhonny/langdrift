@@ -164,7 +164,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                   />
                 </label>
                 <button className="sso-primary" type="submit">Continue with email</button>
-                {signInStatus ? <p className="auth-status" role="status">{signInStatus}</p> : null}
+                {signInStatus ? <output className="auth-status">{signInStatus}</output> : null}
                 <p className="auth-secondary-copy">
                   New to LangDrift? <a className="create-account-link" href="/sign-up">Create account</a>
                 </p>
