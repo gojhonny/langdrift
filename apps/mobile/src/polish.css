@@ -43,7 +43,7 @@ body {
   display: none;
 }
 
-.mobile-header > .ld-theme-toggle {
+.mobile-header .ld-theme-toggle {
   background: transparent;
   border: 0;
   border-radius: 8px;
