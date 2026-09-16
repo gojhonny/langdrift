@@ -36,7 +36,11 @@ export function Pricing2({
         <span>Plans</span>
         <h2>Scale visibility with the organization.</h2>
         <p>Role depth and team coverage expand without changing the underlying truth.</p>
-        <div className="pricing-toggle" role="group" aria-label="Billing period">
+        <fieldset
+          aria-label="Billing period"
+          className="pricing-toggle"
+          style={{ border: 0, minInlineSize: 0 }}
+        >
           <button
             data-active={!annual}
             onClick={() => onBillingChange(false)}
@@ -51,7 +55,7 @@ export function Pricing2({
           >
             Annually
           </button>
-        </div>
+        </fieldset>
       </div>
       <div className="pricing-two-grid">
         {plans.map((plan, index) => (
