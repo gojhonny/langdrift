@@ -2,7 +2,6 @@
 
 import {
   CheckCircle,
-  FileText,
   GitBranch,
   ShieldCheck,
   WarningDiamond
@@ -254,9 +253,12 @@ function Comparison({ type }: { type: 'area' | 'team' }) {
 
   return (
     <section className="dashboard-card comparison-card">
-      {items.map(([label, delta, detail]) => (
-        <article key={label}><strong>{label}</strong><span>{detail}</span><b>{delta}</b><div><i style={{ width: `${Math.min(92, Math.abs(Number(delta)) * 8)}%` }} /></div></article>
-      ))}
+      {items.map(([label, delta, detail]) => {
+        const magnitude = Math.abs(Number.parseInt(delta.replace('−', '-'), 10))
+        return (
+          <article key={label}><strong>{label}</strong><span>{detail}</span><b>{delta}</b><div><i style={{ width: `${Math.min(92, magnitude * 8)}%` }} /></div></article>
+        )
+      })}
     </section>
   )
 }
