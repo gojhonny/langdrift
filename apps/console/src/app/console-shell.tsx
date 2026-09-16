@@ -11,13 +11,14 @@ import {
   Users,
   X
 } from '@phosphor-icons/react'
-import { AgentOrb } from '@repo/react/ui/agent-orb'
+import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
 import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
+import { Tooltip } from '@repo/react/vendors/shadcn'
 import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
-import { useEffect } from 'react'
+import type { FormEvent, ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 
 import { StateLogger } from './state-logger'
 import { useConsoleStore } from './state'
@@ -30,9 +31,43 @@ const navigation = [
   { href: '/reports', icon: FileText, label: 'Reports' }
 ]
 
+const sectionLabels: Record<string, string> = {
+  '/overview': 'Overview',
+  '/evolution': 'Evolution',
+  '/decisions': 'Decisions',
+  '/people': 'People',
+  '/reports': 'Reports',
+  '/settings': 'Settings',
+  '/vision-baseline': 'Evolution',
+  '/drift-graph': 'Evolution',
+  '/drift-timeline': 'Evolution',
+  '/drift-events': 'Evolution',
+  '/drift-by-team': 'Evolution',
+  '/drift-by-product-area': 'Evolution',
+  '/intentional-drift': 'Evolution',
+  '/unexplained-drift': 'Evolution',
+  '/drift-report': 'Reports',
+  '/evidence': 'Evidence'
+}
+
+const voiceAnswers: Record<string, string> = {
+  'Why did Product Vision fall?':
+    'Product Vision moved from 91% to 73%. Pricing changed intentionally, authentication remains unexplained, and export behavior is still under review.',
+  'What changed this week?':
+    'Authentication was the largest contributor this week. Four points were intentional evolution and two points remain unexplained.',
+  'Which changes are unexplained?':
+    'Authentication is currently classified as Unexplained Drift. Export behavior remains Under Review rather than being classified prematurely.'
+}
+
+const voicePrompts = Object.keys(voiceAnswers)
+
 export function ConsoleShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const state = useConsoleStore()
+  const [voiceQuestion, setVoiceQuestion] = useState('')
+  const [voiceAnswer, setVoiceAnswer] = useState('')
+  const [voiceOrbState, setVoiceOrbState] = useState<AgentOrbState>('idle')
+  const currentSection = sectionLabels[pathname] ?? 'Overview'
 
   useEffect(() => {
     document.documentElement.dataset.theme = state.theme
@@ -41,6 +76,27 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
   function switchTheme() {
     state.setTheme(state.theme === 'light' ? 'dark' : 'light')
+  }
+
+  function askVoice(question: string) {
+    const trimmed = question.trim()
+    if (!trimmed) return
+
+    setVoiceQuestion(trimmed)
+    setVoiceOrbState('thinking')
+    window.setTimeout(() => {
+      setVoiceAnswer(
+        voiceAnswers[trimmed] ??
+          'LangDrift can answer bounded questions over Product Vision, Drift events, decisions, people, and linked evidence.'
+      )
+      setVoiceOrbState('speaking')
+      window.setTimeout(() => setVoiceOrbState('idle'), 700)
+    }, 260)
+  }
+
+  function submitVoice(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    askVoice(voiceQuestion)
   }
 
   return (
@@ -103,12 +159,24 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
       <section className="console-workspace">
         <header className="console-topbar">
-          <div className="console-breadcrumb">
+          <div className="console-breadcrumb" aria-label="Breadcrumb">
             <span>LangDrift</span>
             <span>/</span>
             <strong>{state.selectedProduct}</strong>
+            <span>/</span>
+            <strong>{currentSection}</strong>
           </div>
           <div className="console-actions">
+            <Tooltip content="Ask LangDrift">
+              <button
+                aria-label="Ask LangDrift"
+                className="console-orb-button"
+                onClick={state.toggleVoice}
+                type="button"
+              >
+                <AgentOrb size="28px" speed={0.72} state="idle" />
+              </button>
+            </Tooltip>
             <button
               aria-label="Notifications"
               onClick={state.toggleNotifications}
@@ -117,22 +185,18 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               <Bell aria-hidden="true" />
             </button>
             <ThemeToggle onToggle={switchTheme} theme={state.theme} />
-            <span className="console-orb-action">
-              <button aria-label="Ask LangDrift" onClick={state.toggleVoice} type="button">
-                <AgentOrb size="34px" speed={0.72} state="idle" />
-              </button>
-              <span className="console-orb-tooltip" role="tooltip">Ask LangDrift</span>
-            </span>
             <div className="console-account">
-              <button
-                aria-expanded={state.accountMenuOpen}
-                aria-label="Open account menu"
-                onClick={state.toggleAccountMenu}
-                type="button"
-              >
-                <img alt="" aria-hidden="true" src={aiAvatars.jonny} />
-                <CaretDown aria-hidden="true" size={11} />
-              </button>
+              <Tooltip content="Account">
+                <button
+                  aria-expanded={state.accountMenuOpen}
+                  aria-label="Open account menu"
+                  className="console-profile-button"
+                  onClick={state.toggleAccountMenu}
+                  type="button"
+                >
+                  <img alt="" aria-hidden="true" src={aiAvatars.jonny} />
+                </button>
+              </Tooltip>
               {state.accountMenuOpen ? (
                 <div className="shell-dropdown account-dropdown">
                   <a href="/settings">Settings</a>
@@ -166,10 +230,42 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             <button aria-label="Close voice" onClick={state.toggleVoice} type="button">
               <X aria-hidden="true" size={14} />
             </button>
-            <AgentOrb size="88px" speed={0.72} state="idle" />
-            <span>Executive inquiry</span>
-            <strong>Why did Product Vision fall?</strong>
+            <div className="voice-drawer-orb-wrap">
+              <button
+                aria-label={voiceOrbState === 'listening' ? 'Stop listening' : 'Start voice inquiry'}
+                onClick={() => setVoiceOrbState(voiceOrbState === 'listening' ? 'idle' : 'listening')}
+                type="button"
+              >
+                <AgentOrb size="88px" speed={voiceOrbState === 'listening' ? 1.1 : 0.72} state={voiceOrbState} />
+              </button>
+            </div>
+            <span>{voiceOrbState === 'listening' ? 'Listening' : 'Executive inquiry'}</span>
+            <strong>Ask LangDrift</strong>
             <p>Ask over the same structured events, decisions, people, and evidence shown visually.</p>
+            <div className="voice-drawer-prompts">
+              {voicePrompts.map((prompt) => (
+                <button key={prompt} onClick={() => askVoice(prompt)} type="button">
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            {voiceAnswer ? (
+              <output className="voice-drawer-answer" aria-live="polite">
+                {voiceAnswer}
+              </output>
+            ) : null}
+            <form className="voice-drawer-composer" onSubmit={submitVoice}>
+              <label htmlFor="console-voice-question">Ask about this product</label>
+              <div>
+                <input
+                  id="console-voice-question"
+                  onChange={(event) => setVoiceQuestion(event.currentTarget.value)}
+                  placeholder="What changed this week?"
+                  value={voiceQuestion}
+                />
+                <button disabled={voiceOrbState === 'thinking'} type="submit">Ask</button>
+              </div>
+            </form>
           </div>
         ) : null}
 
