@@ -1,5 +1,6 @@
 'use client'
 
+// Illustrative product values are frontend fixtures; this is not the Product Vision scoring contract.
 import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import {
   ProductVisionCurve,
