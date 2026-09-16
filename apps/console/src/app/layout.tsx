@@ -3,11 +3,12 @@ import type { ReactNode } from 'react'
 
 import '@repo/react/styles.css'
 import './globals.css'
+import './product-experience.css'
 import { ConsoleShell } from './console-shell'
 
 export const metadata: Metadata = {
   title: 'LangDrift Console',
-  description: 'Product Vision, Drift, decisions, people, and evidence.',
+  description: 'Product Vision, Drift, decisions, people, and reports.',
   applicationName: 'LangDrift',
   icons: { icon: '/favicon.ico' }
 }
