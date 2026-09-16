@@ -1,13 +1,12 @@
 'use client'
 
-import { AppleLogo, CaretDown, GithubLogo, GoogleLogo } from '@repo/react/ui/icons'
 import { Brand } from '@repo/react/ui/brand'
+import { AppleLogo, CaretDown, GithubLogo, GoogleLogo } from '@repo/react/ui/icons'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
-import { GlowHoverCard } from '@repo/react/vendors/smoothui'
 import { useAtom, useSetAtom } from 'jotai'
 import { useRouter } from 'next/navigation'
 import type { FormEvent } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   accountEmailAtom,
@@ -28,16 +27,16 @@ export type AccountFlowStep =
   | 'sign-up'
 
 const flowSteps = [
-  { href: '/sign-up', id: 'sign-up', label: 'Account' },
-  { href: '/create-organization', id: 'create-organization', label: 'Organization' },
-  { href: '/select-plan', id: 'select-plan', label: 'Plan' },
-  { href: '/setup', id: 'setup', label: 'Setup' }
+  { href: '/sign-up', id: 'sign-up', label: 'Account', note: 'Your personal account' },
+  { href: '/create-organization', id: 'create-organization', label: 'Organization', note: 'Create your workspace' },
+  { href: '/select-plan', id: 'select-plan', label: 'Plan', note: 'Choose how to start' },
+  { href: '/setup', id: 'setup', label: 'Setup', note: 'Create your first product' }
 ] as const
 
-const socialProviders = [
-  { icon: GoogleLogo, id: 'google', label: 'Continue with Google' },
-  { icon: GithubLogo, id: 'github', label: 'Continue with GitHub' },
-  { icon: AppleLogo, id: 'apple', label: 'Continue with Apple' }
+const providers = [
+  { icon: GoogleLogo, id: 'Google', label: 'Continue with Google' },
+  { icon: GithubLogo, id: 'GitHub', label: 'Continue with GitHub' },
+  { icon: AppleLogo, id: 'Apple', label: 'Continue with Apple' }
 ] as const
 
 function flowIndex(step: AccountFlowStep) {
@@ -52,6 +51,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
   const [, setSelectedPlan] = useAtom(selectedPlanAtom)
   const setSetupStep = useSetAtom(setupStepAtom)
   const incrementAttempts = useSetAtom(signInAttemptsAtom)
+  const [signInStatus, setSignInStatus] = useState<string | null>(null)
   const currentIndex = flowIndex(step)
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
     incrementAttempts((current) => current + 1)
 
     if (step === 'sign-in') {
-      window.location.assign(ssoLinks.console)
+      setSignInStatus('Email sign in will become active when authentication is connected.')
       return
     }
 
@@ -72,14 +72,9 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
     router.push('/create-organization')
   }
 
-  function continueWithProvider() {
+  function chooseProvider(provider: string) {
     incrementAttempts((current) => current + 1)
-    if (step === 'sign-in') {
-      window.location.assign(ssoLinks.console)
-      return
-    }
-    setSetupStep('account')
-    router.push('/create-organization')
+    setSignInStatus(`${provider} sign in will become active when authentication is connected.`)
   }
 
   function submitOrganization(event: FormEvent<HTMLFormElement>) {
@@ -96,27 +91,28 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
 
   const titles: Record<AccountFlowStep, [string, string]> = {
     'create-organization': [
-      'Create your organization.',
+      'Create your organization',
       'Give your LangDrift workspace a home. You will be the initial Owner.'
     ],
     'select-plan': [
-      'Choose how to start.',
+      'Choose how to start',
       'Packaging is being finalized. Continue with product setup now.'
     ],
     setup: [
-      'Set up your first product.',
-      'Name the product you want LangDrift to understand first. Integrations come next.'
+      'Set up your first product',
+      'Name the product you want LangDrift to understand first.'
     ],
     'sign-in': [
-      'Sign in to LangDrift.',
-      'Continue with your work identity to access your product workspace.'
+      'Sign in',
+      'Return to the product history your team already understands with LangDrift.'
     ],
     'sign-up': [
-      'Create your LangDrift account.',
+      'Create your account',
       'Start with your work identity. Organization setup comes next.'
     ]
   }
   const [title, description] = titles[step]
+  const onboarding = step !== 'sign-in'
 
   return (
     <main className="account-flow-shell">
@@ -136,58 +132,52 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
         </div>
       </header>
 
-      {step !== 'sign-in' ? (
-        <nav aria-label="Account setup progress" className="account-flow-progress">
-          {flowSteps.map((item, index) => {
-            const state = index < currentIndex ? 'completed' : index === currentIndex ? 'current' : 'future'
-            const content = (
-              <>
-                <span>{state === 'completed' ? '✓' : String(index + 1).padStart(2, '0')}</span>
-                {item.label}
-              </>
-            )
+      <section className={`auth-stage ${onboarding ? 'auth-stage-onboarding' : 'auth-stage-signin'}`}>
+        <div className="auth-main">
+          <div className="account-flow-copy">
+            <span className="sso-kicker">{step === 'sign-in' ? 'Welcome back' : 'Get started'}</span>
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
 
-            if (state === 'future') {
-              return <span className="account-flow-progress-step" data-state={state} key={item.href}>{content}</span>
-            }
-
-            return (
-              <a
-                aria-current={state === 'current' ? 'step' : undefined}
-                className="account-flow-progress-step"
-                data-state={state}
-                href={item.href}
-                key={item.href}
-              >
-                {content}
-              </a>
-            )
-          })}
-        </nav>
-      ) : null}
-
-      <section className="account-flow-card" data-step={step}>
-        <div className="account-flow-copy">
-          <span className="sso-kicker">{step === 'sign-in' ? 'Welcome back' : 'Account setup'}</span>
-          <h1>{title}</h1>
-          <p>{description}</p>
-        </div>
-
-        {step === 'sign-in' || step === 'sign-up' ? (
-          <div className="identity-stack">
-            {step === 'sign-in' ? (
+          {step === 'sign-in' ? (
+            <div className="identity-stack">
               <div className="social-login-stack">
-                {socialProviders.map(({ icon: Icon, id, label }) => (
-                  <button key={id} onClick={continueWithProvider} type="button">
+                {providers.map(({ icon: Icon, id, label }) => (
+                  <button key={id} onClick={() => chooseProvider(id)} type="button">
                     <Icon aria-hidden="true" size={18} weight="fill" />
-                    {label}
+                    <span>{label}</span>
                   </button>
                 ))}
                 <div className="auth-divider"><span>or</span></div>
               </div>
-            ) : null}
+              <form className="account-flow-form account-flow-form-flat" onSubmit={submitIdentity}>
+                <label>
+                  Work email
+                  <input
+                    autoComplete="email"
+                    onChange={(event) => setEmail(event.currentTarget.value)}
+                    placeholder="you@company.com"
+                    required
+                    type="email"
+                    value={email}
+                  />
+                </label>
+                <button className="sso-primary" type="submit">Continue with email</button>
+                {signInStatus ? <p className="auth-status" role="status">{signInStatus}</p> : null}
+                <p className="auth-secondary-copy">
+                  New to LangDrift? <a className="create-account-link" href="/sign-up">Create account</a>
+                </p>
+              </form>
+            </div>
+          ) : null}
 
+          {step === 'sign-up' ? (
             <form className="account-flow-form" onSubmit={submitIdentity}>
+              <label>
+                Full name
+                <input autoComplete="name" name="name" placeholder="Your name" required />
+              </label>
               <label>
                 Work email
                 <input
@@ -199,82 +189,95 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                   value={email}
                 />
               </label>
-              <button className="sso-primary" type="submit">
-                {step === 'sign-in' ? 'Continue with email' : 'Create account'}
-              </button>
-              {step === 'sign-in' ? <a className="create-account-link" href="/sign-up">Create account</a> : null}
+              <button className="sso-primary" type="submit">Continue</button>
+              <p className="auth-secondary-copy">Already have an account? <a href="/sign-in">Sign in</a></p>
             </form>
-          </div>
-        ) : null}
+          ) : null}
 
-        {step === 'create-organization' ? (
-          <form className="account-flow-form" onSubmit={submitOrganization}>
-            <label>
-              Organization name
-              <input
-                autoComplete="organization"
-                onChange={(event) => setOrganization(event.currentTarget.value)}
-                placeholder="Acme"
-                required
-                value={organization}
-              />
-            </label>
-            <label>
-              Your role
-              <span className="select-control">
-                <select defaultValue="owner">
-                  <option value="owner">Owner / Founder</option>
-                  <option value="executive">Executive</option>
-                  <option value="other">Other</option>
-                </select>
-                <CaretDown aria-hidden="true" size={14} />
-              </span>
-            </label>
-            <button className="sso-primary" type="submit">Create organization</button>
-          </form>
-        ) : null}
+          {step === 'create-organization' ? (
+            <form className="account-flow-form" onSubmit={submitOrganization}>
+              <label>
+                Organization name
+                <input
+                  autoComplete="organization"
+                  onChange={(event) => setOrganization(event.currentTarget.value)}
+                  placeholder="Acme"
+                  required
+                  value={organization}
+                />
+              </label>
+              <label>
+                Your role
+                <span className="select-control">
+                  <select defaultValue="owner">
+                    <option value="owner">Owner / Founder</option>
+                    <option value="executive">Executive</option>
+                    <option value="director">Director</option>
+                    <option value="manager">Manager</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <CaretDown aria-hidden="true" size={14} />
+                </span>
+              </label>
+              <button className="sso-primary" type="submit">Continue</button>
+            </form>
+          ) : null}
 
-        {step === 'select-plan' ? (
-          <div className="account-plan-grid">
-            <GlowHoverCard selected>
-              <div className="account-plan-card account-plan-card-neutral">
+          {step === 'select-plan' ? (
+            <div className="account-plan-grid">
+              <article className="account-plan-card account-plan-card-neutral">
                 <span>Packaging in progress</span>
                 <strong>Start with LangDrift</strong>
-                <p>
-                  Final pricing and limits are not published yet. Teams, People, Products,
-                  Voice, History, and Integrations will be part of the packaging model.
-                </p>
-              </div>
-            </GlowHoverCard>
-            <button className="sso-primary account-flow-next" onClick={continuePlan} type="button">
-              Continue to setup
-            </button>
-          </div>
-        ) : null}
+                <p>Teams, people, products, Voice, history, and integrations will define final packaging.</p>
+              </article>
+              <button className="sso-primary account-flow-next" onClick={continuePlan} type="button">
+                Continue to setup
+              </button>
+            </div>
+          ) : null}
 
-        {step === 'setup' ? (
-          <form
-            className="setup-preview"
-            onSubmit={(event) => {
-              event.preventDefault()
-              setSetupStep('setup')
-              window.location.assign(ssoLinks.console)
-            }}
-          >
-            <div>
-              <span>Organization</span>
-              <strong>{organization || 'Your organization'}</strong>
-            </div>
-            <div>
-              <span>Plan</span>
-              <strong>Packaging to be confirmed</strong>
-            </div>
-            <label>
-              First product
-              <input name="product" placeholder="Atlas Home Hub" required />
-            </label>
-            <button className="sso-primary" type="submit">Open LangDrift</button>
-          </form>
+          {step === 'setup' ? (
+            <form
+              className="setup-preview"
+              onSubmit={(event) => {
+                event.preventDefault()
+                setSetupStep('setup')
+                window.location.assign(ssoLinks.console)
+              }}
+            >
+              <div>
+                <span>Organization</span>
+                <strong>{organization || 'Your organization'}</strong>
+              </div>
+              <label>
+                First product
+                <input name="product" placeholder="Atlas Home Hub" required />
+              </label>
+              <button className="sso-primary" type="submit">Open LangDrift</button>
+            </form>
+          ) : null}
+        </div>
+
+        {onboarding ? (
+          <aside className="onboarding-progress" aria-label="Account setup progress">
+            {flowSteps.map((item, index) => {
+              const state = index < currentIndex ? 'completed' : index === currentIndex ? 'current' : 'future'
+              return (
+                <div
+                  aria-current={state === 'current' ? 'step' : undefined}
+                  className="onboarding-progress-step"
+                  data-state={state}
+                  key={item.id}
+                >
+                  <span>{state === 'completed' ? '✓' : index + 1}</span>
+                  <div>
+                    <strong>{item.label}</strong>
+                    <small>{item.note}</small>
+                  </div>
+                </div>
+              )
+            })}
+          </aside>
         ) : null}
       </section>
     </main>
