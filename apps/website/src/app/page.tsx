@@ -1,313 +1,318 @@
-import { Brand } from '@repo/react/ui/brand'
-import { DriftCurve } from '@repo/react/ui/drift-curve'
-import { StatusPill } from '@repo/react/ui/status-pill'
-import { VoicePreview } from './voice-preview'
+'use client'
 
-const proof = [
-  { value: '62%', label: 'intentional evolution' },
-  { value: '4', label: 'unexplained changes' },
-  { value: '2', label: 'items under review' },
-  { value: '18', label: 'linked evidence items' }
+import { CompactDriftChart } from '@repo/react/vendors/shadcn'
+import {
+  AIContextMeter,
+  AnimatedAvatarGroup,
+  BasicToast,
+  FigmaComment,
+  Header4,
+  Pricing2,
+  Scrubber,
+  SmoothFooter,
+  UserAccountAvatar,
+  type PricingPlan
+} from '@repo/react/vendors/smoothui'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useEffect } from 'react'
+
+import {
+  accountActionAtom,
+  annualBillingAtom,
+  commentOpenAtom,
+  selectedPlanAtom,
+  selectedPointAtom,
+  themeAtom,
+  toastAtom
+} from '../state'
+import { StateLogger } from './state-logger'
+
+const curve = [
+  { label: 'Apr', value: 100 },
+  { label: 'May', value: 95 },
+  { label: 'Jun', value: 95 },
+  { label: 'Jul', value: 85 },
+  { label: 'Aug', value: 73 }
 ]
 
-const events = [
+const changes = [
   {
-    date: 'Aug 18',
-    title: 'Pricing direction changed',
-    detail: 'Annual-first packaging replaced usage-first framing.',
+    delta: '—',
+    detail: 'Vision baseline recorded',
+    people: [{ initials: 'MR', name: 'Marina Reis', role: 'CEO' }],
+    status: 'Baseline'
+  },
+  {
+    delta: '−5',
+    detail: 'Navigation scope clarified',
+    people: [{ initials: 'AN', name: 'Ana', role: 'Product' }],
+    status: 'Intentional'
+  },
+  {
     delta: '−9',
-    tone: 'intentional' as const,
-    status: 'Intentional Evolution'
+    detail: 'Pricing strategy changed',
+    people: [
+      { initials: 'AN', name: 'Ana', role: 'Product' },
+      { initials: 'CA', name: 'Carlos', role: 'Engineering' }
+    ],
+    status: 'Intentional'
   },
   {
-    date: 'Aug 29',
-    title: 'Authentication behavior changed',
-    detail: 'Guest access disappeared without a linked decision.',
     delta: '−6',
-    tone: 'unexplained' as const,
-    status: 'Unexplained Drift'
+    detail: 'Authentication redesigned',
+    people: [
+      { initials: 'CA', name: 'Carlos', role: 'Engineering' },
+      { initials: 'LI', name: 'Lia', role: 'Design' }
+    ],
+    status: 'Unexplained'
   },
   {
-    date: 'Sep 08',
-    title: 'Export scope narrowed',
-    detail: 'CSV remains; scheduled export is no longer represented.',
     delta: '−3',
-    tone: 'review' as const,
-    status: 'Under Review'
+    detail: 'Export rules changed',
+    people: [
+      { initials: 'AN', name: 'Ana', role: 'Product' },
+      { initials: 'CA', name: 'Carlos', role: 'Engineering' }
+    ],
+    status: 'Review'
+  }
+]
+
+const plans: PricingPlan[] = [
+  {
+    id: 'team',
+    name: 'Team',
+    price: 'For one product team',
+    description: 'A focused view of Vision, Drift, decisions, and evidence.',
+    features: ['1 product', '2 teams', 'Drift reports', 'Decision attribution']
+  },
+  {
+    id: 'executive',
+    name: 'Executive',
+    price: 'For product leadership',
+    description: 'Cross-team visibility with executive Voice inquiry.',
+    features: ['Multiple teams', 'Executive Voice', 'Team and area views', 'Reports']
+  },
+  {
+    id: 'organization',
+    name: 'Organization',
+    price: 'For product portfolios',
+    description: 'Organization-wide product evolution and governance.',
+    features: ['Multiple products', 'SSO', 'Role controls', 'Evidence retention']
   }
 ]
 
 export default function WebsitePage() {
+  const [theme, setTheme] = useAtom(themeAtom)
+  const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
+  const [annual, setAnnual] = useAtom(annualBillingAtom)
+  const [selectedPlan, setSelectedPlan] = useAtom(selectedPlanAtom)
+  const [toast, setToast] = useAtom(toastAtom)
+  const setCommentOpen = useSetAtom(commentOpenAtom)
+  const setAccountAction = useSetAtom(accountActionAtom)
+  const active = changes[selectedPoint] ?? changes[changes.length - 1]
+  const currentTheme = useAtomValue(themeAtom)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = currentTheme
+    document.documentElement.style.colorScheme = currentTheme
+  }, [currentTheme])
+
+  function notify(message: string, tone: 'info' | 'success' | 'warning' = 'info') {
+    setToast({ message, open: true, tone })
+  }
+
+  function toggleTheme() {
+    const next = theme === 'light' ? 'dark' : 'light'
+    setTheme(next)
+    notify(`${next === 'dark' ? 'Dark' : 'Light'} theme enabled`)
+  }
+
+  function handleAccountAction(action: 'account' | 'settings' | 'signout') {
+    setAccountAction(action)
+    notify(`${action === 'signout' ? 'Sign out' : action} action selected`)
+  }
+
+  function choosePlan(plan: string) {
+    setSelectedPlan(plan)
+    notify(`${plans.find((item) => item.id === plan)?.name ?? plan} plan selected`, 'success')
+  }
+
   return (
     <>
-      <a className="skip-link" href="#main">
-        Skip to content
+      <StateLogger />
+      <a className="skip-link" href="#product">
+        Skip to product
       </a>
-      <header className="site-header">
-        <a className="brand-link" href="#top" aria-label="Lang Drift home">
-          <Brand compact />
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#product">Product</a>
-          <a href="#how">How it works</a>
-          <a href="#voice">Voice</a>
-        </nav>
-        <div className="header-actions">
-          <a className="text-link" href="/signin">
-            Sign in
-          </a>
-          <a className="button button-dark" href="#contact">
-            Request access
-          </a>
-        </div>
-      </header>
+      <main id="top">
+        <Header4
+          actions={
+            <UserAccountAvatar
+              detail="Preview"
+              initials="JS"
+              name="Jonny"
+              onAction={handleAccountAction}
+            />
+          }
+          onThemeToggle={toggleTheme}
+          theme={theme}
+        />
 
-      <main id="main">
-        <section className="hero" id="top">
-          <div className="hero-copy">
-            <span className="eyebrow">
-              <span className="eyebrow-mark" /> Product evolution, made legible
-            </span>
-            <h1>
-              Stay in charge of what your product <em>becomes.</em>
-            </h1>
-            <p className="hero-lede">
-              Lang Drift shows how far reality has moved from Product Vision —
-              when it moved, why it moved, and who was involved.
-            </p>
-            <div className="hero-actions">
-              <a className="button button-brand" href="#product">
-                See the product
-              </a>
-              <a className="button button-ghost" href="#how">
-                How it works <span aria-hidden="true">↘</span>
-              </a>
-            </div>
-            <div className="hero-note">
-              Visual-first for truth. Voice-first for inquiry.
-            </div>
-          </div>
-
-          <section className="hero-product" aria-label="Sample Lang Drift workspace">
-            <div className="product-chrome">
-              <div>
-                <span className="product-overline">Demo model</span>
-                <strong>Atlas Home Hub</strong>
-              </div>
-              <span className="live-pill">Updated 12m ago</span>
-            </div>
-            <div className="vision-row">
-              <div>
-                <span className="product-overline">Product Vision</span>
-                <div className="vision-value">
-                  73 <span>−18 since Q2</span>
-                </div>
-              </div>
-              <StatusPill tone="review">Needs attention</StatusPill>
-            </div>
-            <div className="curve-wrap">
-              <div className="curve-scale" aria-hidden="true">
-                <span>100</span>
-                <span>75</span>
-                <span>50</span>
-              </div>
-              <DriftCurve height={270} />
-              <div className="curve-dates" aria-hidden="true">
-                <span>Jun</span>
-                <span>Jul</span>
-                <span>Aug</span>
-                <span>Sep</span>
-              </div>
-            </div>
-            <div className="event-preview">
-              <span className="event-dot event-dot-red" />
-              <div>
-                <strong>Authentication behavior changed</strong>
-                <span>No linked decision found · −6 Vision points</span>
-              </div>
-              <StatusPill tone="unexplained">Unexplained</StatusPill>
-            </div>
-          </section>
-        </section>
-
-        <section className="proof-strip" aria-label="Sample workspace summary">
-          <div className="proof-label">
-            <span>What moved</span>
-            <strong>Last 30 days</strong>
-          </div>
-          {proof.map((item) => (
-            <div className="proof-stat" key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </section>
-
-        <section className="editorial-section" id="product">
-          <div className="editorial-intro">
-            <span className="section-kicker">Product Vision</span>
-            <h2>Vision is a compare target, not a forgotten document.</h2>
-          </div>
-          <div className="editorial-copy">
+        <section className="curve-section" id="product">
+          <div className="curve-copy">
+            <span className="section-kicker">Drift graph</span>
+            <h2>See the moment Product Vision moved.</h2>
             <p>
-              Lang Drift keeps Product Vision explicit while the product changes.
-              Decisions, observations, evidence, and versions form a queryable
-              timeline instead of disappearing across tools.
+              One compact view connects the score change to the people, decision,
+              reason, and evidence behind it.
             </p>
           </div>
-          <div className="story-grid">
-            <article className="story-card story-card-dark">
-              <span className="card-index">01</span>
-              <h3>See what moved.</h3>
-              <p>
-                Compare reality to Vision across time. The Drift Curve makes
-                directional change visible before it becomes institutional memory.
-              </p>
-              <div className="mini-chart" aria-hidden="true">
-                <svg viewBox="0 0 300 100" preserveAspectRatio="none">
-                  <title>Decorative product evolution curve</title>
-                  <path
-                    d="M0 18 C60 15 88 22 122 43 S188 52 215 69 S260 70 300 88"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                </svg>
+          <div className="curve-card">
+            <div className="curve-card-top">
+              <div>
+                <span>Product Vision</span>
+                <strong>73%</strong>
               </div>
-            </article>
-            <article className="story-card story-card-gradient">
-              <span className="card-index">02</span>
-              <h3>Know why.</h3>
-              <p>
-                Every important movement can point back to a decision, an
-                observation, or the absence of one.
-              </p>
-              <div className="decision-stack">
+              <div className="curve-summary">
+                <span>14 points · intentional evolution</span>
+                <span>4 points · unexplained drift</span>
+              </div>
+            </div>
+            <CompactDriftChart activeIndex={selectedPoint} data={curve} height={150} />
+            <Scrubber
+              label="Timeline"
+              max={curve.length - 1}
+              onChange={setSelectedPoint}
+              value={selectedPoint}
+            />
+            <div className="active-change">
+              <div>
+                <small>{curve[selectedPoint]?.label ?? 'Aug'} · What happened?</small>
+                <strong>{active.detail}</strong>
+              </div>
+              <span className="active-change-delta">{active.delta}</span>
+              <AnimatedAvatarGroup people={active.people} />
+              <span className={`change-state change-state-${active.status.toLowerCase()}`}>
+                {active.status}
+              </span>
+            </div>
+            <div className="chart-comment">
+              <FigmaComment
+                author="Ana"
+                initials="AN"
+                message="The August movement is partially explained. Pricing was intentional; export scope still needs review."
+                onOpenChange={setCommentOpen}
+                timestamp="Aug 20"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="why-section" id="why">
+          <div className="why-title">
+            <span className="section-kicker">Why did it happen?</span>
+            <h2>Change is useful only when the reason stays attached.</h2>
+          </div>
+          <article className="reason-card">
+            <div className="reason-date">Aug 14</div>
+            <div className="reason-main">
+              <h3>Ana + Carlos changed the pricing strategy.</h3>
+              <dl>
                 <div>
-                  <span>Decision</span>
-                  <strong>Annual-first packaging</strong>
+                  <dt>Reason</dt>
+                  <dd>Enterprise customers required a different packaging model.</dd>
                 </div>
                 <div>
-                  <span>Effect</span>
-                  <strong>Product Vision −9</strong>
+                  <dt>Impact</dt>
+                  <dd>Pricing, onboarding and billing.</dd>
                 </div>
-              </div>
-            </article>
-            <article className="story-card">
-              <span className="card-index">03</span>
-              <h3>Keep people in the story.</h3>
-              <p>
-                Attribution is human-readable: who proposed, approved, and
-                implemented the change — with technical provenance kept deeper.
-              </p>
-              <div className="people-stack">
-                <div className="person">
-                  <span className="avatar avatar-a">AS</span>
-                  <div>
-                    <strong>Ana Silva</strong>
-                    <span>Product · Proposed</span>
-                  </div>
+                <div>
+                  <dt>Decision</dt>
+                  <dd>Recorded ✓</dd>
                 </div>
-                <div className="person">
-                  <span className="avatar avatar-b">CS</span>
-                  <div>
-                    <strong>Carlos Souza</strong>
-                    <span>Engineering · Implemented</span>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
+              </dl>
+            </div>
+            <AnimatedAvatarGroup
+              people={[
+                { initials: 'AN', name: 'Ana', role: 'Product' },
+                { initials: 'CA', name: 'Carlos', role: 'Engineering' }
+              ]}
+              size={32}
+            />
+          </article>
         </section>
 
-        <section className="change-section" id="how">
-          <div className="change-heading">
-            <span className="section-kicker">Drift, explained</span>
-            <h2>Not every change is drift. Not every drift is a failure.</h2>
-            <p>
-              Classification keeps deliberate evolution separate from unexplained
-              divergence and work that still needs review.
-            </p>
+        <section className="features-section">
+          <div className="features-heading">
+            <span className="section-kicker">One model, multiple views</span>
+            <h2>Read the same product evolution from the level you need.</h2>
           </div>
-          <div className="change-list">
-            {events.map((event) => (
-              <article className="change-row" key={event.title}>
-                <span className="change-date">{event.date}</span>
-                <div className="change-body">
-                  <strong>{event.title}</strong>
-                  <span>{event.detail}</span>
-                </div>
-                <strong className="change-delta">{event.delta}</strong>
-                <StatusPill tone={event.tone}>{event.status}</StatusPill>
+          <div className="feature-grid">
+            {[
+              'Vision Baseline',
+              'Drift Graph',
+              'Drift Report',
+              'Drift Timeline',
+              'Drift Events',
+              'Drift by Team',
+              'Drift by Product Area',
+              'Intentional Drift',
+              'Unexplained Drift'
+            ].map((feature, index) => (
+              <article key={feature}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{feature}</strong>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="voice-section" id="voice">
-          <VoicePreview />
-        </section>
-
-        <section className="evidence-section">
-          <div className="evidence-copy">
-            <span className="section-kicker">Evidence lineage</span>
-            <h2>Every conclusion keeps a path back to what was observed.</h2>
-            <p>
-              Screenshots, documents, images, video, 3D, URLs, and structured
-              records become normalized observations with confidence, provenance,
-              freshness, and version history.
-            </p>
-          </div>
-          <div className="evidence-board">
-            <div className="evidence-board-top">
-              <span>Evidence / Atlas Home Hub</span>
-              <span>18 linked items</span>
-            </div>
-            <div className="evidence-columns">
-              <div>
-                <span className="evidence-label">Observation</span>
-                <strong>Guest checkout removed</strong>
-                <p>Captured from web flow · Aug 29 · confidence 0.96</p>
-              </div>
-              <div className="evidence-arrow" aria-hidden="true">
-                →
-              </div>
-              <div>
-                <span className="evidence-label">Derived signal</span>
-                <strong>Authentication scope diverged</strong>
-                <p>Unexplained Drift · linked to v18 → v19</p>
-              </div>
-            </div>
-            <div className="evidence-source-row">
-              <span className="source-icon">PNG</span>
-              <span>checkout-flow-2026-08-29.png</span>
-              <span className="evidence-source-status">Processed</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="closing" id="contact">
+        <section className="voice-band">
           <div>
-            <span className="section-kicker section-kicker-dark">From vision to reality</span>
-            <h2>See how products evolve.</h2>
-          </div>
-          <div className="closing-actions">
+            <span className="section-kicker section-kicker-dark">Voice inquiry</span>
+            <h2>Ask the product history, not the repository.</h2>
             <p>
-              Keep the decisions, people, evidence, and change itself in one
-              understandable product history.
+              Executive Voice queries the same structured Product Vision, Drift,
+              decisions, people, and evidence represented in the visual layer.
             </p>
-            <a className="button button-brand" href="mailto:hello@langdrift.com">
-              Request access
-            </a>
+          </div>
+          <div className="voice-meter-card">
+            <span>Deterministic context loaded</span>
+            <AIContextMeter
+              breakdown={[
+                { label: 'Vision', value: 18 },
+                { label: 'Decisions', value: 27 },
+                { label: 'Evidence', value: 46 }
+              ]}
+              limit={130}
+              used={91}
+            />
+            <button
+              onClick={() => notify('Voice preview opened from structured context', 'success')}
+              type="button"
+            >
+              Ask why Vision moved
+            </button>
           </div>
         </section>
-      </main>
 
-      <footer className="site-footer">
-        <Brand compact tone="dark" />
-        <span>Visual intelligence for what changes.</span>
-        <span>© 2026 Lang Drift</span>
-      </footer>
+        <Pricing2
+          annual={annual}
+          onBillingChange={(value) => {
+            setAnnual(value)
+            notify(`${value ? 'Annual' : 'Monthly'} billing selected`)
+          }}
+          onSelectPlan={choosePlan}
+          plans={plans}
+          selectedPlan={selectedPlan}
+        />
+      </main>
+      <SmoothFooter />
+      <BasicToast
+        message={toast.message}
+        onClose={() => setToast((current) => ({ ...current, open: false }))}
+        open={toast.open}
+        tone={toast.tone}
+      />
     </>
   )
 }
