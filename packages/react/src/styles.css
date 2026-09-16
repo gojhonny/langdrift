@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import './tokens.css';
+@import '@repo/design-system/tokens.css';
 
 @theme inline {
   --color-ld-brand: var(--ld-brand);

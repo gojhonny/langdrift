@@ -21,14 +21,21 @@ export default defineConfig({
         id: '/',
         name: 'Lang Drift',
         short_name: 'Lang Drift',
-        description: 'Executive product intelligence for product evolution and drift.',
+        description: 'Product Vision and Drift intelligence, close at hand.',
         lang: 'en',
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#0B0B0C',
-        theme_color: '#F97316',
-        icons: []
+        background_color: '#0b0b0c',
+        theme_color: '#0b0b0c',
+        icons: [
+          {
+            src: '/icons/pwa.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
+        ]
       },
       workbox: {
         cleanupOutdatedCaches: true,
