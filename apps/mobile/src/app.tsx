@@ -1,6 +1,11 @@
+import { CompactDriftChart } from '@repo/react/vendors/shadcn'
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { Brand } from '@repo/react/ui/brand'
-import { AIMessage, BasicToast } from '@repo/react/vendors/smoothui'
+import {
+  AIMessage,
+  AnimatedAvatarGroup,
+  BasicToast
+} from '@repo/react/vendors/smoothui'
 import { useAtom } from 'jotai'
 import type { FormEvent } from 'react'
 import { useEffect } from 'react'
@@ -14,11 +19,21 @@ import {
 } from './state'
 import { StateLogger } from './state-logger'
 
+const curve = [
+  { label: 'Apr', value: 100 },
+  { label: 'May', value: 95 },
+  { label: 'Jun', value: 95 },
+  { label: 'Jul', value: 85 },
+  { label: 'Aug', value: 73 }
+]
+
 const answers: Record<string, string> = {
-  'What changed?':
-    'Three high-impact movements explain most of the change: pricing strategy −9, authentication −6, and export rules −3.',
-  'Why did Vision move?':
-    'Fourteen points are recorded as intentional evolution. Four points remain unexplained and need review.',
+  'How much did we drift this week?':
+    'In this demo period, Product Vision moved six points. Authentication was the largest contributor; four points were intentional evolution and two remain unexplained.',
+  'Why did Product Vision fall?':
+    'Three high-impact movements explain most of the demo change: pricing strategy −9, authentication −6, and export rules −3.',
+  'Which changes are unexplained?':
+    'Authentication is currently classified as unexplained drift. Export rules remain under review rather than being treated as unexplained by default.',
   'Who changed pricing?':
     'Ana and Carlos changed pricing on Aug 14. The recorded reason was enterprise packaging requirements.'
 }
@@ -41,7 +56,8 @@ export function App() {
   function ask(question: string) {
     const trimmed = question.trim()
     if (!trimmed) return
-    const answer = answers[trimmed] ??
+    const answer =
+      answers[trimmed] ??
       'I can answer from Product Vision, Drift events, decisions, people, and linked evidence. This preview stays inside that structured context.'
     const stamp = Date.now().toString()
     setMessages((current) => [
@@ -74,7 +90,43 @@ export function App() {
         </button>
       </header>
 
-      <section className="conversation" aria-label="LangDrift conversation">
+      <section aria-labelledby="mobile-product-vision" className="mobile-overview">
+        <div className="mobile-overview-head">
+          <div>
+            <span>Atlas Home Hub · Demo</span>
+            <h1 id="mobile-product-vision">Product Vision</h1>
+          </div>
+          <strong>73%</strong>
+        </div>
+        <CompactDriftChart activeIndex={4} data={curve} height={112} />
+        <div className="mobile-status-row">
+          <span className="mobile-status intentional">14 · Intentional Evolution</span>
+          <span className="mobile-status unexplained">4 · Unexplained Drift</span>
+        </div>
+        <article className="mobile-top-change">
+          <div>
+            <small>Top demo movement · Pricing</small>
+            <strong>Pricing strategy changed</strong>
+            <span>Aug 14 · −9 · Intentional Evolution</span>
+          </div>
+          <AnimatedAvatarGroup
+            people={[
+              { initials: 'AN', name: 'Ana', role: 'Product' },
+              { initials: 'CA', name: 'Carlos', role: 'Engineering' }
+            ]}
+            size={26}
+          />
+        </article>
+        <div className="mobile-review-note">
+          <strong>Needs review</strong>
+          <span>Export rules changed · −3 · Unknown / Under Review</span>
+        </div>
+        <small className="mobile-demo-note">
+          Illustrative data only. The final Product Vision formula remains open.
+        </small>
+      </section>
+
+      <section aria-label="LangDrift conversation" className="conversation">
         <div className="conversation-orb">
           <button
             aria-label={voiceState === 'idle' ? 'Start voice inquiry' : 'Stop listening'}
@@ -82,7 +134,10 @@ export function App() {
               const next = voiceState === 'idle' ? 'listening' : 'idle'
               setVoiceState(next)
               setToast({
-                message: next === 'listening' ? 'Listening for a product question' : 'Voice inquiry stopped',
+                message:
+                  next === 'listening'
+                    ? 'Listening for a product question'
+                    : 'Voice inquiry stopped',
                 open: true
               })
             }}
@@ -95,6 +150,7 @@ export function App() {
             />
           </button>
           <span>{voiceState === 'listening' ? 'Listening…' : 'Ask LangDrift'}</span>
+          <small>Voice queries the same structured product truth shown above.</small>
         </div>
 
         <div className="message-list">
@@ -119,7 +175,7 @@ export function App() {
             <input
               id="question"
               onChange={(event) => setInput(event.currentTarget.value)}
-              placeholder="Why did Vision move?"
+              placeholder="Why did Product Vision fall?"
               value={input}
             />
             <button type="submit">Ask</button>
