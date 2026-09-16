@@ -19,15 +19,15 @@ export default defineConfig({
       registerType: 'prompt',
       manifest: {
         id: '/',
-        name: 'Lang Drift',
-        short_name: 'Lang Drift',
-        description: 'Product Vision and Drift intelligence, close at hand.',
+        name: 'LangDrift',
+        short_name: 'LangDrift',
+        description: 'Product Vision and Drift inquiry for leadership.',
         lang: 'en',
         start_url: '/',
         scope: '/',
         display: 'standalone',
-        background_color: '#0b0b0c',
-        theme_color: '#0b0b0c',
+        background_color: '#f7f6f2',
+        theme_color: '#f97316',
         icons: [
           {
             src: '/icons/pwa.svg',
