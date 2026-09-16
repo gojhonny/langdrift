@@ -232,7 +232,10 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
           </div>
           <div className="plan-selection-grid">
             {planOptions.map((plan) => (
-              <GlowHoverCard key={plan.id} selected={Boolean(plan.featured)}>
+              <GlowHoverCard
+                key={plan.id}
+                selected={'featured' in plan ? plan.featured : false}
+              >
                 <article className="plan-selection-card">
                   <div>
                     <span>{plan.note}</span>
