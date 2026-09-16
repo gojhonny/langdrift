@@ -1,11 +1,11 @@
 'use client'
 
 import { ArrowRight } from '@phosphor-icons/react'
-import { ThemeToggle } from '../../ui/theme-toggle'
 import { motion, useReducedMotion } from 'motion/react'
 import type { ReactNode } from 'react'
 
 import { Brand } from '../../ui/brand'
+import { ThemeToggle } from '../../ui/theme-toggle'
 import { ChromaText } from './chroma-text'
 
 export interface Header4Props {
@@ -33,8 +33,9 @@ export function Header4({
         </a>
         <nav aria-label="Primary navigation">
           <a href="#why">Product</a>
-          <a href="#attribution">Attribution</a>
+          <a href="#attribution">How it works</a>
           <a href="#voice">Voice</a>
+          <a href="#report">Reports</a>
           <a href="#pricing">Plans</a>
         </nav>
         <div className="header-four-actions">
