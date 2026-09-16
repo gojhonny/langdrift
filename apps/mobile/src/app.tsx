@@ -38,8 +38,14 @@ function Studio() {
           </div>
           <StatusPill tone="review">Needs attention</StatusPill>
         </div>
-        <div className="mobile-drift-visual" aria-label="Product Vision moved from 91 to 73">
-          <svg viewBox="0 0 320 112" preserveAspectRatio="none" role="img">
+        <div className="mobile-drift-visual">
+          <svg
+            aria-label="Product Vision moved from 91 to 73"
+            preserveAspectRatio="none"
+            role="img"
+            viewBox="0 0 320 112"
+          >
+            <title>Product Vision moved from 91 to 73</title>
             <defs>
               <linearGradient id="mobile-fill" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="var(--ld-brand)" stopOpacity="0.22" />

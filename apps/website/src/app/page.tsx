@@ -88,7 +88,7 @@ export default function WebsitePage() {
             </div>
           </div>
 
-          <div className="hero-product" aria-label="Sample Lang Drift workspace">
+          <section className="hero-product" aria-label="Sample Lang Drift workspace">
             <div className="product-chrome">
               <div>
                 <span className="product-overline">Demo model</span>
@@ -127,7 +127,7 @@ export default function WebsitePage() {
               </div>
               <StatusPill tone="unexplained">Unexplained</StatusPill>
             </div>
-          </div>
+          </section>
         </section>
 
         <section className="proof-strip" aria-label="Sample workspace summary">
@@ -165,6 +165,7 @@ export default function WebsitePage() {
               </p>
               <div className="mini-chart" aria-hidden="true">
                 <svg viewBox="0 0 300 100" preserveAspectRatio="none">
+                  <title>Decorative product evolution curve</title>
                   <path
                     d="M0 18 C60 15 88 22 122 43 S188 52 215 69 S260 70 300 88"
                     fill="none"

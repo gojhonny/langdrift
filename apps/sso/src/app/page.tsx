@@ -33,8 +33,8 @@ export default function SignInPage() {
           </p>
         </div>
         <footer className="auth-footer">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
           <span>© 2026 Lang Drift</span>
         </footer>
       </section>

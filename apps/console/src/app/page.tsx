@@ -5,12 +5,12 @@ import { Metric } from '@repo/react/ui/metric'
 import { StatusPill } from '@repo/react/ui/status-pill'
 
 const nav = [
-  ['Overview', '⌁'],
-  ['Evolution', '↗'],
-  ['Decisions', '◇'],
-  ['People', '◎'],
-  ['Reports', '▤'],
-  ['Evidence', '◫']
+  ['Overview', '⌁', '/overview'],
+  ['Evolution', '↗', '/evolution'],
+  ['Decisions', '◇', '/decisions'],
+  ['People', '◎', '/people'],
+  ['Reports', '▤', '/reports'],
+  ['Evidence', '◫', '/evidence']
 ]
 
 const signals = [
@@ -60,15 +60,19 @@ export default function DashboardPage() {
           <span className="switcher-chevron">⌄</span>
         </button>
         <nav aria-label="Product navigation">
-          {nav.map(([label, icon], index) => (
-            <a className={index === 0 ? 'nav-item nav-item-active' : 'nav-item'} href="#" key={label}>
+          {nav.map(([label, icon, href], index) => (
+            <a
+              className={index === 0 ? 'nav-item nav-item-active' : 'nav-item'}
+              href={href}
+              key={label}
+            >
               <span aria-hidden="true">{icon}</span>
               {label}
             </a>
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <a className="nav-item" href="#">
+          <a className="nav-item" href="/settings">
             <span aria-hidden="true">⚙</span> Settings
           </a>
           <div className="account-row">
@@ -110,7 +114,7 @@ export default function DashboardPage() {
               <h1>Product evolution</h1>
               <p>How reality moved relative to Product Vision.</p>
             </div>
-            <div className="range-control" aria-label="Time range">
+            <div className="range-control" aria-label="Time range" role="group">
               <button type="button">30d</button>
               <button className="range-active" type="button">90d</button>
               <button type="button">1y</button>
@@ -193,7 +197,7 @@ export default function DashboardPage() {
                   <span className="overline">Signals</span>
                   <h2>What needs attention</h2>
                 </div>
-                <a href="#">View all →</a>
+                <a href="/signals">View all →</a>
               </div>
               <div className="signal-list">
                 {signals.map((signal) => (
@@ -249,7 +253,7 @@ export default function DashboardPage() {
               </div>
               <div className="decision-foot">
                 <StatusPill tone="intentional">Intentional Evolution</StatusPill>
-                <a href="#">Open decision →</a>
+                <a href="/decisions/latest">Open decision →</a>
               </div>
             </section>
           </div>
