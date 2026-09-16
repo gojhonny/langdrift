@@ -23,6 +23,7 @@ export const aiAvatars = {
   ana: portrait('#ffd7b8', '#d79a77', '#2a1b18', '#2457d6', '#f97316'),
   carlos: portrait('#c6d8ff', '#b87858', '#171717', '#27364a', '#4f7ee8'),
   jonny: portrait('#ffe2bf', '#c98967', '#231815', '#111827', '#f97316'),
+  lia: portrait('#d8f3e8', '#d8a07c', '#4a2b25', '#136f63', '#f7c59f'),
   marina: portrait('#ead6ff', '#e1a985', '#5a342c', '#7c3aed', '#f0a65a')
 } as const
 
