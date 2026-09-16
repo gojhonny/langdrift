@@ -22,14 +22,14 @@ export function AnimatedAvatarGroup({
   const reduceMotion = useReducedMotion()
 
   return (
-    <div
+    <fieldset
       aria-label={people.map((person) => person.name).join(', ')}
       className="avatar-group"
       onBlur={() => setExpanded(false)}
       onFocus={() => setExpanded(true)}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
-      role="group"
+      style={{ border: 0, margin: 0, minInlineSize: 0, padding: 0 }}
     >
       {people.map((person, index) => (
         <motion.span
@@ -43,6 +43,6 @@ export function AnimatedAvatarGroup({
           {person.initials}
         </motion.span>
       ))}
-    </div>
+    </fieldset>
   )
 }
