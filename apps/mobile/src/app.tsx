@@ -11,7 +11,7 @@ import {
 } from '@repo/react/vendors/smoothui'
 import { useAtom } from 'jotai'
 import type { FormEvent } from 'react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import {
   evolutionOpenAtom,
@@ -45,9 +45,11 @@ const visionPoints: VisionPoint[] = [
       ],
       classification: 'intentional',
       date: 'Jun 28',
+      decision: 'Decision recorded',
       delta: -9,
       id: 'pricing',
       productArea: 'Pricing',
+      reason: 'Enterprise customers required a different packaging model.',
       title: 'Pricing strategy changed'
     }
   },
@@ -58,9 +60,11 @@ const visionPoints: VisionPoint[] = [
       actors: [{ initials: 'CA', name: 'Carlos', team: 'Platform' }],
       classification: 'unexplained',
       date: 'Jul 22',
+      decision: 'Decision not found',
       delta: -6,
       id: 'authentication',
       productArea: 'Authentication',
+      reason: 'No matching product decision was found.',
       title: 'Authentication redesigned'
     }
   },
@@ -71,9 +75,11 @@ const visionPoints: VisionPoint[] = [
       actors: [{ initials: 'AN', name: 'Ana', team: 'Product' }],
       classification: 'review',
       date: 'Aug 20',
+      decision: 'Review pending',
       delta: -3,
       id: 'exports',
       productArea: 'Exports',
+      reason: 'Evidence exists, but the product rationale is still incomplete.',
       title: 'Export behavior changed'
     }
   }
@@ -103,8 +109,15 @@ const intents: VoiceIntent[] = [
 function deterministicAnswer(question: string) {
   const knownIntent = intents.find((intent) => intent.prompt === question)
   return knownIntent?.answer ??
-    'This prototype only resolves known executive intents over Product Vision, Drift events, decisions, people, and linked evidence.'
+    'This preview resolves bounded executive questions over Product Vision, Drift events, decisions, people, and linked evidence.'
 }
+
+const voiceLabels = {
+  idle: 'Ask LangDrift',
+  listening: 'Listening…',
+  querying: 'Checking product history…',
+  speaking: 'Answering…'
+} as const
 
 export function App() {
   const [theme, setTheme] = useAtom(themeAtom)
@@ -113,6 +126,8 @@ export function App() {
   const [voiceState, setVoiceState] = useAtom(voiceStateAtom)
   const [evolutionOpen, setEvolutionOpen] = useAtom(evolutionOpenAtom)
   const [toast, setToast] = useAtom(toastAtom)
+  const messageEndRef = useRef<HTMLDivElement>(null)
+  const hasConversation = messages.length > 1
 
   useEffect(() => {
     const root = document.documentElement
@@ -122,23 +137,55 @@ export function App() {
     themeColor?.setAttribute('content', theme === 'dark' ? '#0b0b0c' : '#f7f6f2')
   }, [theme])
 
+  useEffect(() => {
+    if (!hasConversation) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    messageEndRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' })
+  }, [hasConversation, messages.length])
+
+  useEffect(() => {
+    if (!evolutionOpen) return
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setEvolutionOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [evolutionOpen, setEvolutionOpen])
+
   function ask(question: string) {
     const trimmed = question.trim()
     if (!trimmed) return
+
     const answer = deterministicAnswer(trimmed)
     const stamp = Date.now().toString()
+    setVoiceState('querying')
     setMessages((current) => [
       ...current,
-      { id: `${stamp}-user`, role: 'user', text: trimmed },
-      { id: `${stamp}-assistant`, role: 'assistant', text: answer }
+      { id: `${stamp}-user`, role: 'user', text: trimmed }
     ])
     setInput('')
+
+    window.setTimeout(() => {
+      setMessages((current) => [
+        ...current,
+        { id: `${stamp}-assistant`, role: 'assistant', text: answer }
+      ])
+      setVoiceState('speaking')
+      window.setTimeout(() => setVoiceState('idle'), 700)
+    }, 260)
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     ask(input)
   }
+
+  const orbState =
+    voiceState === 'querying'
+      ? 'thinking'
+      : voiceState === 'speaking'
+        ? 'speaking'
+        : voiceState
 
   return (
     <main className="mobile-shell">
@@ -160,59 +207,46 @@ export function App() {
         </button>
       </header>
 
-      <section aria-labelledby="mobile-product-vision" className="mobile-glance">
-        <div>
-          <span>Product Vision</span>
-          <h1 id="mobile-product-vision">73%</h1>
-          <strong>↓ 6 this week</strong>
+      <section className="mobile-inquiry" aria-labelledby="mobile-product-vision">
+        <div className="mobile-glance">
+          <div>
+            <span>Product Vision</span>
+            <h1 id="mobile-product-vision">73%</h1>
+            <strong>↓ 6 this week</strong>
+          </div>
+          <p>
+            <span>14 intentional</span>
+            <span>4 unexplained</span>
+          </p>
+          <button onClick={() => setEvolutionOpen(true)} type="button">
+            View evolution →
+          </button>
         </div>
-        <p>
-          <span>14 intentional</span>
-          <span>4 unexplained</span>
-        </p>
-        <button
-          onClick={() => setEvolutionOpen((open) => !open)}
-          type="button"
-        >
-          {evolutionOpen ? 'Hide evolution' : 'View evolution →'}
-        </button>
-      </section>
 
-      {evolutionOpen ? (
-        <section aria-label="Product Vision evolution" className="mobile-evolution-detail">
-          <ProductVisionCurve compact data={visionPoints} />
-          <small>Illustrative data · final Product Vision formula remains open.</small>
-        </section>
-      ) : null}
-
-      <section aria-label="LangDrift conversation" className="conversation">
         <div className="conversation-orb">
           <button
-            aria-label={voiceState === 'idle' ? 'Start voice inquiry' : 'Stop listening'}
+            aria-label={voiceState === 'listening' ? 'Stop listening' : 'Start voice inquiry'}
             onClick={() => {
-              const next = voiceState === 'idle' ? 'listening' : 'idle'
+              const next = voiceState === 'listening' ? 'idle' : 'listening'
               setVoiceState(next)
               setToast({
-                message:
-                  next === 'listening'
-                    ? 'Listening for a product question'
-                    : 'Voice inquiry stopped',
+                message: next === 'listening' ? 'Listening for a product question' : 'Voice inquiry stopped',
                 open: true
               })
             }}
             type="button"
           >
             <AgentOrb
-              size="88px"
-              speed={voiceState === 'listening' ? 1.15 : 0.55}
-              state={voiceState === 'listening' ? 'listening' : 'idle'}
+              size="92px"
+              speed={voiceState === 'listening' ? 1.15 : voiceState === 'querying' ? 0.95 : 0.62}
+              state={orbState}
             />
           </button>
-          <span>{voiceState === 'listening' ? 'Listening…' : 'Ask LangDrift'}</span>
+          <span>{voiceLabels[voiceState]}</span>
           <small>“What changed this week?”</small>
         </div>
 
-        <fieldset className="quick-prompts">
+        <fieldset className={`quick-prompts ${hasConversation ? 'quick-prompts-compact' : ''}`}>
           <legend className="ld-visually-hidden">Suggested executive questions</legend>
           {intents.map((intent) => (
             <button key={intent.id} onClick={() => ask(intent.prompt)} type="button">
@@ -220,13 +254,16 @@ export function App() {
             </button>
           ))}
         </fieldset>
+      </section>
 
+      <section aria-label="LangDrift conversation" className="conversation">
         <div className="message-list">
           {messages.map((message) => (
             <AIMessage key={message.id} role={message.role}>
               {message.text}
             </AIMessage>
           ))}
+          <div aria-hidden="true" ref={messageEndRef} />
         </div>
 
         <form className="composer" onSubmit={submit}>
@@ -238,7 +275,7 @@ export function App() {
               placeholder="Why did Product Vision fall?"
               value={input}
             />
-            <button type="submit">Ask</button>
+            <button disabled={voiceState === 'querying'} type="submit">Ask</button>
           </div>
         </form>
       </section>
@@ -247,7 +284,7 @@ export function App() {
         <div>
           <span>Largest movement</span>
           <strong>Pricing strategy changed · −9</strong>
-          <small>Jun 28 · Intentional Evolution</small>
+          <small>Jun 28 · Intentional Evolution · Ana + Carlos</small>
         </div>
         <AnimatedAvatarGroup
           people={[
@@ -256,16 +293,37 @@ export function App() {
           ]}
           size={26}
         />
-        <button
-          onClick={() => {
-            setEvolutionOpen(true)
-            setToast({ message: 'Evolution detail opened', open: true })
-          }}
-          type="button"
-        >
+        <button onClick={() => setEvolutionOpen(true)} type="button">
           View →
         </button>
       </section>
+
+      {evolutionOpen ? (
+        <div className="mobile-sheet-backdrop">
+          <section
+            aria-label="Product Vision evolution"
+            aria-modal="true"
+            className="mobile-evolution-sheet"
+            role="dialog"
+          >
+            <div className="mobile-sheet-handle" />
+            <div className="mobile-sheet-header">
+              <div>
+                <span>Evolution</span>
+                <strong>Product Vision · 91% → 73%</strong>
+              </div>
+              <button aria-label="Close evolution" onClick={() => setEvolutionOpen(false)} type="button">Close</button>
+            </div>
+            <ProductVisionCurve compact data={visionPoints} />
+            <div className="mobile-sheet-event">
+              <strong>Pricing strategy changed · −9</strong>
+              <span>Ana + Carlos · Intentional Evolution</span>
+              <p>Enterprise customers required a different packaging model.</p>
+            </div>
+            <small>Illustrative data · final Product Vision formula remains open.</small>
+          </section>
+        </div>
+      ) : null}
 
       <BasicToast
         message={toast.message}

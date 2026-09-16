@@ -31,9 +31,9 @@
   padding: 0 28px;
 }
 
-.account-flow-progress a {
-  border-top: 1px solid var(--ld-hairline);
-  color: inherit;
+.account-flow-progress-step {
+  border-top: 2px solid var(--ld-hairline);
+  color: var(--ld-muted);
   display: grid;
   font-size: 10px;
   gap: 8px;
@@ -41,10 +41,25 @@
   text-decoration: none;
 }
 
-.account-flow-progress a span {
-  color: var(--ld-muted);
+.account-flow-progress-step span {
+  color: inherit;
   font-family: var(--ld-font-mono);
   font-size: 8px;
+}
+
+.account-flow-progress-step[data-state='completed'] {
+  border-top-color: #16a34a;
+  color: var(--ld-ink);
+}
+
+.account-flow-progress-step[data-state='current'] {
+  border-top-color: #f97316;
+  color: var(--ld-ink);
+  font-weight: 600;
+}
+
+.account-flow-progress-step[data-state='future'] {
+  opacity: .58;
 }
 
 .account-flow-card {
@@ -54,6 +69,10 @@
   margin: 56px auto 0;
   max-width: 980px;
   padding: 0 28px 80px;
+}
+
+.account-flow-card[data-step='sign-in'] {
+  margin-top: 100px;
 }
 
 .account-flow-copy h1 {
@@ -67,6 +86,7 @@
 .account-flow-copy p {
   color: var(--ld-muted);
   line-height: 1.55;
+  max-width: 420px;
 }
 
 .account-flow-form,
@@ -104,27 +124,24 @@
   line-height: 1.45;
 }
 
-.account-flow-form a,
-.account-flow-next {
+.account-flow-form a {
   color: inherit;
   font-size: 10px;
   text-decoration: none;
 }
 
 .account-plan-grid {
+  align-self: start;
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .account-plan-card {
-  background: transparent;
-  border: 0;
   color: inherit;
-  cursor: pointer;
   display: grid;
-  gap: 7px;
-  min-height: 150px;
-  padding: 18px;
+  gap: 10px;
+  min-height: 190px;
+  padding: 22px;
   text-align: left;
   width: 100%;
 }
@@ -138,15 +155,20 @@
 }
 
 .account-plan-card strong {
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 520;
 }
 
 .account-plan-card p {
   color: var(--ld-muted);
-  font-size: 10px;
-  line-height: 1.5;
+  font-size: 11px;
+  line-height: 1.55;
   margin: 0;
+  max-width: 560px;
+}
+
+.account-flow-next {
+  width: 100%;
 }
 
 .setup-preview > div:not(.setup-actions) {
@@ -167,28 +189,23 @@
   font-size: 11px;
 }
 
-.setup-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.setup-actions button {
-  background: transparent;
-  border: 1px solid var(--ld-hairline);
-  border-radius: 8px;
-  color: inherit;
-  cursor: pointer;
-  min-height: 38px;
-  padding: 0 11px;
+.setup-preview .sso-secondary {
+  margin-top: 0;
 }
 
 @media (max-width: 760px) {
+  .account-flow-header-actions { gap: 6px; }
+  .account-flow-header-actions a,
+  .account-flow-header-actions button { font-size: 8px; padding: 7px 9px; }
+
   .account-flow-progress {
+    margin-top: 24px;
     overflow-x: auto;
     padding-inline: 18px;
   }
 
-  .account-flow-card {
+  .account-flow-card,
+  .account-flow-card[data-step='sign-in'] {
     gap: 28px;
     grid-template-columns: 1fr;
     margin-top: 36px;

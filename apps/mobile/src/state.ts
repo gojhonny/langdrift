@@ -7,9 +7,11 @@ export interface ConversationMessage {
   text: string
 }
 
+export type MobileVoiceState = 'idle' | 'listening' | 'querying' | 'speaking'
+
 export const themeAtom = atom<'dark' | 'light'>('light')
 export const inputAtom = atom('')
-export const voiceStateAtom = atom<'idle' | 'listening'>('idle')
+export const voiceStateAtom = atom<MobileVoiceState>('idle')
 export const evolutionOpenAtom = atom(false)
 export const messagesAtom = atom<ConversationMessage[]>([
   {
