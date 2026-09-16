@@ -9,7 +9,7 @@ export interface ConversationMessage {
 
 export type MobileVoiceState = 'idle' | 'listening' | 'querying' | 'speaking'
 
-export const themeAtom = atom<'dark' | 'light'>('light')
+export const themeAtom = atom<'dark' | 'light'>('dark')
 export const inputAtom = atom('')
 export const voiceStateAtom = atom<MobileVoiceState>('idle')
 export const evolutionOpenAtom = atom(false)
