@@ -64,3 +64,17 @@
 .account-dropdown a:hover {
   background: color-mix(in srgb, currentColor 7%, transparent);
 }
+
+.person-avatar {
+  border-radius: 999px;
+  display: inline-flex;
+  height: 36px;
+  overflow: hidden;
+  width: 36px;
+}
+
+.person-avatar img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
