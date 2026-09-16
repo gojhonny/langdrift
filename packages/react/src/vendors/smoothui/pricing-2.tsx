@@ -14,19 +14,21 @@ export interface PricingPlan {
 }
 
 export interface Pricing2Props {
-  annual: boolean
-  onBillingChange: (annual: boolean) => void
+  annual?: boolean
+  onBillingChange?: (annual: boolean) => void
   onSelectPlan: (planId: string) => void
   plans: PricingPlan[]
   selectedPlan?: string
+  showBillingToggle?: boolean
 }
 
 export function Pricing2({
-  annual,
+  annual = false,
   onBillingChange,
   onSelectPlan,
   plans,
-  selectedPlan
+  selectedPlan,
+  showBillingToggle = true
 }: Pricing2Props) {
   const reduceMotion = useReducedMotion()
 
@@ -36,26 +38,32 @@ export function Pricing2({
         <span>Plans</span>
         <h2>Scale visibility with the organization.</h2>
         <p>Role depth and team coverage expand without changing the underlying truth.</p>
-        <fieldset
-          aria-label="Billing period"
-          className="pricing-toggle"
-          style={{ border: 0, minInlineSize: 0 }}
-        >
-          <button
-            data-active={!annual}
-            onClick={() => onBillingChange(false)}
-            type="button"
+        {showBillingToggle ? (
+          <fieldset
+            aria-label="Billing period"
+            className="pricing-toggle"
+            style={{ border: 0, minInlineSize: 0 }}
           >
-            Monthly
-          </button>
-          <button
-            data-active={annual}
-            onClick={() => onBillingChange(true)}
-            type="button"
-          >
-            Annually
-          </button>
-        </fieldset>
+            <button
+              data-active={!annual}
+              onClick={() => onBillingChange?.(false)}
+              type="button"
+            >
+              Monthly
+            </button>
+            <button
+              data-active={annual}
+              onClick={() => onBillingChange?.(true)}
+              type="button"
+            >
+              Annually
+            </button>
+          </fieldset>
+        ) : (
+          <p className="pricing-open-note">
+            Plan names, pricing, limits, and billing cadence remain open decisions.
+          </p>
+        )}
       </div>
       <div className="pricing-two-grid">
         {plans.map((plan, index) => (
@@ -80,7 +88,7 @@ export function Pricing2({
                   ))}
                 </ul>
                 <button onClick={() => onSelectPlan(plan.id)} type="button">
-                  {selectedPlan === plan.id ? 'Selected' : 'Choose plan'}
+                  {selectedPlan === plan.id ? 'Preview selected' : 'Preview plan'}
                 </button>
               </div>
             </GlowHoverCard>
