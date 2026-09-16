@@ -18,7 +18,6 @@ import { useEffect } from 'react'
 
 import {
   accountActionAtom,
-  annualBillingAtom,
   commentOpenAtom,
   selectedPlanAtom,
   selectedPointAtom,
@@ -137,7 +136,6 @@ const attribution = [
 export default function WebsitePage() {
   const [theme, setTheme] = useAtom(themeAtom)
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
-  const [annual, setAnnual] = useAtom(annualBillingAtom)
   const [selectedPlan, setSelectedPlan] = useAtom(selectedPlanAtom)
   const [toast, setToast] = useAtom(toastAtom)
   const setCommentOpen = useSetAtom(commentOpenAtom)
@@ -381,14 +379,10 @@ export default function WebsitePage() {
         </section>
 
         <Pricing2
-          annual={annual}
-          onBillingChange={(value) => {
-            setAnnual(value)
-            notify(`${value ? 'Annual' : 'Monthly'} billing preview selected`)
-          }}
           onSelectPlan={choosePlan}
           plans={plans}
           selectedPlan={selectedPlan}
+          showBillingToggle={false}
         />
       </main>
       <SmoothFooter />
