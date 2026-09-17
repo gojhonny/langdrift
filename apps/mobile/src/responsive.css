@@ -1,0 +1,66 @@
+.mobile-shell,
+.mobile-header,
+.mobile-inquiry,
+.conversation,
+.composer,
+.mobile-largest-movement,
+.mobile-evolution-sheet {
+  min-width: 0;
+}
+
+.mobile-header > div,
+.mobile-glance > div,
+.mobile-largest-movement > div,
+.composer > div,
+.composer input {
+  min-width: 0;
+}
+
+.mobile-largest-movement > div > strong,
+.mobile-largest-movement > div > small,
+.mobile-sheet-event p,
+.mobile-sheet-event strong {
+  overflow-wrap: anywhere;
+}
+
+.mobile-evolution-sheet {
+  overscroll-behavior: contain;
+  width: min(100%, 560px);
+}
+
+@media (max-width: 360px) {
+  .mobile-shell {
+    padding-inline: 12px;
+  }
+
+  .mobile-inquiry {
+    border-radius: 15px;
+    padding-inline: 12px;
+  }
+
+  .mobile-glance h1 {
+    font-size: 48px;
+  }
+
+  .composer > div {
+    grid-template-columns: 1fr;
+  }
+
+  .composer button {
+    min-height: 40px;
+    width: 100%;
+  }
+
+  .mobile-sheet-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .mobile-sheet-header > div {
+    min-width: 0;
+  }
+
+  .mobile-sheet-header strong {
+    overflow-wrap: anywhere;
+  }
+}

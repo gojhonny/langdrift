@@ -8,6 +8,7 @@ import {
   Gear,
   GitBranch,
   House,
+  List,
   Users,
   X
 } from '@phosphor-icons/react'
@@ -18,7 +19,7 @@ import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { Tooltip } from '@repo/react/vendors/shadcn'
 import { usePathname } from 'next/navigation'
 import type { FormEvent, ReactNode } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { StateLogger } from './state-logger'
 import { useConsoleStore } from './state'
@@ -61,18 +62,120 @@ const voiceAnswers: Record<string, string> = {
 
 const voicePrompts = Object.keys(voiceAnswers)
 
+function ConsoleNavigation({
+  mobile = false,
+  onNavigate
+}: {
+  mobile?: boolean
+  onNavigate?: () => void
+}) {
+  const pathname = usePathname()
+  const state = useConsoleStore()
+
+  function chooseProduct(product: string) {
+    state.setSelectedProduct(product)
+    if (mobile) onNavigate?.()
+  }
+
+  return (
+    <>
+      <a
+        aria-label="LangDrift overview"
+        className={mobile ? 'console-mobile-brand' : 'console-brand'}
+        href="/overview"
+        onClick={() => onNavigate?.()}
+      >
+        <Brand compact tone={state.theme === 'dark' ? 'dark' : 'light'} />
+      </a>
+      <div className="product-picker">
+        <button
+          aria-expanded={state.productMenuOpen}
+          className="product-picker-trigger"
+          onClick={state.toggleProductMenu}
+          type="button"
+        >
+          <span className="product-letter">A</span>
+          <span>
+            <small>Product</small>
+            <strong>{state.selectedProduct}</strong>
+          </span>
+          <CaretDown aria-hidden="true" size={12} />
+        </button>
+        {state.productMenuOpen ? (
+          <div className="shell-dropdown product-dropdown">
+            {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map((product) => (
+              <button key={product} onClick={() => chooseProduct(product)} type="button">
+                {product}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <nav aria-label={mobile ? 'Mobile product navigation' : 'Executive product navigation'}>
+        {navigation.map((item) => {
+          const Icon = item.icon
+          return (
+            <a
+              className={pathname === item.href ? 'console-nav-active' : ''}
+              href={item.href}
+              key={item.href}
+              onClick={() => onNavigate?.()}
+            >
+              <Icon aria-hidden="true" size={15} />
+              {item.label}
+            </a>
+          )
+        })}
+      </nav>
+      <a
+        className={pathname === '/settings' ? 'console-nav-active console-settings' : 'console-settings'}
+        href="/settings"
+        onClick={() => onNavigate?.()}
+      >
+        <Gear aria-hidden="true" size={15} /> Settings
+      </a>
+    </>
+  )
+}
+
 export function ConsoleShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const state = useConsoleStore()
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [voiceQuestion, setVoiceQuestion] = useState('')
   const [voiceAnswer, setVoiceAnswer] = useState('')
   const [voiceOrbState, setVoiceOrbState] = useState<AgentOrbState>('idle')
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null)
+  const mobileMenuCloseRef = useRef<HTMLButtonElement>(null)
   const currentSection = sectionLabels[pathname] ?? 'Overview'
 
   useEffect(() => {
     document.documentElement.dataset.theme = state.theme
     document.documentElement.style.colorScheme = state.theme
   }, [state.theme])
+
+  useEffect(() => {
+    setMobileNavOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileNavOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    mobileMenuCloseRef.current?.focus()
+
+    function handleKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMobileNavOpen(false)
+    }
+
+    window.addEventListener('keydown', handleKeydown)
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+      document.body.style.overflow = previousOverflow
+      mobileMenuTriggerRef.current?.focus()
+    }
+  }, [mobileNavOpen])
 
   function switchTheme() {
     state.setTheme(state.theme === 'light' ? 'dark' : 'light')
@@ -103,69 +206,58 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
     <main className="console-shell">
       <StateLogger />
       <aside className="console-sidebar">
-        <a aria-label="LangDrift overview" className="console-brand" href="/overview">
-          <Brand compact tone={state.theme === 'dark' ? 'dark' : 'light'} />
-        </a>
-        <div className="product-picker">
-          <button
-            aria-expanded={state.productMenuOpen}
-            className="product-picker-trigger"
-            onClick={state.toggleProductMenu}
-            type="button"
-          >
-            <span className="product-letter">A</span>
-            <span>
-              <small>Product</small>
-              <strong>{state.selectedProduct}</strong>
-            </span>
-            <CaretDown aria-hidden="true" size={12} />
-          </button>
-          {state.productMenuOpen ? (
-            <div className="shell-dropdown product-dropdown">
-              {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map((product) => (
-                <button
-                  key={product}
-                  onClick={() => state.setSelectedProduct(product)}
-                  type="button"
-                >
-                  {product}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <nav aria-label="Executive product navigation">
-          {navigation.map((item) => {
-            const Icon = item.icon
-            return (
-              <a
-                className={pathname === item.href ? 'console-nav-active' : ''}
-                href={item.href}
-                key={item.href}
-              >
-                <Icon aria-hidden="true" size={15} />
-                {item.label}
-              </a>
-            )
-          })}
-        </nav>
-        <a
-          className={pathname === '/settings' ? 'console-nav-active console-settings' : 'console-settings'}
-          href="/settings"
-        >
-          <Gear aria-hidden="true" size={15} /> Settings
-        </a>
+        <ConsoleNavigation />
       </aside>
+
+      {mobileNavOpen ? (
+        <div className="console-mobile-nav-layer">
+          <button
+            aria-label="Close navigation"
+            className="console-mobile-nav-backdrop"
+            onClick={() => setMobileNavOpen(false)}
+            type="button"
+          />
+          <aside
+            aria-label="Mobile navigation"
+            className="console-mobile-drawer"
+            id="console-mobile-navigation"
+          >
+            <button
+              aria-label="Close navigation"
+              className="console-mobile-nav-close"
+              onClick={() => setMobileNavOpen(false)}
+              ref={mobileMenuCloseRef}
+              type="button"
+            >
+              <X aria-hidden="true" size={17} />
+            </button>
+            <ConsoleNavigation mobile onNavigate={() => setMobileNavOpen(false)} />
+          </aside>
+        </div>
+      ) : null}
 
       <section className="console-workspace">
         <header className="console-topbar">
-          <nav className="console-breadcrumb" aria-label="Breadcrumb">
-            <span>LangDrift</span>
-            <span>/</span>
-            <strong>{state.selectedProduct}</strong>
-            <span>/</span>
-            <strong>{currentSection}</strong>
-          </nav>
+          <div className="console-topbar-leading">
+            <button
+              aria-controls="console-mobile-navigation"
+              aria-expanded={mobileNavOpen}
+              aria-label="Open navigation"
+              className="console-mobile-menu"
+              onClick={() => setMobileNavOpen(true)}
+              ref={mobileMenuTriggerRef}
+              type="button"
+            >
+              <List aria-hidden="true" size={18} />
+            </button>
+            <nav className="console-breadcrumb" aria-label="Breadcrumb">
+              <span>LangDrift</span>
+              <span>/</span>
+              <strong>{state.selectedProduct}</strong>
+              <span>/</span>
+              <strong>{currentSection}</strong>
+            </nav>
+          </div>
           <div className="console-actions">
             <Tooltip content="Ask LangDrift">
               <button
@@ -177,11 +269,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 <AgentOrb size="28px" speed={0.72} state="idle" />
               </button>
             </Tooltip>
-            <button
-              aria-label="Notifications"
-              onClick={state.toggleNotifications}
-              type="button"
-            >
+            <button aria-label="Notifications" onClick={state.toggleNotifications} type="button">
               <Bell aria-hidden="true" />
             </button>
             <ThemeToggle onToggle={switchTheme} theme={state.theme} />
@@ -236,7 +324,11 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 onClick={() => setVoiceOrbState(voiceOrbState === 'listening' ? 'idle' : 'listening')}
                 type="button"
               >
-                <AgentOrb size="88px" speed={voiceOrbState === 'listening' ? 1.1 : 0.72} state={voiceOrbState} />
+                <AgentOrb
+                  size="88px"
+                  speed={voiceOrbState === 'listening' ? 1.1 : 0.72}
+                  state={voiceOrbState}
+                />
               </button>
             </div>
             <span>{voiceOrbState === 'listening' ? 'Listening' : 'Executive inquiry'}</span>
