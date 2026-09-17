@@ -1,13 +1,82 @@
-@media (min-width: 761px) {
+/* Header alignment contract: share the same horizontal geometry as the hero below. */
+.header-four-nav {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  margin-inline: auto;
+  max-width: 1240px;
+  padding-inline: 28px;
+  width: 100%;
+}
+
+.header-four-nav > a {
+  justify-self: start;
+}
+
+.header-four-nav nav {
+  justify-self: center;
+}
+
+.header-four-actions {
+  justify-self: end;
+}
+
+@media (max-width: 900px) and (min-width: 761px) {
+  .header-four-nav nav {
+    gap: 20px;
+  }
+
+  .header-four-actions {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 760px) {
   .header-four-nav {
-    max-width: none;
-    padding-inline: 24px;
+    grid-template-areas:
+      'brand actions'
+      'nav nav';
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 18px;
+    row-gap: 14px;
+  }
+
+  .header-four-nav > a {
+    grid-area: brand;
+    justify-self: start;
+  }
+
+  .header-four-nav nav {
+    gap: 18px;
+    grid-area: nav;
+    justify-content: center;
+    justify-self: stretch;
     width: 100%;
   }
 
-  .header-four-nav > a { justify-self: start; }
-  .header-four-nav nav { justify-self: center; }
-  .header-four-actions { justify-self: end; }
+  .header-four-actions {
+    grid-area: actions;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 360px) {
+  .header-four-nav {
+    grid-template-areas:
+      'brand'
+      'actions'
+      'nav';
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  .header-four-actions {
+    justify-self: end;
+  }
+
+  .header-four-nav nav {
+    gap: 14px;
+    justify-content: space-between;
+  }
 }
 
 .reason-card {
