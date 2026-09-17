@@ -5,6 +5,7 @@ import '@repo/react/styles.css'
 import './globals.css'
 import './product-experience.css'
 import './polish.css'
+import './responsive.css'
 import { ConsoleShell } from './console-shell'
 
 export const metadata: Metadata = {
