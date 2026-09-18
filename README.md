@@ -20,8 +20,8 @@ packages/
   react/     Shared Lang Drift design foundation and future React primitives
 cli/
   drift      POSIX-shell repository CLI
-.agents/     Harness artifact structure (placeholders only for now)
-.audits/     Harness audit structure (placeholder only for now)
+.agents/     Code-design rules, template prompts, artifact templates, and skills
+.audits/     Reserved for future audit checkers
 assets/
   images/    Shared image assets
 ```

@@ -11,7 +11,7 @@ case "$kind" in
   adr|rule|spec)
     dir="$DRIFT_PROJECT_ROOT/.agents/${kind}s"
     [ "$kind" != adr ] || dir="$DRIFT_PROJECT_ROOT/.agents/adr"
-    [ "$kind" != rule ] || dir="$DRIFT_PROJECT_ROOT/.agents/rules"
+    [ "$kind" != rule ] || dir="$DRIFT_PROJECT_ROOT/.agents/rule"
     [ "$kind" != spec ] || dir="$DRIFT_PROJECT_ROOT/.agents/specs"
     mkdir -p "$dir"
     next=$(find "$dir" -maxdepth 1 -type f -name '[0-9][0-9][0-9][0-9]-*' 2>/dev/null | wc -l | tr -d ' ')

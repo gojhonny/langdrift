@@ -172,6 +172,14 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - Jotai owns Website/SSO/Mobile state; Zustand owns Console state.
 - Important state changes remain inspectable through the existing state loggers.
 
+## Harness bootstrap
+
+The harness is being rebuilt from selected Amarelo reference files. Code-design rules live under `.agents/rule/code-design/`; template prompts live under `.agents/prompts/`; local skills live under `.agents/skills/`.
+
+Copied rules, templates, and skills retain their source content for deliberate iteration. Their Amarelo-specific references and pending workflow dependencies still need adaptation. They do not establish new LangDrift product decisions or trigger a repository-wide code-conformance migration.
+
+`.audits/` currently contains only a placeholder. `drift check` commands remain unavailable until their actual checker files are introduced.
+
 ## Verification
 
 A frontend change is not repository-ready until it passes:
@@ -181,5 +189,4 @@ drift doctor --ci
 Biome lint
 typecheck
 build
-surface/product audits where applicable
 ```
