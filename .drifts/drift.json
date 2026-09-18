@@ -1,0 +1,50 @@
+{
+  "$schema": "schemas/drift.schema.json",
+  "schemaVersion": "0.1",
+  "project": "langdrift",
+  "initiatives": [
+    {
+      "id": "website-hero",
+      "title": "Explore Product Vision movement through connected graph nodes",
+      "status": "planned",
+      "owner": {
+        "id": "gojhonny",
+        "type": "human"
+      },
+      "artifacts": [
+        {
+          "id": "PRD-0001",
+          "type": "prd",
+          "path": ".agents/workflow/prds/0001-website-hero.prd.md"
+        },
+        {
+          "id": "HANDOFF-0001",
+          "type": "handoff",
+          "path": ".agents/workflow/handoffs/sinapsi-node-selection/handoff.md"
+        }
+      ],
+      "pendingDependencies": [
+        "Iterate website-relevant engineering rules and review the draft product/interaction contract.",
+        "Sinapsi owner implements and publishes a compatible semantic graph and selection API.",
+        "Review behavioral spec and integration plan before implementing the website change."
+      ]
+    }
+  ],
+  "activity": [
+    {
+      "id": "ACT-0001",
+      "initiativeId": "website-hero",
+      "actor": {
+        "id": "codex",
+        "type": "agent"
+      },
+      "action": "artifact.drafted",
+      "occurredAt": "2026-09-18T17:35:33.673Z",
+      "summary": "Drafted the website hero PRD and Sinapsi handoff. No website implementation, npm publication, human approval, or Obsidian/MCP connection is recorded.",
+      "artifactIds": [
+        "PRD-0001",
+        "HANDOFF-0001"
+      ]
+    }
+  ]
+}

@@ -19,6 +19,6 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: ./cli/drift doctor --ci
       - run: pnpm exec biome lint . --files-ignore-unknown=true
-      # Audit steps return as the harness is rebuilt; .audits/ is intentionally empty.
+      # Audit steps return when real checkers exist; .audits/checks/ is a placeholder.
       - run: pnpm typecheck
       - run: pnpm build

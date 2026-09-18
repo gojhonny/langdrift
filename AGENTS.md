@@ -178,7 +178,11 @@ The harness is being rebuilt from selected Amarelo reference files. Code-design 
 
 Copied rules, templates, and skills retain their source content for deliberate iteration. Their Amarelo-specific references and pending workflow dependencies still need adaptation. They do not establish new LangDrift product decisions or trigger a repository-wide code-conformance migration.
 
-`.audits/` currently contains only a placeholder. `drift check` commands remain unavailable until their actual checker files are introduced.
+Planning now lives in `.agents/workflow/`; see [.agents/README.md](.agents/README.md) for artifact ownership and [.agents/workflow/README.md](.agents/workflow/README.md) for the draft lifecycle. Status belongs inside documents, not status-named folders. Retained templates are centralized in `.agents/templates/`.
+
+`.drifts/` holds the draft portable JSON integration contract and future Obsidian/MCP placeholders. It references factory documents but does not own their approval status. No integration is running.
+
+`.audits/` has placeholder folders for checks and evidence. `drift check` targets `.audits/checks/` and remains unavailable until real checker files are introduced. Website implementation and Sinapsi publication are outside this scaffold.
 
 ## Verification
 
