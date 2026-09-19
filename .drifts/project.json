@@ -1,0 +1,30 @@
+{
+  "id": "string:id",
+  "account_id": "string:account_id",
+  "name": "string:name",
+  "description": "string:description",
+  "status": "enum:status",
+  "teams": "string[]:team_id",
+  "users": [{
+    "id": "string:user_id",
+    "name": "string:user_name",
+    "avatar": "string:user_avatar",
+    "bio": "string:user_bio",
+    "email": "string:user_email",
+    "role": "enum:user_role",
+    "permissions": "enum[]:user_permission",
+    "score": {
+      "impact": "number:user_score_impact",
+      "drifts": "string[]:user_score_drift_id"
+    },
+    "created_at": "string:user_created_at",
+    "updated_at": "string:user_updated_at"
+  }],
+  "roles": "enum[]:role",
+  "permissions": "enum[]:permission",
+  "settings": {},
+  "logs": "string[]:log_id",
+  "events": "enum[]:event",
+  "created_at": "string:created_at",
+  "updated_at": "string:updated_at"
+}
