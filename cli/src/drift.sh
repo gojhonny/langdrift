@@ -16,8 +16,8 @@ drift_usage_error() {
 
 drift_run_check() {
   drift_check_name=$1
-  drift_check_path="$PROJECT_ROOT/.audits/$drift_check_name.audit.sh"
-  [ -f "$drift_check_path" ] || drift_die "Audit checker is not implemented yet: .audits/$drift_check_name.audit.sh"
+  drift_check_path="$PROJECT_ROOT/.audits/checks/$drift_check_name.audit.sh"
+  [ -f "$drift_check_path" ] || drift_die "Audit checker is not implemented yet: .audits/checks/$drift_check_name.audit.sh"
   /bin/sh "$drift_check_path"
 }
 

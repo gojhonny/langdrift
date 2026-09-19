@@ -20,13 +20,16 @@ packages/
   react/     Shared Lang Drift design foundation and future React primitives
 cli/
   drift      POSIX-shell repository CLI
-.agents/     Code-design rules, template prompts, artifact templates, and skills
-.audits/     Reserved for future audit checkers
+.agents/     Agentic factory: rules, skills, templates, and workflow planning
+.audits/     Audit checks and verification evidence (placeholders)
+.drifts/     Portable initiative JSON and future integration contracts
 assets/
   images/    Shared image assets
 ```
 
 There is intentionally no backend application in this scaffold.
+
+The [factory harness](.agents/README.md), [planning workflow](.agents/workflow/README.md), and [Drift Manifest](.drifts/README.md) are drafts. Obsidian/MCP adapters and autonomous delivery are not implemented.
 
 ## Design foundations
 

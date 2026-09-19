@@ -10,9 +10,9 @@ slug=$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; 
 case "$kind" in
   adr|rule|spec)
     dir="$DRIFT_PROJECT_ROOT/.agents/${kind}s"
-    [ "$kind" != adr ] || dir="$DRIFT_PROJECT_ROOT/.agents/adr"
+    [ "$kind" != adr ] || dir="$DRIFT_PROJECT_ROOT/.agents/workflow/adrs"
     [ "$kind" != rule ] || dir="$DRIFT_PROJECT_ROOT/.agents/rule"
-    [ "$kind" != spec ] || dir="$DRIFT_PROJECT_ROOT/.agents/specs"
+    [ "$kind" != spec ] || dir="$DRIFT_PROJECT_ROOT/.agents/workflow/specs"
     mkdir -p "$dir"
     next=$(find "$dir" -maxdepth 1 -type f -name '[0-9][0-9][0-9][0-9]-*' 2>/dev/null | wc -l | tr -d ' ')
     next=$((next + 1))
