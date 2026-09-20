@@ -46,7 +46,16 @@ export interface VisionPoint {
 export interface ProductVisionCurveProps {
   compact?: boolean
   data: VisionPoint[]
+  formatNumber?: (value: number) => string
+  labels?: {
+    classifications?: Partial<Record<DriftClassification, string>>
+    describeEvent?: (event: VisionDriftEvent) => string
+    product?: string
+    summary?: string
+    why?: string
+  }
   onSelectEvent?: (event: VisionDriftEvent) => void
+  pointPadding?: number
   selectedEventId?: string
 }
 
@@ -65,9 +74,12 @@ const classificationColors: Record<DriftClassification, string> = {
 }
 
 function fallbackReason(classification: DriftClassification) {
-  if (classification === 'intentional') return 'A recorded product decision explains this movement.'
-  if (classification === 'unexplained') return 'No matching product decision was found.'
-  if (classification === 'review') return 'The product rationale is still under review.'
+  if (classification === 'intentional')
+    return 'A recorded product decision explains this movement.'
+  if (classification === 'unexplained')
+    return 'No matching product decision was found.'
+  if (classification === 'review')
+    return 'The product rationale is still under review.'
   return 'This point establishes the recorded Vision reference.'
 }
 
@@ -81,7 +93,10 @@ function fallbackDecision(classification: DriftClassification) {
 export function ProductVisionCurve({
   compact = false,
   data,
+  formatNumber = String,
+  labels,
   onSelectEvent,
+  pointPadding = 0,
   selectedEventId
 }: ProductVisionCurveProps) {
   const reduceMotion = useReducedMotion()
@@ -89,25 +104,51 @@ export function ProductVisionCurve({
     data.find((point) => point.event?.id === selectedEventId)?.event ??
     [...data].reverse().find((point) => point.event)?.event
   const lastPoint = data[data.length - 1]
+  const eventClassifications = {
+    ...classificationLabels,
+    ...labels?.classifications
+  }
+  const formatDelta = (value: number) =>
+    `${value > 0 ? '+' : ''}${formatNumber(value)}`
 
   return (
-    <section className={`product-vision-curve ${compact ? 'product-vision-curve-compact' : ''}`}>
+    <section
+      className={`product-vision-curve ${compact ? 'product-vision-curve-compact' : ''}`}
+    >
       <p className="ld-visually-hidden">
-        Product Vision moves from {data[0]?.value ?? 0}% to {lastPoint?.value ?? 0}%.
-        Important events are available as keyboard-focusable points on the curve.
+        {labels?.summary ??
+          `Product Vision moves from ${data[0]?.value ?? 0}% to ${lastPoint?.value ?? 0}%. Important events are available as keyboard-focusable points on the curve.`}
       </p>
-      <div className="product-vision-chart" style={{ height: compact ? 128 : 230 }}>
+      <div
+        className="product-vision-chart"
+        style={{ height: compact ? 128 : 250 }}
+      >
         <ResponsiveContainer height="100%" width="100%">
-          <LineChart data={data} margin={{ bottom: 4, left: -20, right: 24, top: 34 }}>
-            <CartesianGrid stroke="var(--ld-chart-grid, #e8e8e8)" vertical={false} />
-            <XAxis axisLine={false} dataKey="label" fontSize={10} tickLine={false} />
+          <LineChart
+            data={data}
+            margin={{ bottom: 4, left: 0, right: 24, top: compact ? 16 : 54 }}
+          >
+            <CartesianGrid
+              stroke="var(--ld-chart-grid, #e8e8e8)"
+              vertical={false}
+            />
+            <XAxis
+              axisLine={false}
+              dataKey="label"
+              fontSize={compact ? 10 : 12}
+              padding={{ left: pointPadding }}
+              tickLine={false}
+              tick={{ fill: 'var(--ld-muted, #71717a)' }}
+            />
             <YAxis
               axisLine={false}
               domain={['dataMin - 4', 'dataMax + 4']}
-              fontSize={10}
+              fontSize={compact ? 10 : 12}
               tickCount={4}
+              tick={{ fill: 'var(--ld-muted, #71717a)' }}
+              tickFormatter={formatNumber}
               tickLine={false}
-              width={34}
+              width={40}
             />
             <Line
               dataKey="value"
@@ -143,13 +184,19 @@ export function ProductVisionCurve({
                 return (
                   // biome-ignore lint/a11y/useSemanticElements: Recharts dot markers render inside SVG and cannot contain an HTML button.
                   <g
-                    aria-label={`${event.title}, ${event.delta} Product Vision, ${classificationLabels[event.classification]}, ${event.date}`}
+                    aria-label={
+                      labels?.describeEvent?.(event) ??
+                      `${event.title}, ${event.delta} Product Vision, ${eventClassifications[event.classification]}, ${event.date}`
+                    }
                     className="product-vision-event-dot"
                     key={event.id}
                     onClick={activate}
                     onFocus={activate}
                     onKeyDown={(keyboardEvent) => {
-                      if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+                      if (
+                        keyboardEvent.key === 'Enter' ||
+                        keyboardEvent.key === ' '
+                      ) {
                         keyboardEvent.preventDefault()
                         activate()
                       }
@@ -178,7 +225,10 @@ export function ProductVisionCurve({
                         {actor?.src ? (
                           <>
                             <defs>
-                              <clipPath id={avatarClipId} clipPathUnits="userSpaceOnUse">
+                              <clipPath
+                                id={avatarClipId}
+                                clipPathUnits="userSpaceOnUse"
+                              >
                                 <circle cx={cx} cy={cy - 24} r={10} />
                               </clipPath>
                             </defs>
@@ -206,12 +256,12 @@ export function ProductVisionCurve({
                         )}
                         <text
                           fill="var(--ld-muted, #71717a)"
-                          fontSize="8"
+                          fontSize="11"
                           textAnchor="middle"
                           x={cx}
                           y={cy - 41}
                         >
-                          {event.delta > 0 ? '+' : ''}{event.delta}
+                          {formatDelta(event.delta)}
                         </text>
                       </>
                     ) : null}
@@ -230,27 +280,40 @@ export function ProductVisionCurve({
       {selectedEvent && !compact ? (
         <div aria-live="polite" className="product-vision-event-detail">
           <div className="product-vision-event-copy">
-            <span>{selectedEvent.date} · {selectedEvent.productArea ?? 'Product'}</span>
+            <span>
+              {selectedEvent.date} ·{' '}
+              {selectedEvent.productArea ?? labels?.product ?? 'Product'}
+            </span>
             <strong>{selectedEvent.title}</strong>
             <small>
               {selectedEvent.actors.map((actor) => actor.name).join(' + ')}
-              {selectedEvent.actors[0]?.team ? ` · ${selectedEvent.actors[0].team}` : ''}
+              {selectedEvent.actors[0]?.team
+                ? ` · ${selectedEvent.actors[0].team}`
+                : ''}
             </small>
             <p>
-              <b>Why?</b>{' '}
-              {selectedEvent.reason ?? fallbackReason(selectedEvent.classification)}
+              <b>{labels?.why ?? 'Why?'}</b>{' '}
+              {selectedEvent.reason ??
+                fallbackReason(selectedEvent.classification)}
             </p>
             <small className="product-vision-decision">
-              {selectedEvent.decision ?? fallbackDecision(selectedEvent.classification)}
+              {selectedEvent.decision ??
+                fallbackDecision(selectedEvent.classification)}
               {selectedEvent.actionHref && selectedEvent.actionLabel ? (
-                <> · <a href={selectedEvent.actionHref}>{selectedEvent.actionLabel} →</a></>
+                <>
+                  {' '}
+                  ·{' '}
+                  <a href={selectedEvent.actionHref}>
+                    {selectedEvent.actionLabel} →
+                  </a>
+                </>
               ) : null}
             </small>
           </div>
           <div className="product-vision-event-status">
-            <b>{selectedEvent.delta > 0 ? '+' : ''}{selectedEvent.delta}</b>
+            <b>{formatDelta(selectedEvent.delta)}</b>
             <span data-classification={selectedEvent.classification}>
-              {classificationLabels[selectedEvent.classification]}
+              {eventClassifications[selectedEvent.classification]}
             </span>
           </div>
         </div>
