@@ -21,6 +21,7 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
+    "@langdrift/setup#typecheck": { "dependsOn": ["^build"], "outputs": [] },
     "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
     "dev": { "cache": false, "persistent": true },
     "start": { "dependsOn": ["build"], "cache": false, "persistent": true },

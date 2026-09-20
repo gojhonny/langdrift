@@ -18,6 +18,8 @@ apps/
   mobile/    Installed PWA experience
 packages/
   react/     Shared Lang Drift design foundation and future React primitives
+  sdk/       Deterministic Vision → Loop → Evidence protocol (public package)
+  langdrift/ Explicit customer setup backed by the SDK (public package)
 cli/
   drift      POSIX-shell repository CLI
 .agents/     Agentic factory: rules, skills, templates, and workflow planning
@@ -28,6 +30,13 @@ assets/
 ```
 
 There is intentionally no backend application in this scaffold.
+
+The core packages implement protocol version 1 with schemas, Markdown parsing,
+reference resolution, Records and validated Drift envelopes. The public setup
+creates a minimal `.drifts` scaffold in customer projects. See the
+[SDK](packages/sdk/README.md), [setup package](packages/langdrift/README.md) and
+[release guide](docs/packages-release.md). These packages are unpublished; the
+repository's existing scaffold folders have not been migrated.
 
 The [factory harness](.agents/README.md), [planning workflow](.agents/workflow/README.md), and [Drift Manifest](.drifts/README.md) are drafts. Obsidian/MCP adapters and autonomous delivery are not implemented.
 
