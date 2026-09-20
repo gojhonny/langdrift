@@ -269,7 +269,7 @@
 
 .website-drawer-buttons a { min-block-size: 44px; }
 
-@media (max-width: 1359px) {
+@media (max-width: 1439px) {
   .website-header-inner { grid-template-columns: minmax(0, 1fr) auto; }
   .website-desktop-nav { display: none; }
   .website-navigation-trigger { display: inline-flex; }

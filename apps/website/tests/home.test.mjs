@@ -28,6 +28,7 @@ for (const [path, locale] of routes) {
       const { response, html } = await readPage(path)
       assert.equal(response.status, 200)
       assert.match(html, new RegExp(`<html[^>]*lang="${locale}"`))
+      assert.match(html, /<html[^>]*data-theme="dark"/)
       assert.equal([...html.matchAll(/<h1\b/g)].length, 1)
       assert.match(html, /rel="canonical"/)
       for (const [, language] of routes) {
@@ -37,6 +38,8 @@ for (const [path, locale] of routes) {
         'why',
         'movement-details',
         'attribution',
+        'integrations',
+        'executive-review',
         'voice',
         'pricing',
         'early-access'
@@ -52,6 +55,33 @@ for (const [path, locale] of routes) {
       assert.ok(
         html.indexOf('id="movement-details"') < html.indexOf('id="attribution"')
       )
+      assert.ok(html.indexOf('id="intent"') < html.indexOf('id="integrations"'))
+      assert.ok(
+        html.indexOf('id="integrations"') <
+          html.indexOf('id="executive-review"')
+      )
+      assert.ok(
+        html.indexOf('id="executive-review"') < html.indexOf('id="voice"')
+      )
+      const review = html
+        .split('id="executive-review"')[1]
+        ?.split('id="voice"')[0]
+      assert.ok(review, 'Executive review is available before hydration')
+      assert.equal([...review.matchAll(/data-review-question=/g)].length, 3)
+      assert.equal([...review.matchAll(/data-review-event=/g)].length, 12)
+      assert.equal([...review.matchAll(/data-review-item=/g)].length, 4)
+      for (const [metric, value] of [
+        ['events', '12'],
+        ['targets', '3'],
+        ['reviews', '4']
+      ]) {
+        assert.match(
+          review,
+          new RegExp(
+            `data-review-metric="${metric}"><span[^>]*>${value}</span>`
+          )
+        )
+      }
       const scenarioSection = html.split('id="why"')[1]?.split('</section>')[0]
       assert.ok(
         scenarioSection,
@@ -78,6 +108,7 @@ for (const [path, locale] of routes) {
       const header = html.match(/<header\b[^>]*>[\s\S]*?<\/header>/)?.[0]
       assert.ok(header, 'Header is present in the server response')
       assert.ok([...header.matchAll(/href="[^"]*#early-access"/g)].length >= 2)
+      assert.match(header, /href="[^"]*#integrations"/)
       assert.doesNotMatch(header, /href="[^"]*\/(?:sign-in|sign-up)"/)
       assert.doesNotMatch(
         html,
@@ -112,7 +143,14 @@ test('Localization reaches the existing sections below the hero', async () => {
   )
   assert.ok(introductions.every(Boolean))
   assert.equal(new Set(introductions).size, routes.length)
-  for (const id of ['movement-details', 'attribution', 'voice', 'pricing']) {
+  for (const id of [
+    'movement-details',
+    'attribution',
+    'integrations',
+    'executive-review',
+    'voice',
+    'pricing'
+  ]) {
     const headings = pages.map((html) => {
       const section = html.split(`id="${id}"`)[1]?.split('</section>')[0]
       const heading = section?.match(/<h2\b[^>]*>([\s\S]*?)<\/h2>/)?.[1]

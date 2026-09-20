@@ -1,5 +1,10 @@
 import { atom } from 'jotai'
 import type { Atom, createStore } from 'jotai/vanilla'
+import {
+  atomWithStorage,
+  createJSONStorage,
+  unstable_withStorageValidator as withStorageValidator
+} from 'jotai/utils'
 
 export type WebsiteTheme = 'dark' | 'light'
 
@@ -9,8 +14,38 @@ export interface WebsiteToast {
   tone: 'info' | 'success' | 'warning'
 }
 
-export const themeAtom = atom<WebsiteTheme>('light')
-export const selectedPointAtom = atom(2)
+interface HeroSelection {
+  pointIndex: number
+  source: 'initial' | 'chart' | 'graph'
+}
+
+export const themeAtom = atomWithStorage<WebsiteTheme>(
+  'langdrift.website.theme',
+  'dark',
+  withStorageValidator(
+    (value): value is WebsiteTheme => value === 'dark' || value === 'light'
+  )(createJSONStorage())
+)
+export const heroSelectionAtom = atom<HeroSelection>({
+  pointIndex: 2,
+  source: 'initial'
+})
+// Existing chart/detail consumers keep their numeric interface. Origin belongs
+// to the same committed selection, so presentation never owns another copy.
+export const selectedPointAtom = atom(
+  (get) => get(heroSelectionAtom).pointIndex,
+  (get, set, pointIndex: number) => {
+    if (get(heroSelectionAtom).pointIndex === pointIndex) return
+    set(heroSelectionAtom, { pointIndex, source: 'chart' })
+  }
+)
+export const selectHeroGraphPointAtom = atom(
+  null,
+  (get, set, pointIndex: number) => {
+    if (get(heroSelectionAtom).pointIndex === pointIndex) return
+    set(heroSelectionAtom, { pointIndex, source: 'graph' })
+  }
+)
 export const toastAtom = atom<WebsiteToast>({
   message: '',
   open: false,
@@ -18,6 +53,7 @@ export const toastAtom = atom<WebsiteToast>({
 })
 
 export const websiteAtoms: Record<string, Atom<unknown>> = {
+  heroSelectionAtom,
   selectedPointAtom,
   themeAtom,
   toastAtom
@@ -38,9 +74,7 @@ function snapshot(value: unknown): unknown {
   return value
 }
 
-export function subscribeToWebsiteAtoms(
-  store: ReturnType<typeof createStore>
-) {
+export function subscribeToWebsiteAtoms(store: ReturnType<typeof createStore>) {
   const state = new Map<string, unknown>()
   const stops = Object.entries(websiteAtoms).map(([name, target]) => {
     let previous = store.get(target)
