@@ -1,9 +1,11 @@
 {
-  "name": "@repo/design-system",
+  "name": "@repo/design",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
