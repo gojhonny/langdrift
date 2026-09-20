@@ -35,7 +35,7 @@ Current maturity:
 - no canonical backend contract yet;
 - Product Vision values are illustrative demo data;
 - Product Vision formula remains open;
-- Pricing, limits, billing cadence, and exact Voice entitlements remain open;
+- Website offers are a 15-day free trial (starting at access activation), Plus and Pro; prices, limits, billing cadence and exact entitlements remain open;
 - auth provider and exact auth methods remain open.
 
 Do not present an open implementation choice as canonical product policy.
@@ -100,6 +100,7 @@ Public acquisition and explanation.
 - First viewport must explain Product Vision movement visually.
 - Marketing language uses founder outcomes, not internal route taxonomy.
 - Technical infrastructure remains secondary.
+- Early access currently validates email locally only; it sends no requests and does not create a lead, account, subscription or trial.
 
 ### Console / Dashboard
 
@@ -169,12 +170,12 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - No backend/API workspace until architecture explicitly introduces one.
 - Do not silently turn design references into copied branding.
 - Preserve light/dark support and accessibility across surfaces.
-- Jotai owns Website/SSO/Mobile state; Zustand owns Console state.
-- Important state changes remain inspectable through the existing state loggers.
+- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Console state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website local state and forms](apps/website/docs/local-state-and-forms.md); this does not require migrating other surfaces.
+- Important shared state changes remain inspectable through the existing state loggers. Keep email and other entered form data out of atoms, logs, URLs, analytics and browser persistence.
 
 ## Harness bootstrap
 
-The harness is being rebuilt from selected Amarelo reference files. Code-design rules live under `.agents/rule/code-design/`; template prompts live under `.agents/prompts/`; local skills live under `.agents/skills/`.
+The harness is being rebuilt from selected Amarelo reference files. Code-design rules live under `.agents/rules/code-design/`; template prompts live under `.agents/prompts/`; local skills live under `.agents/skills/`.
 
 Copied rules, templates, and skills retain their source content for deliberate iteration. Their Amarelo-specific references and pending workflow dependencies still need adaptation. They do not establish new LangDrift product decisions or trigger a repository-wide code-conformance migration.
 

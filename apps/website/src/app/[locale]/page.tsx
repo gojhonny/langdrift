@@ -1,4 +1,3 @@
-import { LogoMark } from '@repo/react/ui/brand'
 import { AnimatedAvatarGroup, ChromaText } from '@repo/react/vendors/smoothui'
 import { hasLocale } from 'next-intl'
 import {
@@ -15,6 +14,10 @@ import { HeroSinapsiGraph } from '../../components/hero-sinapsi-graph'
 import { SelectedMovement } from '../../components/selected-movement'
 import { VisionLoopEvidenceSection } from '../../components/vision-loop-evidence-section'
 import { WebsiteHeader } from '../../components/website-header'
+import { WebsiteFooter } from '../../components/website-footer'
+import { RoiSection } from '../../components/roi-section'
+import { FaqSection } from '../../components/faq-section'
+import { EarlyAccessSection } from '../../components/early-access/section'
 import { routing } from '../../i18n/routing'
 import { getHeroPoints } from '../../lib/hero-demo-data'
 import { StateLogger } from '../state-logger'
@@ -160,9 +163,6 @@ export default async function WebsitePage({
           </div>
         </section>
 
-        <IntegrationsSection locale={locale} />
-        <ExecutiveReviewSection locale={locale} />
-
         <section className="voice-band" id="voice">
           <VoicePreview />
         </section>
@@ -207,35 +207,13 @@ export default async function WebsitePage({
           </article>
         </section>
 
-        <section className="packaging-section" id="pricing">
-          <span className="section-kicker">{t('pricing.kicker')}</span>
-          <h2>{t('pricing.title')}</h2>
-          <p>{t('pricing.description')}</p>
-          <a className="smooth-primary-button" href="#early-access">
-            {t('pricing.cta')}
-          </a>
-          <div className="website-early-access" id="early-access">
-            <h3>{t('earlyAccess.title')}</h3>
-            <p>{t('earlyAccess.description')}</p>
-          </div>
-        </section>
+        <IntegrationsSection locale={locale} />
+        <ExecutiveReviewSection locale={locale} />
+        <RoiSection locale={locale} />
+        <FaqSection locale={locale} />
+        <EarlyAccessSection locale={locale} source="landing" />
       </main>
-      <footer className="smooth-footer website-footer">
-        <div className="smooth-footer-main">
-          <span className="website-footer-brand">
-            <LogoMark size={23} />
-            LangDrift
-          </span>
-          <p>{t('footer.description')}</p>
-          <a href="mailto:hello@langdrift.com">
-            hello@langdrift.com <span aria-hidden="true">↗</span>
-          </a>
-        </div>
-        <div className="smooth-footer-bottom">
-          <span>© 2026 LangDrift</span>
-          <span>{t('footer.tagline')}</span>
-        </div>
-      </footer>
+      <WebsiteFooter locale={locale} />
     </>
   )
 }

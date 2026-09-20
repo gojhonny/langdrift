@@ -23,11 +23,11 @@ const languages = [
 let pendingDrawerFocusLocale: (typeof languages)[number]['locale'] | undefined
 
 const sections = [
-  { label: 'product', hash: 'why' },
-  { label: 'attribution', hash: 'attribution' },
-  { label: 'integrations', hash: 'integrations' },
-  { label: 'voice', hash: 'voice' },
-  { label: 'plans', hash: 'pricing' }
+  { label: 'product', href: '/#why' },
+  { label: 'attribution', href: '/#attribution' },
+  { label: 'integrations', href: '/#integrations' },
+  { label: 'voice', href: '/#voice' },
+  { label: 'plans', href: '/pricing' }
 ] as const
 
 function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
@@ -215,7 +215,7 @@ export function WebsiteHeader() {
           <Brand className="website-header-brand" compact tone={theme} />
           <nav aria-label={t('navigation')} className="website-desktop-nav">
             {sections.map((section) => (
-              <Link href={`/#${section.hash}`} key={section.hash}>
+              <Link href={section.href} key={section.label}>
                 {t(section.label)}
               </Link>
             ))}
@@ -289,11 +289,7 @@ export function WebsiteHeader() {
         </div>
         <nav aria-label={t('navigation')} className="website-drawer-nav">
           {sections.map((section) => (
-            <Link
-              href={`/#${section.hash}`}
-              key={section.hash}
-              onClick={closeDrawer}
-            >
+            <Link href={section.href} key={section.label} onClick={closeDrawer}>
               {t(section.label)}
             </Link>
           ))}
