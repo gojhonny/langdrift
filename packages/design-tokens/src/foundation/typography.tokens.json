@@ -1,0 +1,14 @@
+{
+  "font-product": {
+    "$type": "fontFamily",
+    "$value": "Geist, Inter, ui-sans-serif, system-ui, sans-serif"
+  },
+  "font-editorial": {
+    "$type": "fontFamily",
+    "$value": "Inter, ui-sans-serif, system-ui, sans-serif"
+  },
+  "font-mono": {
+    "$type": "fontFamily",
+    "$value": "'Geist Mono', SFMono-Regular, Consolas, monospace"
+  }
+}

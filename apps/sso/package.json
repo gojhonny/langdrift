@@ -9,7 +9,7 @@
     "start": "next start --hostname 0.0.0.0 --port 3002"
   },
   "dependencies": {
-    "@repo/design-system": "workspace:*",
+    "@repo/design-tokens": "workspace:*",
     "@repo/react": "workspace:*",
     "@workos-inc/authkit-nextjs": "^4.3.1",
     "@workos-inc/node": "^10.9.0",

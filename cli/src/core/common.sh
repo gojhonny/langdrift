@@ -20,10 +20,13 @@ drift_project_version() {
   sed -n 's/^[[:space:]]*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$DRIFT_PROJECT_ROOT/package.json" | head -n 1
 }
 
-drift_find_env_templates() {
-  find "$DRIFT_PROJECT_ROOT" \
-    \( -name .git -o -name node_modules -o -name .next -o -name .turbo -o -name dist -o -name coverage -o -name .audits \) -prune \
-    -o -type f \( -name .env.example -o -name .env.template \) -print
+drift_find_env_contracts() {
+  git -C "$DRIFT_PROJECT_ROOT" ls-files --cached --others --exclude-standard | while IFS= read -r path; do
+    case "$path" in
+      .agents/*|.drifts/*) continue ;;
+      */.env.development|.env.development) printf '%s/%s\n' "$DRIFT_PROJECT_ROOT" "$path" ;;
+    esac
+  done
 }
 
 drift_git_checkout() {

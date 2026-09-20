@@ -3,11 +3,21 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, staging]
 
 jobs:
   repository:
     runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_DASHBOARD_URL: http://localhost:3001
+      NEXT_PUBLIC_DOCS_URL: http://localhost:3004
+      NEXT_PUBLIC_SSO_URL: http://localhost:3002
+      NEXT_PUBLIC_SITE_URL: http://localhost:3004
+      NEXT_PUBLIC_WEBSITE_URL: http://localhost:3000
+      NEXT_PUBLIC_WORKOS_REDIRECT_URI: http://localhost:3002/callback
+      EMAIL_SERVICE_URL: http://localhost:8080
+      EMAIL_SERVICE_API_KEY: ci-placeholder
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -17,14 +27,54 @@ jobs:
         with:
           node-version: 24
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      # Repository scaffolds are being restructured; check application code directly.
+      - run: ./cli/drift doctor --ci
       - run: pnpm lint
       - run: pnpm typecheck
-      # The website fails fast on missing NEXT_PUBLIC_* (see
-      # apps/docs/content/decisions/2026-09-20-environment-variables-fail-fast.mdx).
-      # Build-safe values are set here explicitly instead of weakening that check.
       - run: pnpm build
-        env:
-          NEXT_PUBLIC_DOCS_URL: http://localhost:3004
-          NEXT_PUBLIC_SSO_URL: http://localhost:3002
-      - run: ./cli/drift verify packages
+
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: go build ./...
+      - run: go vet ./...
+      - name: Require gofmt
+        run: |
+          files=$(gofmt -l packages/events messaging/runtime/early-access)
+          [ -z "$files" ] || { printf '%s\n' "$files"; exit 1; }
+
+  containers:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - apps/website/Dockerfile
+          - apps/dashboard/Dockerfile
+          - apps/sso/Dockerfile
+          - apps/docs/Dockerfile
+          - messaging/infrastructure/broker/nats/Dockerfile
+          - messaging/infrastructure/storage/minio/Dockerfile
+          - messaging/runtime/early-access/microservices/email-store/Dockerfile
+          - messaging/runtime/early-access/microservices/email-sender/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Supply safe image build configuration
+        run: |
+          cat > /tmp/langdrift-build.env <<'ENV'
+          NEXT_TELEMETRY_DISABLED=1
+          NEXT_PUBLIC_DASHBOARD_URL=http://localhost:3001
+          NEXT_PUBLIC_DOCS_URL=http://localhost:3004
+          NEXT_PUBLIC_SSO_URL=http://localhost:3002
+          NEXT_PUBLIC_SITE_URL=http://localhost:3004
+          NEXT_PUBLIC_WEBSITE_URL=http://localhost:3000
+          NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3002/callback
+          EMAIL_SERVICE_URL=http://localhost:8080
+          EMAIL_SERVICE_API_KEY=ci-placeholder
+          ENV
+      - name: Build image
+        run: docker build --secret id=build_env,src=/tmp/langdrift-build.env --file '${{ matrix.dockerfile }}' .

@@ -15,7 +15,9 @@
     "WORKOS_API_KEY",
     "WORKOS_CLIENT_ID",
     "WORKOS_COOKIE_PASSWORD",
-    "XDG_CACHE_HOME"
+    "XDG_CACHE_HOME",
+    "EMAIL_SERVICE_URL",
+    "EMAIL_SERVICE_API_KEY"
   ],
   "tasks": {
     "build": {
@@ -23,12 +25,39 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
-    "@repo/react#build": { "dependsOn": ["^build"], "outputs": [] },
-    "@repo/design-system#build": { "dependsOn": ["^build"], "outputs": [] },
-    "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
-    "@langdrift/setup#typecheck": { "dependsOn": ["^build"], "outputs": [] },
-    "dev": { "dependsOn": ["^build"], "cache": false, "persistent": true },
-    "start": { "dependsOn": ["build"], "cache": false, "persistent": true },
-    "clean": { "cache": false }
-  }
+    "@repo/react#build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "@repo/design-tokens#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "outputs": []
+    },
+    "@langdrift/setup#typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "public/_pagefind/**"]
+    }
+  },
+  "globalEnv": ["NEXT_PUBLIC_*", "VERCEL_ENV"]
 }

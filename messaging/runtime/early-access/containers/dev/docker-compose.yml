@@ -1,0 +1,68 @@
+name: langdrift-early-access-dev
+services:
+  nats:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/infrastructure/broker/nats/Dockerfile
+    env_file:
+      - ../../../../infrastructure/broker/nats/.env.development
+      - ../../../../infrastructure/broker/nats/.env
+    volumes:
+      - jetstream:/data/jetstream
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, 'http://localhost:8222/healthz?js-enabled-only=true']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  minio:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/infrastructure/storage/minio/Dockerfile
+    env_file:
+      - ../../../../infrastructure/storage/minio/.env.development
+      - ../../../../infrastructure/storage/minio/.env
+    volumes:
+      - contacts:/data
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, http://localhost:9000/minio/health/ready]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  email-store:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/microservices/email-store/Dockerfile
+    env_file:
+      - ../../microservices/email-store/.env.development
+      - ../../microservices/email-store/.env
+    ports:
+      - '127.0.0.1:8080:8080'
+    depends_on:
+      nats:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://localhost:8080/healthz]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    stop_grace_period: 12s
+  email-sender:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/microservices/email-sender/Dockerfile
+    env_file:
+      - ../../microservices/email-sender/.env.development
+      - ../../microservices/email-sender/.env
+    depends_on:
+      email-store:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 12s
+volumes:
+  jetstream:
+  contacts:

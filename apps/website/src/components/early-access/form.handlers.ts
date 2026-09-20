@@ -1,3 +1,5 @@
+import type { WebsiteLocale } from '../../i18n/routing'
+import { submitEarlyAccess } from './form.action'
 import {
   mapEmailBlur,
   mapEmailChange,
@@ -28,11 +30,13 @@ export function handleEmailBlur(
   })
 }
 
-export function handleFormSubmit(
+export async function handleFormSubmit(
   email: string,
   update: StateUpdater<EarlyAccessFormState>,
-  focusEmail: () => void
-): void {
+  focusEmail: () => void,
+  locale: WebsiteLocale,
+  source: 'landing' | 'pricing'
+): Promise<void> {
   const result = earlyAccessFormSchema.safeParse({ email })
   if (!result.success) {
     const error = getEmailError(email) ?? 'emailInvalid'
@@ -46,4 +50,23 @@ export function handleFormSubmit(
   update((draft) => {
     mapValidationPassed(draft, result.data.email)
   })
+
+  try {
+    const response = await submitEarlyAccess({ ...result.data, locale, source })
+    update((draft) => {
+      draft.status = response.ok ? 'success' : 'error'
+      if (response.ok) draft.email = ''
+      if (!response.ok && response.code === 'VALIDATION_ERROR') {
+        const error = response.fieldErrors?.email
+        draft.fieldErrors.email =
+          error === 'emailRequired' || error === 'emailTooLong'
+            ? error
+            : 'emailInvalid'
+      }
+    })
+  } catch {
+    update((draft) => {
+      draft.status = 'error'
+    })
+  }
 }

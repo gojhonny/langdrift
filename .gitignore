@@ -14,7 +14,7 @@ coverage/
 .env
 .env.local
 .env.*.local
-!.env.template
+!.env.development
 
 # logs
 *.log

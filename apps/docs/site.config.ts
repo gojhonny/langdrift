@@ -14,9 +14,10 @@ function normalizeSiteUrl(value: string) {
   return url.origin
 }
 
-const siteUrl = normalizeSiteUrl(
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3004'
-)
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
+if (!configuredSiteUrl)
+  throw new Error('Missing required environment variable: NEXT_PUBLIC_SITE_URL')
+const siteUrl = normalizeSiteUrl(configuredSiteUrl)
 const isHttps = siteUrl.startsWith('https://')
 const searchIndexable =
   process.env.NODE_ENV === 'production' &&
