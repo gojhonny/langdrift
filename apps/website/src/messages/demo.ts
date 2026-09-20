@@ -11,11 +11,15 @@ const en = {
   },
   graph: {
     title: 'Connected context',
-    description: 'Explore the relationships behind product movement.',
+    description:
+      'Select a node to see who was involved and follow the movement on the chart.',
     instructions:
-      'Hover or select a node to explore its connections. With a keyboard, use the Up and Down arrow keys to move between nodes and Enter or Space to select.',
+      'Hover to highlight direct connections. Click a node to open its card and select the related chart movement. With a keyboard, use Up and Down to navigate, Enter or Space to open, and Escape to close.',
     summary:
-      'An illustrative network connects Vision, a target, the product loop, decisions, and evidence. Its selection is independent of the Product Vision chart.',
+      'Forty-eight context nodes connect four illustrative movements: the vision baseline, pricing, authentication, and exports. Each node opens attribution and selects its related event on the Product Vision curve. The network rotates slowly.',
+    closeLabel: 'Close movement details',
+    cardDescription: '{context} · {movement}',
+    cardBadge: '{delta} pts',
     loading: 'Loading connected context…',
     fallback:
       'The interactive graph is temporarily unavailable. Vision, decisions, and evidence remain connected in this illustrative example.'
@@ -86,7 +90,31 @@ const en = {
     intent: 'Intent',
     release: 'Release',
     research: 'Research',
-    authentication: 'Identity'
+    authentication: 'Authentication',
+    outcomes: 'Outcomes',
+    principles: 'Principles',
+    alignment: 'Alignment',
+    roadmap: 'Roadmap',
+    segmentation: 'Segments',
+    packaging: 'Packaging',
+    enterprise: 'Enterprise',
+    commercial: 'Commercial',
+    discovery: 'Discovery',
+    approval: 'Approval',
+    tradeoff: 'Trade-off',
+    identity: 'Identity',
+    session: 'Session',
+    permissions: 'Permissions',
+    security: 'Security',
+    account: 'Account',
+    roles: 'Roles',
+    migration: 'Migration',
+    verification: 'Verification',
+    formats: 'Formats',
+    reports: 'Reports',
+    retention: 'Retention',
+    workflow: 'Workflow',
+    compatibility: 'Compatibility'
   }
 }
 
@@ -103,11 +131,15 @@ const ptBR: typeof en = {
   },
   graph: {
     title: 'Contexto conectado',
-    description: 'Explore as relações por trás do movimento do produto.',
+    description:
+      'Selecione um nó para ver quem participou e acompanhar o movimento no gráfico.',
     instructions:
-      'Passe o ponteiro ou selecione um nó para explorar suas conexões. No teclado, use as setas para cima e para baixo para navegar pelos nós e Enter ou Espaço para selecionar.',
+      'Passe o ponteiro para destacar as conexões diretas. Clique em um nó para abrir seu card e selecionar o movimento relacionado no gráfico. No teclado, use as setas para cima e para baixo para navegar, Enter ou Espaço para abrir e Escape para fechar.',
     summary:
-      'Uma rede ilustrativa conecta a visão, um objetivo, o ciclo do produto, decisões e evidências. Sua seleção é independente do gráfico de Product Vision.',
+      'Quarenta e oito nós de contexto conectam quatro movimentos ilustrativos: a referência da visão, preços, autenticação e exportações. Cada nó mostra os participantes e seleciona o evento relacionado na curva de Product Vision. A rede gira lentamente.',
+    closeLabel: 'Fechar detalhes do movimento',
+    cardDescription: '{context} · {movement}',
+    cardBadge: '{delta} pts',
     loading: 'Carregando o contexto conectado…',
     fallback:
       'O grafo interativo está temporariamente indisponível. Visão, decisões e evidências permanecem conectadas neste exemplo ilustrativo.'
@@ -182,7 +214,31 @@ const ptBR: typeof en = {
     intent: 'Intenção',
     release: 'Versão',
     research: 'Pesquisa',
-    authentication: 'Identidade'
+    authentication: 'Autenticação',
+    outcomes: 'Resultados',
+    principles: 'Princípios',
+    alignment: 'Alinhamento',
+    roadmap: 'Direção',
+    segmentation: 'Segmentos',
+    packaging: 'Oferta',
+    enterprise: 'Corporativo',
+    commercial: 'Comercial',
+    discovery: 'Descoberta',
+    approval: 'Aprovação',
+    tradeoff: 'Escolha',
+    identity: 'Identidade',
+    session: 'Sessão',
+    permissions: 'Permissões',
+    security: 'Segurança',
+    account: 'Conta',
+    roles: 'Papéis',
+    migration: 'Migração',
+    verification: 'Verificação',
+    formats: 'Formatos',
+    reports: 'Relatórios',
+    retention: 'Retenção',
+    workflow: 'Fluxo',
+    compatibility: 'Compatibilidade'
   }
 }
 
@@ -199,11 +255,14 @@ const zhHant: typeof en = {
   },
   graph: {
     title: '相連的脈絡',
-    description: '探索產品變化背後的關聯。',
+    description: '選取節點，了解參與者並在圖表中追蹤相關變動。',
     instructions:
-      '將游標移至節點或選取節點，以探索其連結。使用鍵盤時，以上下方向鍵切換節點，並按 Enter 或空白鍵選取。',
+      '將游標移至節點可突顯直接連結。點選節點可開啟卡片，並選取圖表中的相關變動。使用上下方向鍵導覽、Enter 或空白鍵開啟，以及 Escape 關閉。',
     summary:
-      '此示意網絡連結願景、目標、產品循環、決策與證據。節點選取與 Product Vision 圖表互相獨立。',
+      '四十八個脈絡節點連結四項示範變動：願景基準、定價、身分驗證與匯出。每個節點都會顯示參與者，並選取 Product Vision 曲線上的相關事件。網絡緩慢旋轉。',
+    closeLabel: '關閉變動詳情',
+    cardDescription: '{context} · {movement}',
+    cardBadge: '{delta} 點',
     loading: '正在載入相連的脈絡…',
     fallback:
       '互動關聯圖暫時無法使用。在此示意範例中，願景、決策與證據仍彼此相連。'
@@ -271,7 +330,31 @@ const zhHant: typeof en = {
     intent: '意圖',
     release: '發布',
     research: '研究',
-    authentication: '身分'
+    authentication: '身分驗證',
+    outcomes: '成果',
+    principles: '原則',
+    alignment: '對齊',
+    roadmap: '路線圖',
+    segmentation: '分群',
+    packaging: '方案組合',
+    enterprise: '企業',
+    commercial: '商務',
+    discovery: '探索',
+    approval: '核准',
+    tradeoff: '取捨',
+    identity: '身分',
+    session: '工作階段',
+    permissions: '權限',
+    security: '安全',
+    account: '帳戶',
+    roles: '角色',
+    migration: '遷移',
+    verification: '驗證',
+    formats: '格式',
+    reports: '報告',
+    retention: '保留',
+    workflow: '流程',
+    compatibility: '相容性'
   }
 }
 
@@ -288,11 +371,14 @@ const ja: typeof en = {
   },
   graph: {
     title: 'つながる背景',
-    description: 'プロダクトの変化の背景にあるつながりを探る。',
+    description: 'ノードを選ぶと、関係者を確認し、グラフで変化を追えます。',
     instructions:
-      'ノードにポインターを合わせるか選択すると、つながりを確認できます。キーボードでは上下の矢印キーでノードを移動し、Enter またはスペースキーで選択します。',
+      'ポインターを合わせると直接のつながりが強調されます。ノードをクリックするとカードが開き、グラフの関連する変化が選択されます。上下の矢印キーで移動し、Enter またはスペースキーで開き、Escape で閉じます。',
     summary:
-      'このデモのネットワークは、ビジョン、目標、プロダクトのループ、意思決定、根拠をつないでいます。ノードの選択は Product Vision のグラフと独立しています。',
+      '48の背景ノードが、ビジョンの基準、価格設定、認証、エクスポートという4つのデモの変化をつないでいます。各ノードで関係者を確認し、Product Vision 曲線の関連イベントを選択できます。ネットワークはゆっくり回転します。',
+    closeLabel: '変化の詳細を閉じる',
+    cardDescription: '{context} · {movement}',
+    cardBadge: '{delta} ポイント',
     loading: 'つながる背景を読み込み中…',
     fallback:
       'インタラクティブなネットワークは一時的に利用できません。このデモでは、ビジョン、意思決定、根拠が互いにつながっています。'
@@ -367,7 +453,31 @@ const ja: typeof en = {
     intent: '意図',
     release: 'リリース',
     research: '調査',
-    authentication: '認証'
+    authentication: '認証',
+    outcomes: '成果',
+    principles: '原則',
+    alignment: '整合',
+    roadmap: 'ロードマップ',
+    segmentation: '顧客層',
+    packaging: 'プラン構成',
+    enterprise: '企業',
+    commercial: '商務',
+    discovery: '探索',
+    approval: '承認',
+    tradeoff: '取捨選択',
+    identity: '識別',
+    session: 'セッション',
+    permissions: '権限',
+    security: '安全性',
+    account: 'アカウント',
+    roles: '役割',
+    migration: '移行',
+    verification: '検証',
+    formats: '形式',
+    reports: 'レポート',
+    retention: '保持',
+    workflow: 'フロー',
+    compatibility: '互換性'
   }
 }
 

@@ -95,15 +95,17 @@
 }
 
 .hero-graph-region {
+  align-self: start;
   display: flex;
   flex-direction: column;
+  gap: 14px;
   min-width: 0;
-  padding-block: 20px 0;
   position: relative;
 }
 
 .hero-graph-heading {
-  padding-inline: 20px;
+  max-width: 580px;
+  padding: 0;
 }
 
 .hero-graph-heading h2 {
@@ -121,18 +123,28 @@
 }
 
 .hero-graph-stage {
-  flex: 1;
-  min-height: 520px;
+  aspect-ratio: 6 / 5;
+  flex: none;
+  max-width: 580px;
   position: relative;
+  width: 100%;
 }
 
 .hero-sinapsi {
+  --sinapsi-presentation-background: #ffffff;
+  --sinapsi-presentation-border: #dddddf;
+  --sinapsi-presentation-shadow: 0 16px 50px #17171720;
   display: block;
   height: 100%;
   inset: 0;
-  min-height: 520px;
   position: absolute;
   width: 100%;
+}
+
+:root[data-theme='dark'] .hero-sinapsi {
+  --sinapsi-presentation-background: #151517;
+  --sinapsi-presentation-border: #343438;
+  --sinapsi-presentation-shadow: 0 20px 58px #00000070;
 }
 
 .hero-graph-stage:not([data-status='ready']) .hero-sinapsi {
@@ -165,16 +177,8 @@
     text-align: left;
   }
 
-  .hero-graph-region {
-    padding-top: 0;
-  }
-
-  .hero-graph-heading {
-    padding-inline: 0;
-  }
-
-  .hero-graph-stage,
-  .hero-sinapsi {
-    min-height: 320px;
+  .hero-graph-stage {
+    aspect-ratio: 1;
+    min-height: 280px;
   }
 }

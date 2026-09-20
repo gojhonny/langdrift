@@ -76,9 +76,6 @@ export default async function WebsitePage({
             className="website-hero-demo"
             aria-describedby="hero-demo-caption hero-demo-summary"
           >
-            <span className="website-demo-disclosure">
-              {t('hero.illustrative')}
-            </span>
             <div className="website-demo-grid">
               <HeroChart />
               <HeroSinapsiGraph />
