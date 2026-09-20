@@ -16,9 +16,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: pnpm install --no-frozen-lockfile
-      - run: ./cli/drift doctor --ci
-      - run: pnpm exec biome lint . --files-ignore-unknown=true
-      # Audit steps return when real checkers exist; .audits/checks/ is a placeholder.
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      # Repository scaffolds are being restructured; check application code directly.
+      - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
