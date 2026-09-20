@@ -1,0 +1,35 @@
+{
+  "vision": {
+    "prd": {
+      "directives": {
+        "id": "string:prd_id",
+        "title": "string:prd_title",
+        "description": "string:prd_description",
+        "research": "string[]:prd_research_id",
+        "owners": "string[]:prd_owner_id",
+        "deciders": "string[]:prd_decider_id",
+        "created_at": "string:prd_created_at",
+        "updated_at": "string:prd_updated_at"
+      }
+    },
+    "research": {
+      "directives": {
+        "questions": {
+          "question": "string:question",
+          "answers": "string[]:answer_id"
+        },
+        "answers": {
+          "question": "string:research_question_id",
+          "answer": "string[]:research_answer"
+        },
+        "status": "enum:research_status",
+        "owners": "string[]:research_owner_id",
+        "created": "string:research_created",
+        "updated": "string:research_updated"
+      }
+    },
+    "context": {
+      "directives": {}
+    }
+  }
+}

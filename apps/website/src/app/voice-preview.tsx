@@ -1,13 +1,21 @@
 'use client'
 
 import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
+import { useFormatter, useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 
 import './voice-preview.css'
 
-const scriptedStates: AgentOrbState[] = ['listening', 'thinking', 'speaking', 'idle']
+const scriptedStates: AgentOrbState[] = [
+  'listening',
+  'thinking',
+  'speaking',
+  'idle'
+]
 
 export function VoicePreview() {
+  const t = useTranslations('home.voice')
+  const format = useFormatter()
   const [state, setState] = useState<AgentOrbState>('idle')
   const [showAnswer, setShowAnswer] = useState(false)
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([])
@@ -38,29 +46,30 @@ export function VoicePreview() {
         <AgentOrb size="190px" speed={0.82} state={state} />
       </div>
       <div className="voice-copy">
-        <span className="section-kicker section-kicker-dark">Executive voice</span>
-        <h2>Ask the same model you can see.</h2>
-        <p>
-          Voice sits on top of structured Product Vision, Drift, attribution, and
-          evidence — not a separate chat history.
-        </p>
+        <span className="section-kicker section-kicker-dark">
+          {t('kicker')}
+        </span>
+        <h2>{t('title')}</h2>
+        <p>{t('description')}</p>
         <div className="voice-question">
-          <span>“Why did Product Vision move this week?”</span>
+          <span>{t('question')}</span>
           <button type="button" onClick={runPreview}>
-            Ask this question
+            {t('ask')}
           </button>
         </div>
-        <div aria-live="polite" className={`voice-answer ${showAnswer ? 'voice-answer-visible' : ''}`}>
+        <output className="website-sr-only">{t(state)}</output>
+        <div
+          aria-live="polite"
+          className={`voice-answer ${showAnswer ? 'voice-answer-visible' : ''}`}
+          aria-hidden={!showAnswer}
+        >
           <div className="voice-answer-stat">
-            <strong>−9 pts</strong>
-            <span>largest move</span>
+            <strong>{t('points', { count: format.number(-9) })}</strong>
+            <span>{t('largest')}</span>
           </div>
           <div>
-            <strong>Pricing direction changed.</strong>
-            <p>
-              Proposed by Product, approved in the Q3 review, classified as
-              Intentional Evolution with linked evidence.
-            </p>
+            <strong>{t('answerTitle')}</strong>
+            <p>{t('answer')}</p>
           </div>
         </div>
       </div>

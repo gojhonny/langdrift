@@ -31,3 +31,9 @@ apps/mobile/.vite/
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local integration state and raw audit output
+.drifts/**/*.local.json
+.drifts/.env*
+.audits/runs/*
+!.audits/runs/.gitkeep
