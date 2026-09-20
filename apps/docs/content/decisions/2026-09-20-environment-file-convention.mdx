@@ -1,0 +1,33 @@
+---
+title: Environment file convention
+date: 2026-09-20
+type: decision
+status: canonical
+searchable: false
+scope:
+  - runtime-configuration
+---
+
+# Environment file convention
+
+Tracked `.env.development` files contain safe development configuration: local
+origins, ports, bucket names and booleans. Ignored `.env` files contain private
+values and secrets. Production configuration belongs to the deployment platform.
+
+Do not place empty secret assignments in `.env.development`: Next.js loads that
+file ahead of `.env`, so an empty assignment would shadow the private value.
+The active convention does not use `.env.local`, `.env.template` or `.env.example`.
+
+`drift env setup` discovers tracked development contracts and creates missing,
+empty private files without overwriting existing values. `drift env validate`
+checks their presence. Each application validates its required values, as defined
+in [Environment variables must fail fast](./2026-09-20-environment-variables-fail-fast).
+
+Compose loads `.env.development` followed by `.env`; the latter takes precedence.
+Docker build contexts exclude both. Web image builds receive explicit safe values
+through a BuildKit secret mount, which is not retained in image layers.
+
+Website links use `NEXT_PUBLIC_DOCS_URL`: `http://localhost:3004` in development
+and `https://docs.langdrift.md` in production. Docs itself requires the same origin
+in `NEXT_PUBLIC_SITE_URL`. Public values are build inputs and require rebuilding
+when changed. Server-only credentials never enter browser bundles.

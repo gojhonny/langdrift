@@ -2,7 +2,8 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@repo/design-system', '@repo/react']
+  output: 'standalone',
+  transpilePackages: ['@repo/design-tokens', '@repo/react']
 }
 
 export default nextConfig

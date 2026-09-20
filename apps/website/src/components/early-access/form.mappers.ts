@@ -36,5 +36,5 @@ export function mapValidationPassed(
   draft.email = email
   draft.hasInteractedWithEmail = true
   draft.fieldErrors.email = null
-  draft.status = 'valid'
+  draft.status = 'submitting'
 }

@@ -9,7 +9,9 @@ export interface EarlyAccessMessages {
   emailLabel: string
   placeholder: string
   submit: string
-  addressValid: string
+  submitting: string
+  success: string
+  unavailable: string
   errors: Record<EmailErrorCode, string>
 }
 
@@ -24,7 +26,10 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     emailLabel: 'Email address',
     placeholder: 'you@company.com',
     submit: 'Join early access',
-    addressValid: 'Email address is valid.',
+    submitting: 'Submitting…',
+    success:
+      'You’re on the early-access list. We’ll email you when access is available.',
+    unavailable: 'We couldn’t save your request. Please try again.',
     errors: {
       emailRequired: 'Enter your email address.',
       emailInvalid: 'Enter a valid email address.',
@@ -42,7 +47,10 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     emailLabel: 'E-mail',
     placeholder: 'voce@empresa.com',
     submit: 'Quero acesso antecipado',
-    addressValid: 'O e-mail é válido.',
+    submitting: 'Enviando…',
+    success:
+      'Você está na lista. Avisaremos por e-mail quando o acesso estiver disponível.',
+    unavailable: 'Não foi possível salvar sua solicitação. Tente novamente.',
     errors: {
       emailRequired: 'Informe seu e-mail.',
       emailInvalid: 'Informe um e-mail válido.',
@@ -58,7 +66,9 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     emailLabel: '電子郵件地址',
     placeholder: 'you@company.com',
     submit: '登記搶先體驗',
-    addressValid: '電子郵件地址格式有效。',
+    submitting: '正在提交…',
+    success: '您已加入搶先體驗名單。存取權限開放時會以電子郵件通知您。',
+    unavailable: '無法儲存您的登記，請再試一次。',
     errors: {
       emailRequired: '請輸入您的電子郵件地址。',
       emailInvalid: '請輸入有效的電子郵件地址。',
@@ -75,7 +85,10 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     emailLabel: 'メールアドレス',
     placeholder: 'you@company.com',
     submit: '先行アクセスに登録',
-    addressValid: 'メールアドレスの形式は有効です。',
+    submitting: '送信中…',
+    success:
+      '先行アクセスに登録されました。利用可能になりましたらメールでお知らせします。',
+    unavailable: '登録を保存できませんでした。もう一度お試しください。',
     errors: {
       emailRequired: 'メールアドレスを入力してください。',
       emailInvalid: '有効なメールアドレスを入力してください。',

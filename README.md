@@ -8,7 +8,7 @@ Visual product intelligence for founders and teams building with humans and AI.
 
 **Vision → Loop → Evidence**
 
-[Explore LangDrift](https://langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
+[Explore LangDrift](https://langdrift.md/) · [Docs](https://docs.langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
 
 ![LangDrift product preview: a Product Vision curve connects illustrative changes to people, decisions, and a graph of supporting context.](./assets/readme/banner.png)
 
@@ -44,6 +44,11 @@ Visual-first for understanding. Voice-first for inquiry. One product story, from
 **[Explore the interactive demo →](https://langdrift.md/)**
 
 In active development. The website demonstrates the intended experience; live platform integrations and voice inquiry are not yet available. SDK and setup packages are implemented but unpublished.
+
+For local development, run `./cli/drift env setup`: safe defaults live in tracked
+`.env.development`, private values in ignored `.env`. The narrow
+[Early Access runtime](messaging/runtime/early-access/README.md) lives under
+`messaging/`; shared visual tokens are built by `@repo/design-tokens`.
 
 ---
 

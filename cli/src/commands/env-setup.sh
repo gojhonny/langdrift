@@ -5,7 +5,7 @@ set -eu
 drift_loader_start "Preparing env"
 drift_queue_scene "$DRIFT_ICON_ENV" "$DRIFT_ENV_PHRASE"
 
-drift_find_env_templates | while IFS= read -r template; do
+drift_find_env_contracts | while IFS= read -r template; do
   target=${template%.*}
-  if [ ! -e "$target" ]; then cp "$template" "$target"; drift_print_success "Created ${target#$DRIFT_PROJECT_ROOT/}"; fi
+  if [ ! -e "$target" ]; then (umask 077; : > "$target"); drift_print_success "Created ${target#$DRIFT_PROJECT_ROOT/}"; fi
 done

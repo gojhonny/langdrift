@@ -32,7 +32,7 @@ Implemented frontend surfaces:
 Current maturity:
 
 - frontend prototype / demo;
-- no canonical backend contract yet;
+- a narrow Early Access messaging contract; no general product backend contract yet;
 - Product Vision values are illustrative demo data;
 - Product Vision formula remains open;
 - Website offers are a 15-day free trial (starting at access activation), Plus and Pro; prices, limits, billing cadence and exact entitlements remain open;
@@ -88,7 +88,7 @@ structured sources
 
 Canonical principle: **reason over changes, not repositories**.
 
-The frontend must not invent a backend contract. There is no backend/API workspace in this repository yet.
+The frontend must not invent a backend contract. Early Access uses the canonical two-actor Go runtime under `messaging/runtime/early-access`; shared event envelopes live in `packages/events/envelopes`. There is no general backend/API workspace.
 
 ## Surface boundaries
 
@@ -100,7 +100,7 @@ Public acquisition and explanation.
 - First viewport must explain Product Vision movement visually.
 - Marketing language uses founder outcomes, not internal route taxonomy.
 - Technical infrastructure remains secondary.
-- Early access currently validates email locally only; it sends no requests and does not create a lead, account, subscription or trial.
+- Early access validates locally and in a Server Function, then submits via server-only Axios to the Go messaging runtime. Success requires durable acceptance; this does not create an account, subscription or activated trial.
 
 ### Dashboard
 
@@ -170,7 +170,7 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - No backend/API workspace until architecture explicitly introduces one.
 - Do not silently turn design references into copied branding.
 - Preserve light/dark support and accessibility across surfaces.
-- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website local state and forms](apps/website/docs/local-state-and-forms.md); this does not require migrating other surfaces.
+- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website environment and local form state](apps/website/readme.md); this does not require migrating other surfaces.
 - Important shared state changes remain inspectable through the existing state loggers. Keep email and other entered form data out of atoms, logs, URLs, analytics and browser persistence.
 
 ## Harness bootstrap

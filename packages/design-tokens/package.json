@@ -1,0 +1,27 @@
+{
+  "name": "@repo/design-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "sh src/scripts/build-tokens.sh",
+    "dev": "sh src/scripts/build-tokens.sh --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "style": "./dist/index.css",
+      "default": "./dist/index.css"
+    },
+    "./tokens": {
+      "default": "./dist/tokens.json"
+    }
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^24"
+  }
+}

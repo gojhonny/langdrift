@@ -22,3 +22,9 @@
 .early-access-compact .early-access-intro h2 { font-size: 25px; margin-bottom: 10px; }
 @media (max-width: 900px) { .early-access-surface { grid-template-columns: 1fr; gap: 28px; } }
 @media (max-width: 600px) { .early-access-section { padding: 40px 18px 56px; } .early-access-surface, .early-access-compact .early-access-surface { padding: 26px 20px; } .early-access-controls { flex-direction: column; } .early-access-controls input { flex-basis: auto; } .early-access-controls button { width: 100%; } .early-access-compact { padding-block: 24px; } }
+
+.early-access-controls button:disabled,
+.early-access-controls input:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}

@@ -1,4 +1,4 @@
-@import '@repo/design-system/tokens.css';
+@import '@repo/design-tokens';
 
 :root {
   --ld-bg: #f7f6f2;

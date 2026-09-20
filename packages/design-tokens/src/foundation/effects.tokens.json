@@ -1,0 +1,14 @@
+{
+  "shadow-float": {
+    "$type": "shadow",
+    "$value": "0 24px 80px rgb(0 0 0 / 10%)"
+  },
+  "shadow-dark-float": {
+    "$type": "shadow",
+    "$value": "0 28px 90px rgb(0 0 0 / 38%)"
+  },
+  "ease": {
+    "$type": "cubicBezier",
+    "$value": "cubic-bezier(0.2, 0.8, 0.2, 1)"
+  }
+}

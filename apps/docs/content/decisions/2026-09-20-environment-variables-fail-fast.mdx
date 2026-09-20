@@ -45,7 +45,7 @@ const docsUrl =
 
 ## Local development
 
-Local defaults belong in environment files or their committed templates, not in TypeScript/JavaScript source.
+Safe local defaults belong in tracked `.env.development`; secrets belong in ignored `.env`. Production values belong to the deployment platform. See [Environment file convention](./2026-09-20-environment-file-convention).
 
 Example:
 
@@ -82,4 +82,4 @@ Fail-fast behavior makes the error visible at the point where the configuration 
 
 For the website refinement, `NEXT_PUBLIC_DOCS_URL` and `NEXT_PUBLIC_SSO_URL` should both follow this rule.
 
-The current behavior where an absent `NEXT_PUBLIC_SSO_URL` can degrade into relative `/sign-in` or `/sign-up` links should be removed when the environment contract is implemented.
+Website and SSO links require explicit environment origins. Missing values no longer produce relative links. Docs requires `NEXT_PUBLIC_SITE_URL`; the Website Server Function requires server-only `EMAIL_SERVICE_URL` and `EMAIL_SERVICE_API_KEY`.

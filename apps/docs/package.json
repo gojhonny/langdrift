@@ -11,7 +11,7 @@
     "start": "next start --hostname 0.0.0.0 --port 3004"
   },
   "dependencies": {
-    "@repo/design-system": "workspace:*",
+    "@repo/design-tokens": "workspace:*",
     "@repo/react": "workspace:*",
     "next": "16.2.11",
     "next-themes": "0.4.6",

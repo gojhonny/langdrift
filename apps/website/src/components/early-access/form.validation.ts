@@ -30,3 +30,10 @@ export function getEmailError(email: unknown): EmailErrorCode | null {
       return 'emailInvalid'
   }
 }
+
+export const earlyAccessSubmissionSchema = earlyAccessFormSchema
+  .extend({
+    locale: z.enum(['en', 'pt-BR', 'zh-Hant', 'ja']),
+    source: z.enum(['landing', 'pricing'])
+  })
+  .strict()
