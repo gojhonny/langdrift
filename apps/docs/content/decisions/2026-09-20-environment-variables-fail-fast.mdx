@@ -1,0 +1,85 @@
+---
+title: Environment variables must fail fast
+date: 2026-09-20
+type: decision
+status: canonical
+searchable: false
+scope:
+  - runtime-configuration
+  - website
+---
+
+# Environment variables must fail fast
+
+## Decision
+
+Configuration values that belong to environment variables must **not** have hardcoded runtime fallbacks in application code.
+
+If a required environment variable is absent, the application must fail immediately with an explicit exception.
+
+```ts
+function requireEnv(name: string, value: string | undefined): string {
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+```
+
+Example:
+
+```ts
+export const env = {
+  docsUrl: requireEnv('NEXT_PUBLIC_DOCS_URL', process.env.NEXT_PUBLIC_DOCS_URL),
+  ssoUrl: requireEnv('NEXT_PUBLIC_SSO_URL', process.env.NEXT_PUBLIC_SSO_URL)
+}
+```
+
+Do not implement:
+
+```ts
+const docsUrl =
+  process.env.NEXT_PUBLIC_DOCS_URL || 'http://localhost:3004'
+```
+
+## Local development
+
+Local defaults belong in environment files or their committed templates, not in TypeScript/JavaScript source.
+
+Example:
+
+```env
+NEXT_PUBLIC_SSO_URL=http://localhost:3002
+NEXT_PUBLIC_DOCS_URL=http://localhost:3004
+```
+
+The Docs application currently uses port `3004` for local development. That value is therefore documented through environment configuration.
+
+## Rationale
+
+A missing required environment variable is a configuration error.
+
+Silently falling back to a hardcoded value:
+
+- hides developer mistakes;
+- can point one environment at another unexpectedly;
+- makes deployment behavior less explicit;
+- duplicates configuration across code and environment files;
+- allows an incorrectly configured build to appear healthy.
+
+Fail-fast behavior makes the error visible at the point where the configuration is consumed.
+
+## Rule
+
+> Required environment variable missing → throw.
+
+> Local/deployment value → env file or deployment environment.
+
+> No hardcoded runtime fallback for environment-owned configuration.
+
+## Current website application
+
+For the website refinement, `NEXT_PUBLIC_DOCS_URL` and `NEXT_PUBLIC_SSO_URL` should both follow this rule.
+
+The current behavior where an absent `NEXT_PUBLIC_SSO_URL` can degrade into relative `/sign-in` or `/sign-up` links should be removed when the environment contract is implemented.

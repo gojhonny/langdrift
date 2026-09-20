@@ -114,7 +114,7 @@
 .website-locale-link:hover,
 .website-locale-link:focus-visible { color: var(--ld-ink); }
 
-.website-sign-in,
+.website-docs-link,
 .website-get-started {
   align-items: center;
   border: 1px solid var(--ld-hairline);
@@ -129,12 +129,12 @@
   white-space: nowrap;
 }
 
-.website-sign-in {
+.website-docs-link {
   background: color-mix(in srgb, var(--ld-surface) 70%, transparent);
   color: var(--ld-ink);
 }
 
-.website-sign-in:hover { background: var(--ld-surface); }
+.website-docs-link:hover { background: var(--ld-surface); }
 
 .website-get-started {
   background: var(--ld-ink);
@@ -200,15 +200,6 @@
 }
 
 .website-navigation-trigger { display: none; }
-
-.website-header-sr-only {
-  block-size: 1px;
-  clip-path: inset(50%);
-  inline-size: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-}
 
 .website-navigation-drawer {
   background: var(--ld-bg);

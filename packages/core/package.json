@@ -1,0 +1,43 @@
+{
+  "name": "@langdrift/setup",
+  "version": "0.1.0",
+  "description": "Explicit, non-destructive LangDrift project setup",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "bin": {
+    "langdrift": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "pnpm build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gojhonny/langdrift.git",
+    "directory": "packages/core"
+  },
+  "dependencies": {
+    "@langdrift/sdk": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.6",
+    "typescript": "5.9.2"
+  }
+}

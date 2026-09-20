@@ -3,6 +3,7 @@ node_modules
 .turbo
 dist
 coverage
+**/public/_pagefind
 .env
 .env.*
 !.env.template

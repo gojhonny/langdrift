@@ -1,6 +1,11 @@
 'use client'
 
-import { AppleLogo, CaretDown, GithubLogo, GoogleLogo } from '@repo/react/ui/icons'
+import {
+  AppleLogo,
+  CaretDown,
+  GithubLogo,
+  GoogleLogo
+} from '@repo/react/ui/icons'
 import { Brand } from '@repo/react/ui/brand'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { GlowHoverCard } from '@repo/react/vendors/smoothui'
@@ -29,7 +34,11 @@ export type AccountFlowStep =
 
 const flowSteps = [
   { href: '/sign-up', id: 'sign-up', label: 'Account' },
-  { href: '/create-organization', id: 'create-organization', label: 'Organization' },
+  {
+    href: '/create-organization',
+    id: 'create-organization',
+    label: 'Organization'
+  },
   { href: '/select-plan', id: 'select-plan', label: 'Plan' },
   { href: '/setup', id: 'setup', label: 'Setup' }
 ] as const
@@ -42,20 +51,23 @@ const socialProviders = [
 
 const planOptions = [
   {
-    description: 'A simple starting point for understanding Product Vision and Drift.',
+    description:
+      'A simple starting point for understanding Product Vision and Drift.',
     id: 'free',
     name: 'Free',
     note: 'For getting started'
   },
   {
-    description: 'For product teams that want shared context around decisions, people, and evolution.',
+    description:
+      'For product teams that want shared context around decisions, people, and evolution.',
     featured: true,
     id: 'plus',
     name: 'Plus+',
     note: 'For growing product teams'
   },
   {
-    description: 'For organizations that need deeper governance across products and teams.',
+    description:
+      'For organizations that need deeper governance across products and teams.',
     id: 'pro',
     name: 'Pro',
     note: 'For organizations'
@@ -91,7 +103,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
     incrementAttempts((current) => current + 1)
 
     if (step === 'sign-in') {
-      window.location.assign(ssoLinks.console)
+      window.location.assign(ssoLinks.dashboard)
       return
     }
 
@@ -148,7 +160,10 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
           <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
         </a>
         <div className="account-flow-header-actions">
-          <a className="account-header-link" href={step === 'sign-in' ? '/sign-up' : '/sign-in'}>
+          <a
+            className="account-header-link"
+            href={step === 'sign-in' ? '/sign-up' : '/sign-in'}
+          >
             {step === 'sign-in' ? 'Create account' : 'Sign in'}
           </a>
           <ThemeToggle
@@ -159,18 +174,38 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
       </header>
 
       {step !== 'sign-in' ? (
-        <nav aria-label="Account setup progress" className="account-flow-progress">
+        <nav
+          aria-label="Account setup progress"
+          className="account-flow-progress"
+        >
           {flowSteps.map((item, index) => {
-            const state = index < currentIndex ? 'completed' : index === currentIndex ? 'current' : 'future'
+            const state =
+              index < currentIndex
+                ? 'completed'
+                : index === currentIndex
+                  ? 'current'
+                  : 'future'
             const content = (
               <>
-                <span>{state === 'completed' ? '✓' : String(index + 1).padStart(2, '0')}</span>
+                <span>
+                  {state === 'completed'
+                    ? '✓'
+                    : String(index + 1).padStart(2, '0')}
+                </span>
                 {item.label}
               </>
             )
 
             if (state === 'future') {
-              return <span className="account-flow-progress-step" data-state={state} key={item.href}>{content}</span>
+              return (
+                <span
+                  className="account-flow-progress-step"
+                  data-state={state}
+                  key={item.href}
+                >
+                  {content}
+                </span>
+              )
             }
 
             return (
@@ -194,7 +229,10 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
             <div className="login-five-heading">
               <h1>{title}</h1>
               <p>{description}</p>
-              <small>Don&apos;t have an account? <a href="/sign-up">Create account</a></small>
+              <small>
+                Don&apos;t have an account?{' '}
+                <a href="/sign-up">Create account</a>
+              </small>
             </div>
             <form className="login-five-form" onSubmit={submitIdentity}>
               <label htmlFor="login-email">Email</label>
@@ -207,18 +245,28 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                 type="email"
                 value={email}
               />
-              <button className="sso-primary" type="submit">Continue with email</button>
+              <button className="sso-primary" type="submit">
+                Continue with email
+              </button>
             </form>
-            <div className="auth-divider"><span>Or continue with</span></div>
+            <div className="auth-divider">
+              <span>Or continue with</span>
+            </div>
             <div className="login-five-providers">
               {socialProviders.map(({ icon: Icon, id, label }) => (
-                <button key={id} onClick={() => continueWithProvider(id)} type="button">
+                <button
+                  key={id}
+                  onClick={() => continueWithProvider(id)}
+                  type="button"
+                >
                   <Icon aria-hidden="true" size={18} weight="fill" />
                   <span>{label}</span>
                 </button>
               ))}
             </div>
-            {providerStatus ? <output className="auth-status">{providerStatus}</output> : null}
+            {providerStatus ? (
+              <output className="auth-status">{providerStatus}</output>
+            ) : null}
           </div>
         </section>
       ) : null}
@@ -273,7 +321,9 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                   value={email}
                 />
               </label>
-              <button className="sso-primary" type="submit">Create account</button>
+              <button className="sso-primary" type="submit">
+                Create account
+              </button>
             </form>
           ) : null}
 
@@ -283,7 +333,9 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                 Organization name
                 <input
                   autoComplete="organization"
-                  onChange={(event) => setOrganization(event.currentTarget.value)}
+                  onChange={(event) =>
+                    setOrganization(event.currentTarget.value)
+                  }
                   placeholder="Acme"
                   required
                   value={organization}
@@ -300,7 +352,9 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                   <CaretDown aria-hidden="true" size={14} />
                 </span>
               </label>
-              <button className="sso-primary" type="submit">Create organization</button>
+              <button className="sso-primary" type="submit">
+                Create organization
+              </button>
             </form>
           ) : null}
 
@@ -310,7 +364,7 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
               onSubmit={(event) => {
                 event.preventDefault()
                 setSetupStep('setup')
-                window.location.assign(ssoLinks.console)
+                window.location.assign(ssoLinks.dashboard)
               }}
             >
               <div>
@@ -325,7 +379,9 @@ export function AccountFlow({ step }: { step: AccountFlowStep }) {
                 First product
                 <input name="product" placeholder="Atlas Home Hub" required />
               </label>
-              <button className="sso-primary" type="submit">Open LangDrift</button>
+              <button className="sso-primary" type="submit">
+                Open LangDrift
+              </button>
             </form>
           ) : null}
         </section>

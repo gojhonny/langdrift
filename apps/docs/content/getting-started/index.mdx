@@ -1,0 +1,67 @@
+---
+title: Getting started
+description: Create the smallest local LangDrift protocol scaffold in an existing repository.
+---
+
+# Getting started
+
+LangDrift setup requires Node.js 24 or later and an existing project directory.
+From inside a Git repository, the command can discover the nearest repository
+root, so no `--root` flag is needed.
+
+<Callout type="info">
+**Unpublished.** The following `npx` command is the intended interface after
+`@langdrift/setup` is published. Today, use a locally installed copy of the
+package and invoke its `langdrift` binary through that project's package
+manager.
+</Callout>
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+Outside a Git repository, pass an explicit existing directory with
+`--root /path/to/product`. Project and account IDs are routing metadata; setup
+does not create an account or authenticate either ID.
+
+## Generated files
+
+A new setup creates exactly these protocol files:
+
+```text
+.drifts/project.json
+.drifts/vision/schema.json
+.drifts/loop/schema.json
+.drifts/evidence/schema.json
+```
+
+Artifact directories are created later as documents are added. Setup does not
+generate placeholder artifacts, integration code, or agent configuration.
+
+## Safe, local setup
+
+Preview the complete file plan before writing:
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run
+```
+
+Setup classifies every managed destination as `create`, `preserve`, or
+`conflict`. It creates missing files, preserves matching files byte-for-byte,
+and never overwrites conflicting content. A preflight conflict prevents all
+writes. The command makes no network requests and does not connect GitHub,
+Linear, Obsidian, MCP, or a LangDrift backend.
+
+## Continue
+
+- [Create a first PRD artifact](/getting-started/first-artifact)
+- [Learn the protocol pillars](/concepts/vision-loop-evidence)
+- [Understand deterministic and interpretive work](/concepts/deterministic-first)
+- [Review setup behavior and options](/setup)

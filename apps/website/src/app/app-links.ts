@@ -1,10 +1,7 @@
-function normalizeBase(value: string | undefined) {
-  return value?.replace(/\/+$/, '') ?? ''
-}
-
-const ssoBase = normalizeBase(process.env.NEXT_PUBLIC_SSO_URL)
+import { websiteEnv } from '../env'
 
 export const websiteLinks = {
-  signIn: `${ssoBase}/sign-in`,
-  signUp: `${ssoBase}/sign-up`
+  docs: websiteEnv.docsUrl,
+  signIn: `${websiteEnv.ssoUrl}/sign-in`,
+  signUp: `${websiteEnv.ssoUrl}/sign-up`
 }

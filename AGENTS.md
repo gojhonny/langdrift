@@ -24,7 +24,7 @@ Product Vision
 Implemented frontend surfaces:
 
 - Website
-- Console / Dashboard
+- Dashboard
 - SSO / Auth / Plans preview
 - Mobile / PWA
 - shared React UI
@@ -102,7 +102,7 @@ Public acquisition and explanation.
 - Technical infrastructure remains secondary.
 - Early access currently validates email locally only; it sends no requests and does not create a lead, account, subscription or trial.
 
-### Console / Dashboard
+### Dashboard
 
 Authenticated analytical product.
 
@@ -170,7 +170,7 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - No backend/API workspace until architecture explicitly introduces one.
 - Do not silently turn design references into copied branding.
 - Preserve light/dark support and accessibility across surfaces.
-- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Console state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website local state and forms](apps/website/docs/local-state-and-forms.md); this does not require migrating other surfaces.
+- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website local state and forms](apps/website/docs/local-state-and-forms.md); this does not require migrating other surfaces.
 - Important shared state changes remain inspectable through the existing state loggers. Keep email and other entered form data out of atoms, logs, URLs, analytics and browser persistence.
 
 ## Harness bootstrap
@@ -183,7 +183,7 @@ Planning now lives in `.agents/workflow/`; see [.agents/README.md](.agents/READM
 
 `.drifts/` holds the draft portable JSON integration contract and future Obsidian/MCP placeholders. It references factory documents but does not own their approval status. No integration is running.
 
-`.audits/` has placeholder folders for checks and evidence. `drift check` targets `.audits/checks/` and remains unavailable until real checker files are introduced. Website implementation and Sinapsi publication are outside this scaffold.
+Website implementation and Sinapsi publication are outside this scaffold.
 
 ## Verification
 

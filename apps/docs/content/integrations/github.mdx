@@ -1,0 +1,53 @@
+---
+title: GitHub
+description: Deterministic mapping from an explicit merged pull request fixture to a Record.
+---
+
+# GitHub
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+```
+
+The mapper accepts already obtained data. The event must describe a closed,
+merged pull request in a named `owner/repository`, with numeric pull request
+identity, author, timestamps, and head/base branch references. Optional
+details contain explicit commit and file facts.
+
+The resulting Record uses:
+
+- `kind: 'github.pull_request.merged'`
+- `occurred_at` from `merged_at`
+- the repository and pull request database ID as source identity
+- a stable ID from
+  `recordId('github', 'pull_request', '<pull-request-id>:merged')`
+- caller-supplied artifact references unchanged
+
+The pull request author is a top-level actor. A distinct merger is added as a
+second actor. A GitHub user whose exact `type` is `Bot` maps to an agent; other
+users map to humans. External actor IDs have the form `github:<numeric-id>`.
+
+Record `data` contains pull request number, title, state, author, optional
+merger, created/updated/merged timestamps, and head/base refs and SHAs. When
+present in the input it also includes label names, requested reviewer actor
+references, the `html_url` value as `url`, commits, and changed filenames with
+status, additions, and deletions.
+
+The mapper validates both the event and optional details, then delegates to
+`createRecord`. Invalid input throws `LangDriftError` with code
+`ARTIFACT_INVALID`.
+
+It does not:
+
+- receive webhooks or call GitHub APIs
+- authenticate or install a GitHub App
+- fetch commits, files, users, or reviews
+- extract Spec or Ticket links from prose
+- infer impact, a Vision Target, or Drift
+
+GitHub facts become Records. Any Drift Event remains a separate, explicit
+interpretation supported by Evidence.

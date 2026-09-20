@@ -1,0 +1,163 @@
+---
+title: Package API
+description: Grouped TypeScript exports for the SDK and setup release candidates.
+---
+
+# Package API
+
+This is a reference for the TypeScript packages. It is not an HTTP API and
+does not define backend routes.
+
+## `@langdrift/sdk`
+
+The root entry point re-exports every public SDK module. Dedicated
+`/schema`, `/mcp`, and `/integrations` entry points expose the same exports for
+those areas.
+
+### Protocol types
+
+Runtime constants:
+
+- `ARTIFACT_TYPES`
+- `SCHEMA_VERSION`
+
+Public types:
+
+- `ArtifactType`, `DocumentType`, and `Pillar`
+- `JsonValue` and `JsonObject`
+- `ArtifactRef` and `ActorRef`
+- `Project`, `ArtifactMetadata`, `RecordEvent`, and `DriftEvent`
+
+### Schemas and validation
+
+Runtime schema exports are `schemas`, `projectSchema`, `pillarSchemas`, and
+`artifactPillars`.
+
+```ts
+validateProject(input: unknown): Project
+validateArtifact(input: unknown): ArtifactMetadata
+validateRecord(input: unknown): RecordEvent
+validateDrift(input: unknown): DriftEvent
+```
+
+These functions are synchronous and return the original validated object. They
+throw `LangDriftError` rather than coercing or copying data.
+
+### Safe paths, projects, and artifacts
+
+```ts
+findRepositoryRoot(start?: string): Promise<string>
+resolveSafePath(root: string, relative: string): Promise<string>
+readProjectFile(
+  root: string,
+  relative: string,
+  maxBytes?: number
+): Promise<string>
+loadProject(root: string): Promise<Project>
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+discoverArtifacts(
+  root: string,
+  options?: DiscoveryOptions
+): Promise<ParsedArtifact[]>
+```
+
+`MAX_ARTIFACT_BYTES`, `artifactLocations`, and `artifactReferences` are also
+exported. Related types are `ParsedArtifact` and `DiscoveryOptions`.
+
+### References and events
+
+```ts
+resolveReferences(
+  root: string,
+  artifacts: ParsedArtifact[],
+  knownReferences?: ArtifactRef[]
+): Promise<ReferenceResolution>
+
+recordId(
+  integration: string,
+  sourceId: string,
+  eventId: string
+): string
+
+createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+
+createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+`ReferenceResolution` is exported. `recordId`, `createRecord`, and
+`createDrift` are synchronous.
+
+### Payloads and transport
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+
+resolveCredential(
+  reference: string,
+  environment?: Readonly<Record<string, string | undefined>>
+): string
+
+sendPayload(
+  project: Project,
+  artifact: ParsedArtifact | RecordEvent | DriftEvent,
+  transport: PayloadTransport,
+  options: {
+    credentialRef: string
+    environment?: Readonly<Record<string, string | undefined>>
+    source?: PayloadSource
+  }
+): Promise<TransportResult>
+```
+
+Public transport types are `PayloadSource`, `PayloadEnvelope`,
+`PayloadTransport`, and `TransportResult`. `TransportError` is the status-only
+error an injected adapter can throw for `sendPayload` to classify.
+
+### Integrations and diagnostics
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+
+reportError(error: unknown, logger: Logger): void
+```
+
+The package also exports `integrationCapabilities`, `RecordSourceAdapter`,
+`GitHubPullRequestEvent`, `GitHubPullRequestDetails`, `LangDriftError`,
+`Issue`, `Diagnostic`, and `Logger`.
+
+## `@langdrift/setup`
+
+```ts
+planSetup(options?: SetupOptions): Promise<SetupPlan>
+setupProject(options?: SetupOptions): Promise<SetupResult>
+```
+
+The package exports `SetupError` and the `SetupOptions`, `SetupFile`,
+`SetupPlan`, and `SetupResult` types. `runCli`, templates, and generator
+internals are not package exports.
+
+`planSetup` validates and reads without writing. `setupProject` writes only
+safe `create` entries after a conflict-free plan, or returns the plan unchanged
+for a dry run.
+
+## Errors
+
+SDK validation, paths, credentials, and transport use `LangDriftError` with
+`code` and `issues: { path, message }[]`. Setup-specific failures use
+`SetupError` with `code`, `files`, and `fields`. Setup can also surface an SDK
+`LangDriftError` when project or path validation fails.
+
+Only the functions explicitly returning `Promise` are asynchronous. No API in
+these packages performs implicit logging, remote lookup, upload, or retry.

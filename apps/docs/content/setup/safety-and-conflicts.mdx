@@ -1,0 +1,67 @@
+---
+title: Safety and conflicts
+description: Dry runs, preservation rules, conflict handling, and setup recovery.
+---
+
+# Safety and conflicts
+
+Setup is additive and non-destructive. It plans every managed file before a
+normal run writes anything.
+
+## Preview
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run \
+  --json
+```
+
+The result assigns each managed path one status:
+
+- `create` — the file is missing and would be created
+- `preserve` — parsed JSON already equals the expected value
+- `conflict` — the destination cannot be safely reused or created
+
+A dry run validates and returns this plan without writing. Its `changed` value
+is `false`, including when files would be created.
+
+## Preservation and conflicts
+
+JSON comparison ignores whitespace and object key order. Matching files are
+preserved byte-for-byte, including their formatting and timestamps. Existing
+files are never overwritten.
+
+Conflicts include:
+
+- malformed or truncated JSON
+- a regular file whose parsed value differs from the requested project or
+  bundled schema
+- an unsupported protocol version
+- a destination that is not a regular file
+- a required parent that is not a directory
+- a symbolic link anywhere in a managed path
+- a changed integration setting on an existing project
+
+If preflight finds any conflict, setup writes nothing, even when other managed
+files are missing. Review the per-file reasons manually.
+
+The legacy `.drifts/execution` path is always a conflict. Version 0.1.0 uses
+`.drifts/loop` and does not migrate, rename, merge, or remove a legacy layout.
+
+## Writes and reruns
+
+Missing files are created with exclusive creation and no symlink following.
+If a destination appears after preflight, setup preserves it when its parsed
+content matches. Otherwise it fails with `SETUP_CONCURRENT_CHANGE`.
+
+An unchanged rerun reports only `preserve` and returns `changed: false`.
+Missing required schemas are recreated on a later safe run.
+
+The write sequence is not a filesystem transaction. If an I/O or concurrent
+change failure occurs after one or more files were created, those files can
+remain. Existing content is still not overwritten. Inspect the reported plan,
+review any invalid file, and rerun setup to repair remaining missing files.

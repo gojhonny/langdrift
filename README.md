@@ -1,67 +1,51 @@
-# Lang Drift
 
-Lang Drift is a visual product-intelligence platform for founders and leadership. It makes product evolution understandable relative to the vision and recorded decisions that shaped the product.
 
-The executive question is simple:
+# LangDrift
 
-> How far has the product drifted from the vision we intended to build?
+### Your product moves fast. Know where it’s going.
 
-Lang Drift is **visual-first for truth** and **voice-first for inquiry**. The product surfaces Product Vision, the Drift Curve, attribution, decisions, Intentional Evolution, Unexplained Drift, and Unknown / Under Review states while keeping engineering complexity underneath.
+Visual product intelligence for founders and teams building with humans and AI.
 
-## Monorepo
+**Vision → Loop → Evidence**
 
-```text
-apps/
-  console/   Executive and management web product
-  website/   Public website, auth-adjacent marketing, and plans surface
-  sso/       Authentication / SSO surface
-  mobile/    Installed PWA experience
-packages/
-  react/     Shared Lang Drift design foundation and future React primitives
-cli/
-  drift      POSIX-shell repository CLI
-.agents/     Agentic factory: rules, skills, templates, and workflow planning
-.audits/     Audit checks and verification evidence (placeholders)
-.drifts/     Portable initiative JSON and future integration contracts
-assets/
-  images/    Shared image assets
-```
+[Explore LangDrift](https://langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
 
-There is intentionally no backend application in this scaffold.
+![LangDrift product preview: a Product Vision curve connects illustrative changes to people, decisions, and a graph of supporting context.](./assets/readme/banner.png)
 
-The [factory harness](.agents/README.md), [planning workflow](.agents/workflow/README.md), and [Drift Manifest](.drifts/README.md) are drafts. Obsidian/MCP adapters and autonomous delivery are not implemented.
+Product preview · Illustrative data
 
-## Design foundations
+## Every release changes your product. Keep the why.
 
-- **Website / public acquisition:** Cohere DESIGN.md composition adapted to Lang Drift.
-- **Console / authenticated product:** Vercel DESIGN.md precision adapted to Lang Drift.
-- **Mobile / PWA:** the same Vercel-derived product language, adapted for installed/mobile use.
-- **Metrics and data motion:** SmoothUI primitives and interaction language.
-- **Voice presence:** Orbz, with the Amarelo interaction as a reference when Voice work begins.
+Priorities shift. Customer requests reshape the roadmap. Humans and AI agents turn decisions into shipped changes. Over time, the product you build can move away from the one you intended.
 
-Canonical brand primary: `#F97316`. Orange is identity, never a generic warning/error color.
+LangDrift connects that movement to its context: **what changed, why it happened, who was involved, and whether it was intentional.**
 
-## Tooling
+- **See the direction.** Follow product evolution against your original vision.
+- **Understand the trade-offs.** Connect changes to decisions and supporting evidence.
+- **Keep accountability clear.** Trace contributions across people, teams, and agents.
+- **Invest with context.** Revisit compromises and recognize opportunities before the next release.
 
-- Node.js 24
-- pnpm 10
-- Turborepo
-- TypeScript
-- Biome
-- Husky + Commitlint + lint-staged
-- Next.js 16 / React 19 for `website`, `console`, and `sso`
-- Vite + React 19 + Vite PWA for `mobile`
 
-## CLI
 
-The repository CLI is `drift`:
+## Vision → Loop → Evidence
 
-```sh
-./cli/drift --help
-./cli/drift doctor
-./cli/drift bootstrap
-./cli/drift adr my-decision
-./cli/drift spec product-vision-curve
-```
 
-The CLI is implemented with POSIX shell scripts only.
+| Vision                           | Loop                                            | Evidence                                       |
+| -------------------------------- | ----------------------------------------------- | ---------------------------------------------- |
+| Define what you want to achieve. | Follow the decisions and changes that shape it. | Understand what happened and what supports it. |
+
+
+**Drift can reveal a gap, a deliberate trade-off, or a better direction.** Its meaning comes from context and evidence.
+
+## Built for clearer product decisions
+
+Visual-first for understanding. Voice-first for inquiry. One product story, from the original intent to the decisions that come next.
+
+**[Explore the interactive demo →](https://langdrift.md/)**
+
+In active development. The website demonstrates the intended experience; live platform integrations and voice inquiry are not yet available. SDK and setup packages are implemented but unpublished.
+
+---
+
+**From vision to reality, and everything in between.**  
+Made in Brazil · [Neongate AI](https://neongate.com.br/)

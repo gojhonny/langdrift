@@ -1,0 +1,44 @@
+---
+title: Integrations order and Docs navigation
+date: 2026-09-20
+type: decision
+status: canonical
+searchable: false
+scope:
+  - website
+  - docs
+---
+
+# Integrations order and Docs navigation
+
+Approved at Checkpoint 0 of the website refinement.
+
+## Integrations
+
+The website integrations section presents three external tools, in this order from the top of the section:
+
+1. **GitHub** — required for the pull request automation described on the website.
+2. **Obsidian** — optional. PRDs and Research can start in Obsidian. The website makes no sync, system-of-record or ADR-consolidation claim.
+3. **Linear** — optional. Specs and tickets can be replicated into Linear. The website makes no bidirectional claim.
+
+Obsidian occupies the middle position and receives the straight connector from the LangDrift core card; GitHub and Linear receive the elbow connectors. Connector geometry is index-based, not tied to a tool id.
+
+Slack is no longer presented as an integration on the website.
+
+The order applies to the component, the `IntegrationId` union, the section prose, the technical accordion and the FAQ entry, in all four locales (`en`, `pt-BR`, `zh-Hant`, `ja`).
+
+## Docs navigation
+
+The website header (desktop and drawer) and footer link to the Docs application. The label is `Docs` (`en`, `pt-BR`), `文件` (`zh-Hant`) and `ドキュメント` (`ja`).
+
+Docs is an external, environment-configured origin. It is rendered as a plain anchor, not through the locale-aware router, so no locale prefix is applied to it.
+
+`Sign in` is removed from the website header. `Get started` remains the primary action and continues to lead to early access.
+
+## Environment contract
+
+The Docs origin comes from `NEXT_PUBLIC_DOCS_URL`, and the SSO origin from `NEXT_PUBLIC_SSO_URL`, both required by `apps/website/src/env.ts` under the policy in [Environment variables must fail fast](./2026-09-20-environment-variables-fail-fast). Local values live in `apps/website/.env.template`; CI sets explicit build values. The former behaviour where an absent `NEXT_PUBLIC_SSO_URL` degraded into relative `/sign-in` and `/sign-up` links no longer exists.
+
+## Decision records in Docs
+
+Canonical decision records live under `apps/docs/content/decisions/`. They are hidden from the Docs navigation, excluded from the sitemap and excluded from search through `searchable: false` frontmatter. They remain reachable by URL. Every new record must carry `searchable: false` until a record is deliberately promoted to public documentation.

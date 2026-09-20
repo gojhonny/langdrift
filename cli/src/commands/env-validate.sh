@@ -2,6 +2,8 @@
 set -eu
 . "$DRIFT_CLI_DIR/core/common.sh"
 [ "$#" -eq 0 ] || drift_die "Usage: drift env validate" 2
+drift_loader_start "Validating env"
+drift_queue_scene "$DRIFT_ICON_ENV" "$DRIFT_ENV_PHRASE"
 
 status=0
 for template in $(drift_find_env_templates); do

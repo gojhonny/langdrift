@@ -1,0 +1,55 @@
+---
+title: LangDrift documentation
+description: The local protocol, SDK, and setup tools for describing product change against recorded intent.
+---
+
+# LangDrift documentation
+
+LangDrift defines a deterministic protocol for connecting intended product
+direction, the work that follows, and the evidence left by change.
+
+<Callout type="info">
+**Unpublished.** `@langdrift/sdk` and `@langdrift/setup` are version `0.1.0`
+release candidates. Their documented `npx` and package import paths are
+intended interfaces, not packages currently available from npm.
+</Callout>
+
+## Start here
+
+- [Set up the smallest local project](/getting-started)
+- [Create a first artifact](/getting-started/first-artifact)
+- [Understand Vision → Loop → Evidence](/concepts/vision-loop-evidence)
+- [Follow a Record into a Drift Event](/concepts/records-and-drift)
+- [See what deterministic first means](/concepts/deterministic-first)
+
+## Protocol at a glance
+
+The canonical model is **Vision → Loop → Evidence**.
+
+- **Vision** records intended direction through research, PRDs, and context.
+- **Loop** connects that direction to triage, design documents, specs, and
+  tickets.
+- **Evidence** holds ADRs, audits, normalized Records, and Drift Events.
+
+A **Record** is a normalized observed fact. A **Drift Event** is an
+interpretation of observed movement against a Vision Target, supported by
+Evidence. Drift is derived from the Loop; it is not a fourth pillar.
+
+## Current boundaries
+
+<Callout type="info">
+**Implemented.** The SDK provides versioned schemas, strict local validation,
+artifact discovery, explicit reference resolution, Record and Drift
+constructors, payload construction, and injected transport interfaces.
+
+**Concept.** Product Vision is intended to be explainable, decomposable, and
+auditable. Its formula is not defined by the current SDK.
+
+**Not connected yet.** There is no running LangDrift backend, bundled MCP
+server, automatic upload, or live Linear or Obsidian adapter. The SDK bundles
+no LLM; applications supply any interpretive system and transport.
+</Callout>
+
+Setup is local, explicit, non-destructive, and makes no network requests.
+Project and account IDs are routing metadata; creating the local scaffold does
+not create or authorize a remote account.

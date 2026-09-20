@@ -1,0 +1,71 @@
+---
+title: Artifacts
+description: Package-owned artifact locations, parsing rules, and bounded deterministic discovery.
+---
+
+# Artifacts
+
+An artifact has validated metadata, a source path, explicit references, and a
+resource name. Markdown artifacts also retain their body text.
+
+## Package-owned locations
+
+Protocol version 1 discovers only these recursive source globs:
+
+- Vision: `research/**/*.md`, `prd/**/*.md`, and `context/**/*.md`
+- Loop: `triage/**/*.md`, `design-document/**/*.md`, `spec/**/*.md`, and
+  `ticket/**/*.md`
+- Evidence: `adr/**/*.md`, `audit/**/*.md`, `record/**/*.json`, and
+  `drift/**/*.json`
+
+Every glob is rooted under `.drifts/<pillar>/`. Nested audit paths such as
+`evidence/audit/runs` and `evidence/audit/reports` are covered by the audit
+glob. Arbitrary source globs are not supported.
+
+Markdown is used for the nine document families. Record and Drift Event
+envelopes use JSON. During discovery, the metadata `type` must match the source
+directory.
+
+## Parsing
+
+```ts
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+```
+
+`parseArtifact` accepts `.md` and `.json` paths. It validates the metadata,
+derives the pillar resource such as `vision.prd`, gathers explicit references,
+and returns the original artifact path.
+
+For Markdown, `body` is the text after the closing frontmatter delimiter. For
+JSON Records and Drift Events, `body` is empty. Unsupported extensions,
+malformed input, missing frontmatter, or an artifact larger than 1 MiB produce
+`LangDriftError` with code `ARTIFACT_INVALID`.
+
+## Discovery
+
+```ts
+await discoverArtifacts(root, {
+  maxFiles: 1000,
+  maxDirectories: 1000
+})
+```
+
+Both limits default to `1000` and must be positive safe integers. Callers can
+choose different limits explicitly. File reads are bounded at 1 MiB.
+
+Discovery:
+
+- visits only the package-declared `.drifts` locations
+- sorts directory entries before processing them
+- skips dot-prefixed entries and `node_modules`
+- ignores artifact directories that do not exist
+- rejects symbolic links instead of following them
+- rejects traversal, absolute paths, backslashes, control characters, hidden
+  path segments, and dependency directories
+
+It does not crawl the whole repository. Results are deterministic for an
+unchanged filesystem: package locations have a declared order and each
+directory is traversed in sorted order.
+
+Local project content must not be changed by an untrusted process while it is
+being inspected.

@@ -10,16 +10,25 @@ import {
 
 import './integrations-section.css'
 
-const tools: readonly IntegrationId[] = ['github', 'linear', 'slack']
+const tools: readonly IntegrationId[] = ['github', 'obsidian', 'linear']
+
+const integrationLogos: Record<
+  IntegrationId,
+  { light: string; dark?: string; width: number }
+> = {
+  github: { light: 'github-black.svg', dark: 'github-white.svg', width: 39 },
+  obsidian: { light: 'obsidian.svg', width: 38 },
+  linear: { light: 'linear-dark.svg', dark: 'linear-light.svg', width: 38 }
+}
 
 function IntegrationLogo({ id }: { id: IntegrationId }) {
-  if (id === 'slack') {
-    return <Image alt="" height={38} src="/integrations/slack.png" width={38} />
-  }
+  const { light, dark, width } = integrationLogos[id]
 
-  const light = id === 'github' ? 'github-black' : 'linear-dark'
-  const dark = id === 'github' ? 'github-white' : 'linear-light'
-  const width = id === 'github' ? 39 : 38
+  if (!dark) {
+    return (
+      <Image alt="" height={38} src={`/integrations/${light}`} width={width} />
+    )
+  }
 
   return (
     <>
@@ -27,14 +36,14 @@ function IntegrationLogo({ id }: { id: IntegrationId }) {
         alt=""
         className="integration-logo-light"
         height={38}
-        src={`/integrations/${light}.svg`}
+        src={`/integrations/${light}`}
         width={width}
       />
       <Image
         alt=""
         className="integration-logo-dark"
         height={38}
-        src={`/integrations/${dark}.svg`}
+        src={`/integrations/${dark}`}
         width={width}
       />
     </>
@@ -53,7 +62,7 @@ function IntegrationBranches() {
       >
         <path d="M1 0v100" />
       </svg>
-      {tools.map((id) => (
+      {tools.map((id, index) => (
         <svg
           aria-hidden="true"
           focusable="false"
@@ -61,7 +70,8 @@ function IntegrationBranches() {
           preserveAspectRatio="none"
           viewBox="0 0 100 12"
         >
-          <path d={id === 'linear' ? 'M0 6h100' : 'M50 6h50'} />
+          {/* the middle branch runs straight out of the spine */}
+          <path d={index === 1 ? 'M0 6h100' : 'M50 6h50'} />
         </svg>
       ))}
     </div>

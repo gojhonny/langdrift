@@ -1,0 +1,63 @@
+---
+title: Deterministic first
+description: Separate reproducible protocol operations from caller-owned interpretation.
+---
+
+# Deterministic first
+
+LangDrift reasons over changes, not repositories. Repository files are
+structured inputs; normalized events and their explicit relationships are the
+units used to describe product movement.
+
+## Deterministic work
+
+The current packages implement reproducible operations:
+
+- validate project, artifact, Record, and Drift data against versioned JSON
+  Schemas;
+- parse explicit `langdrift` frontmatter while preserving the Markdown body as
+  text;
+- discover only package-declared `.drifts` locations, in sorted order, without
+  following symlinks;
+- derive stable Record identities when immutable source identities are
+  supplied to `recordId`;
+- resolve explicit local and registered references without remote lookups;
+- build payload envelopes with routing, provenance, references, and validated
+  content;
+- plan setup as `create`, `preserve`, or `conflict` and avoid overwriting
+  existing content.
+
+Validation does not coerce values, remove unknown fields, fill missing facts,
+or migrate unsupported versions. Setup makes no network requests.
+
+<Callout type="info">
+**Implemented.** These schema, parsing, validation, discovery, reference,
+payload, and setup behaviors are available in the `0.1.0` release-candidate
+source.
+</Callout>
+
+## Interpretive work
+
+Applications or people still decide:
+
+- which Vision Target observed movement should be compared with;
+- whether that movement is `expected` or `unexpected`;
+- which Evidence supports the interpretation;
+- which impact unit and values are appropriate;
+- whether reasoning is `human`, `deterministic`, or `llm`;
+- how Product Vision is calculated and presented.
+
+The SDK records and validates those supplied decisions. It does not make them
+canonical.
+
+## No LLM dependency
+
+`@langdrift/sdk` does not bundle, call, or require an LLM. A Drift Event can
+declare `human`, `deterministic`, or `llm` reasoning. When `llm` is supplied,
+the schema requires a model identifier and at least one linked evidence ID;
+the caller remains responsible for running the model and supplying supported
+output.
+
+Transport follows the same boundary. Applications inject a transport into
+`sendPayload`; the SDK does not provide a running backend, endpoint, queue,
+automatic retry, or automatic upload.

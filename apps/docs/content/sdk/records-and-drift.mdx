@@ -1,0 +1,77 @@
+---
+title: Records and Drift
+description: Fact envelopes, interpreted Drift Events, and their validated creation APIs.
+---
+
+# Records and Drift
+
+A **Record is a fact** from an identified source. A **Drift Event is an
+interpretation** against a Vision Target, supported by explicit Evidence.
+Creating a Record never creates a Drift interpretation automatically.
+
+## Records
+
+```ts
+function createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+```
+
+The caller supplies:
+
+- `id` and extensible `kind`
+- `occurred_at` as a date-time
+- `source.integration`, `source.external_id`, and optional
+  `source.repository`
+- human or agent `actors`
+- explicit `references`
+- a JSON-compatible `data` object containing source facts
+
+`createRecord` adds only `type: 'record'` and `schema_version: 1`, then
+validates the complete envelope. It does not generate a timestamp or fetch
+source detail.
+
+For stable provider event identities, the SDK also exports:
+
+```ts
+recordId(integration: string, sourceId: string, eventId: string): string
+```
+
+It hashes the ordered three-part identity and returns a `REC-` prefixed ID.
+Callers should use immutable provider identifiers, not titles.
+
+## Drift Events
+
+```ts
+function createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+A Drift Event requires:
+
+- `id` and `vision_target_id`
+- `state: 'expected' | 'unexpected'`
+- `impact` with `unit`, `before`, `delta`, and `after`
+- human or agent `actors`
+- explicit `references`
+- versioned `reasoning`
+- optional `created_at`
+
+Impact units are `percentage_points`, `ratio`, and `score_points`.
+`impact.after` must equal `impact.before + impact.delta` within
+floating-point precision.
+
+Reasoning methods are `human`, `deterministic`, and `llm`. Every
+`reasoning.evidence_refs` entry must identify an item in `references`. LLM
+reasoning additionally requires a nonempty evidence list and `model`;
+`model_version`, when present, also requires `model`. The reasoning envelope
+uses `schema_version: 1`.
+
+`createDrift` adds only the top-level type and schema version and validates the
+result. It does not decide whether change is expected, calculate impact,
+choose units, find Evidence, or run a reasoning engine.
+
+The SDK deliberately leaves the Product Vision formula undefined. Persistence,
+identity authorization, and interpretation policy belong to a separately
+designed runtime.

@@ -1,0 +1,82 @@
+---
+title: Setup
+description: Local, explicit scaffolding for a LangDrift protocol project.
+---
+
+import { PackageStatus } from '../../components/package-status'
+
+# Setup
+
+<PackageStatus package="setup" />
+
+<Callout type="warning">
+  **Unpublished.** Version 0.1.0 is a release candidate. The command below
+  describes the binary from a local workspace build or local package
+  installation, not a currently available public install.
+</Callout>
+
+`@langdrift/setup` exposes the `langdrift` binary. Setup is explicit:
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+`--root` must name an existing directory. If it is omitted, setup searches
+upward from the current directory for `.git`. Outside a Git repository, pass
+`--root`.
+
+Project and account IDs are routing and context metadata. Setup does not create
+an account, authenticate either ID, or authorize access to a project.
+
+## Generated files
+
+Setup manages exactly four JSON files:
+
+```text
+.drifts/
+  project.json
+  vision/schema.json
+  loop/schema.json
+  evidence/schema.json
+```
+
+A new `project.json` records protocol version `1`, project identity, setup
+package generator provenance, and integration configuration. LangDrift is
+enabled locally; GitHub, Linear, and Obsidian start disabled. The three pillar
+schemas are self-contained copies from `@langdrift/sdk`.
+
+Setup does not generate empty artifact trees, Markdown documents, agent
+harnesses, or placeholder integrations.
+
+## Command options
+
+- `--root <directory>`
+- `--project-id <id>`
+- `--account-id <id>`
+- `--name <name>`
+- `--github-installation-id <numeric-id>`
+- `--github-repository <owner/repository>`
+- `--linear` or `--no-linear`
+- `--obsidian` or `--no-obsidian`
+- `--dry-run`
+- `--json`
+- `--help` or `-h`
+
+The two GitHub values must be provided together for a new configuration. They
+store non-secret references only. Linear and Obsidian flags store optional
+interface settings only.
+
+If identity values are missing, the CLI prompts only when standard input and
+standard error are interactive terminals and `--json` is absent. Noninteractive
+and JSON runs fail with the missing fields instead.
+
+## Local operation
+
+Setup makes no network requests, receives no credentials, and does not connect
+GitHub, Linear, Obsidian, an MCP server, or a backend. The package has no
+postinstall setup hook. Building or packing the workspace does not run setup
+and does not publish either package.
