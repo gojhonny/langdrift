@@ -1,23 +1,45 @@
 'use client'
 
 import type {} from 'sinapsi/react-types'
-import { useAtomValue } from 'jotai'
-import { useTranslations } from 'next-intl'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { SinapsiElement } from 'sinapsi'
-import { getHeroGraph } from '../lib/hero-demo-data'
-import { themeAtom } from '../state'
+import {
+  getHeroGraph,
+  getHeroPointFromNodeClick,
+  getHeroPoints
+} from '../lib/hero-demo-data'
+import { selectedPointAtom, themeAtom } from '../state'
 
 export function HeroSinapsiGraph() {
   const t = useTranslations('demo')
+  const locale = useLocale()
   const theme = useAtomValue(themeAtom)
+  const setSelectedPoint = useSetAtom(selectedPointAtom)
   const elementRef = useRef<SinapsiElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'failed'>(
     'loading'
   )
   const descriptionId = useId()
   const headingId = useId()
-  const graph = useMemo(() => getHeroGraph(t), [t])
+  const graph = useMemo(() => getHeroGraph(t, locale), [t, locale])
+  const points = useMemo(() => getHeroPoints(t, locale), [t, locale])
+
+  useEffect(() => {
+    const element = elementRef.current
+    if (!element) return
+
+    function selectMovement(event: Event) {
+      if (!(event instanceof CustomEvent)) return
+      const index = getHeroPointFromNodeClick(event.detail, graph, points)
+      if (index !== undefined) setSelectedPoint(index)
+    }
+
+    element.addEventListener('sinapsi-node-click', selectMovement)
+    return () =>
+      element.removeEventListener('sinapsi-node-click', selectMovement)
+  }, [graph, points, setSelectedPoint])
 
   useEffect(() => {
     let cancelled = false
@@ -62,12 +84,15 @@ export function HeroSinapsiGraph() {
       </p>
       <div className="hero-graph-stage" data-status={status}>
         <sinaps-i
+          aria-label={t('graph.title')}
           className="hero-sinapsi"
+          close-label={t('graph.closeLabel')}
           color-muted={theme === 'dark' ? '#A1A1AA' : '#6B6B75'}
           color-primary="#F97316"
-          color-text="#212121"
-          move="idle"
+          color-text={theme === 'dark' ? '#F5F5F5' : '#171717'}
+          move="rotate"
           ref={elementRef}
+          speed={0.2}
         />
         {status !== 'ready' ? (
           <output className="hero-graph-fallback">

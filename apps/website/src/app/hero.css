@@ -73,20 +73,11 @@ html { scroll-padding-top: 96px; }
 
 .website-hero-demo { margin-top: 48px; }
 
-.website-demo-disclosure {
-  color: var(--ld-muted);
-  display: block;
-  font-family: var(--ld-font-mono);
-  font-size: 11px;
-  letter-spacing: .04em;
-  margin-bottom: 13px;
-}
-
 .website-demo-grid {
   align-items: stretch;
   display: grid;
   gap: 24px;
-  grid-template-columns: minmax(0, .45fr) minmax(0, .55fr);
+  grid-template-columns: minmax(460px, .42fr) minmax(0, .58fr);
 }
 
 .website-demo-grid > * { min-width: 0; }
@@ -124,7 +115,6 @@ html { scroll-padding-top: 96px; }
 @media (max-width: 1100px) {
   .website-demo-grid { grid-template-columns: minmax(0, 1fr); }
   .website-demo-grid > * { margin-inline: auto; max-width: 780px; width: 100%; }
-  .website-demo-disclosure { margin-inline: auto; max-width: 780px; }
 }
 
 @media (max-width: 760px) {

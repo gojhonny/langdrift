@@ -12,11 +12,10 @@ const en = {
       'LangDrift shows how your product moved from the vision you intended — what changed, who moved it, why it happened, and whether the change was intentional.',
     seeMovement: 'See what moved',
     howItWorks: 'How it works',
-    illustrative: 'Illustrative data',
     caption:
       'Drift describes movement relative to a product vision. It can reveal a gap, a realignment, or a positive change.',
     summary:
-      'This illustrative Product Vision curve moves from 91% in April to 73% in August. Select a marked point to explore its context. The graph shows relationships and can be explored independently.'
+      'This illustrative Product Vision curve moves from 91% in April to 73% in August. Select a marked point to explore its context, or select a graph node to open its card and show the related movement on the curve.'
   },
   why: {
     kicker: 'Know why',
@@ -113,11 +112,10 @@ const ptBR: HomeMessages = {
       'O LangDrift mostra como seu produto se moveu em relação à visão que você pretendia construir — o que mudou, quem o moveu, por que aconteceu e se a mudança foi intencional.',
     seeMovement: 'Veja o que mudou',
     howItWorks: 'Como funciona',
-    illustrative: 'Dados ilustrativos',
     caption:
       'Drift descreve o movimento em relação à visão de um produto. Pode revelar um afastamento, um realinhamento ou uma mudança positiva.',
     summary:
-      'Esta curva ilustrativa de Product Vision vai de 91% em abril a 73% em agosto. Selecione um ponto marcado para explorar seu contexto. O grafo mostra relações e pode ser explorado de forma independente.'
+      'Esta curva ilustrativa de Product Vision vai de 91% em abril a 73% em agosto. Selecione um ponto marcado para explorar seu contexto, ou um node do grafo para abrir seu card e mostrar o movimento relacionado na curva.'
   },
   why: {
     kicker: 'Entenda o porquê',
@@ -212,11 +210,10 @@ const zhHant: HomeMessages = {
       'LangDrift 呈現您的產品相對於原定願景如何變動——改變了什麼、誰參與其中、為何發生，以及這項變更是否出於明確意圖。',
     seeMovement: '查看變動',
     howItWorks: '運作方式',
-    illustrative: '示範資料',
     caption:
       'Drift 描述產品相對於願景的變動。它可能揭示差距、重新對齊，或正向改變。',
     summary:
-      '此示範 Product Vision 曲線從四月的 91% 變為八月的 73%。選取標記的資料點以探索背景。關聯圖呈現各項關係，可獨立探索。'
+      '此示範 Product Vision 曲線從四月的 91% 變為八月的 73%。選取標記的資料點以探索背景，或選取關聯圖中的節點，開啟資訊卡並在曲線上查看相關變動。'
   },
   why: {
     kicker: '了解原因',
@@ -306,11 +303,10 @@ const ja: HomeMessages = {
       'LangDrift は、製品が意図したビジョンからどう変化したかを示します。何が変わり、誰が関わり、なぜ起きたのか、そしてその変化が意図的だったのかを確認できます。',
     seeMovement: '変化を見る',
     howItWorks: '仕組みを見る',
-    illustrative: 'デモデータ',
     caption:
       'Drift は製品ビジョンに対する変化を表します。隔たり、再調整、または前向きな変化を示すことがあります。',
     summary:
-      'このデモの Product Vision 曲線は、4月の 91% から8月の 73% に変化しています。マークされた点を選ぶと背景を確認できます。グラフは関係性を示しており、独立して探索できます。'
+      'このデモの Product Vision 曲線は、4月の 91% から8月の 73% に変化しています。マークされた点で背景を確認できます。グラフのノードを選ぶとカードが開き、関連する変化が曲線に表示されます。'
   },
   why: {
     kicker: '理由を知る',
