@@ -1,11 +1,11 @@
 'use client'
 
 import { ProductVisionCurve } from '@repo/react/ui/product-vision-curve'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useLocale, useTranslations } from 'next-intl'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { getHeroPoints } from '../lib/hero-demo-data'
-import { selectedPointAtom } from '../state'
+import { heroSelectionAtom, selectedPointAtom } from '../state'
 
 export function useHeroPoints() {
   const t = useTranslations('demo')
@@ -18,14 +18,56 @@ export function HeroChart() {
   const locale = useLocale()
   const points = useHeroPoints()
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
+  const selection = useAtomValue(heroSelectionAtom)
+  const previousSelection = useRef(selection)
+  const frameRef = useRef<HTMLSpanElement>(null)
+  const passage = useRef(false)
   const selectedEventId = (points[selectedPoint]?.event ?? points.at(-1)?.event)
     ?.id
   const percent = new Intl.NumberFormat(locale, { style: 'percent' })
   const number = new Intl.NumberFormat(locale)
   const delta = new Intl.NumberFormat(locale, { signDisplay: 'exceptZero' })
 
+  useEffect(() => {
+    const previous = previousSelection.current
+    previousSelection.current = selection
+    const frame = frameRef.current
+    const motionPreference = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    )
+    if (
+      !frame ||
+      selection.source !== 'graph' ||
+      selection.pointIndex === previous.pointIndex ||
+      motionPreference.matches
+    ) {
+      return
+    }
+
+    // Alternate finite CSS animations to replace an in-flight passage without
+    // remounting the chart, measuring layout or scheduling a frame loop.
+    function stopInterruptedPassage() {
+      if (frame && motionPreference.matches) delete frame.dataset.passage
+    }
+    frame.addEventListener('animationcancel', stopInterruptedPassage)
+    passage.current = !passage.current
+    frame.dataset.passage = passage.current ? 'a' : 'b'
+    return () => {
+      frame.removeEventListener('animationcancel', stopInterruptedPassage)
+      delete frame.dataset.passage
+    }
+  }, [selection])
+
   return (
     <div className="hero-chart-card">
+      <span
+        aria-hidden="true"
+        className="hero-chart-chroma"
+        onAnimationEnd={(event) => {
+          delete event.currentTarget.dataset.passage
+        }}
+        ref={frameRef}
+      />
       <div className="hero-chart-heading">
         <div className="hero-chart-score">
           <span>{t('chart.title')}</span>

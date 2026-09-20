@@ -44,8 +44,8 @@ export async function generateMetadata({
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: '#f7f6f2'
+  colorScheme: 'dark light',
+  themeColor: '#0b0b0c'
 }
 
 export default async function LocaleLayout({ children, params }: LayoutProps) {
@@ -54,7 +54,12 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   setRequestLocale(locale)
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html
+      lang={locale}
+      data-theme="dark"
+      style={{ colorScheme: 'dark' }}
+      suppressHydrationWarning
+    >
       <body>
         <NextIntlClientProvider
           locale={locale}

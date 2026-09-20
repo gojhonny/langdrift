@@ -6,6 +6,73 @@
   box-shadow: 0 18px 54px #00000008;
   min-width: 0;
   padding: clamp(16px, 2vw, 24px);
+  position: relative;
+}
+
+.hero-chart-chroma {
+  border-radius: inherit;
+  inset: -1px;
+  pointer-events: none;
+  position: absolute;
+}
+
+.hero-chart-chroma::before,
+.hero-chart-chroma::after {
+  --hero-chroma-intensity: .9;
+  animation-duration: 600ms;
+  animation-timing-function: ease-out;
+  background: linear-gradient(
+    105deg,
+    var(--ld-brand, #f97316) 15%,
+    var(--ld-brand, #f97316) 36%,
+    var(--ld-intentional, #3b82f6) 46%,
+    var(--ld-review, #a855f7) 54%,
+    var(--ld-brand, #f97316) 68%,
+    var(--ld-brand, #f97316) 90%
+  ) 0 0 / 220% 100%;
+  border-radius: inherit;
+  content: '';
+  inset: 0;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: .16;
+  padding: 1px;
+  position: absolute;
+}
+
+.hero-chart-chroma::after {
+  --hero-chroma-intensity: .6;
+  filter: blur(4px);
+  padding: 2px;
+}
+
+.hero-chart-chroma[data-passage='a']::before,
+.hero-chart-chroma[data-passage='a']::after {
+  animation-name: hero-chroma-passage-a;
+}
+
+.hero-chart-chroma[data-passage='b']::before,
+.hero-chart-chroma[data-passage='b']::after {
+  animation-name: hero-chroma-passage-b;
+}
+
+@keyframes hero-chroma-passage-a {
+  0% { background-position: 100% 0; opacity: .16; }
+  28% { opacity: var(--hero-chroma-intensity); }
+  100% { background-position: 0 0; opacity: .16; }
+}
+
+@keyframes hero-chroma-passage-b {
+  0% { background-position: 100% 0; opacity: .16; }
+  28% { opacity: var(--hero-chroma-intensity); }
+  100% { background-position: 0 0; opacity: .16; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-chart-chroma[data-passage]::before,
+  .hero-chart-chroma[data-passage]::after {
+    animation: none;
+  }
 }
 
 .hero-chart-heading {

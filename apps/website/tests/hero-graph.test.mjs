@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { registerHooks } from 'node:module'
 import { test } from 'node:test'
 import { createTranslator } from 'next-intl'
+import { createStore } from 'jotai/vanilla'
 
 // Node's TypeScript runner does not resolve extensionless workspace barrels.
 // Resolve this one asset-only export to its source; no browser/React mock is needed.
@@ -24,6 +25,12 @@ const { getHeroGraph, getHeroPoints, getHeroPointFromNodeClick } = await import(
   '../src/lib/hero-demo-data.ts'
 )
 const { demoMessages } = await import('../src/messages/demo.ts')
+const {
+  heroSelectionAtom,
+  selectedPointAtom,
+  selectHeroGraphPointAtom,
+  themeAtom
+} = await import('../src/state.ts')
 
 function scenario(locale = 'en') {
   const t = createTranslator({ locale, messages: demoMessages[locale] })
@@ -119,4 +126,59 @@ test('Locale changes translate presentation while preserving topology and event 
       node.presentation.description
     )
   }
+})
+
+test('Graph selection commits only a changed mapped event, with its origin and immediate data', () => {
+  const store = createStore()
+  const { graph, points } = scenario()
+  const commits = []
+  const stop = store.sub(heroSelectionAtom, () => {
+    commits.push(store.get(heroSelectionAtom))
+  })
+  function click(id) {
+    const node = graph.graph.find((entry) => entry.id === id)
+    const index = getHeroPointFromNodeClick(
+      { id, event: 'click', payload: node.payload },
+      graph,
+      points
+    )
+    if (index !== undefined) store.set(selectHeroGraphPointAtom, index)
+  }
+
+  assert.deepEqual(store.get(heroSelectionAtom), {
+    pointIndex: 2,
+    source: 'initial'
+  })
+  click('pricing')
+  click('decision')
+  assert.equal(commits.length, 0, 'Different nodes for current data are no-ops')
+
+  click('authentication')
+  assert.equal(store.get(selectedPointAtom), 3, 'Data commits immediately')
+  assert.deepEqual(commits, [{ pointIndex: 3, source: 'graph' }])
+  click('authentication')
+  click('onboarding')
+  assert.equal(commits.length, 1, 'Repeated event does not retrigger feedback')
+
+  store.set(selectedPointAtom, 4)
+  assert.deepEqual(store.get(heroSelectionAtom), {
+    pointIndex: 4,
+    source: 'chart'
+  })
+  click('exports')
+  assert.equal(commits.length, 2, 'Graph cannot confirm unchanged chart data')
+
+  click('vision')
+  click('pricing')
+  click('authentication')
+  assert.deepEqual(store.get(heroSelectionAtom), {
+    pointIndex: 3,
+    source: 'graph'
+  })
+  const finalCommit = store.get(heroSelectionAtom)
+  store.set(themeAtom, 'dark')
+  scenario('pt-BR')
+  assert.equal(store.get(heroSelectionAtom), finalCommit)
+  assert.equal(commits.length, 5, 'Theme and translated data do not commit')
+  stop()
 })

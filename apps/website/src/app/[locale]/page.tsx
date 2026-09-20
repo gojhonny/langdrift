@@ -9,6 +9,8 @@ import {
 import { notFound } from 'next/navigation'
 
 import { HeroChart } from '../../components/hero-chart'
+import { IntegrationsSection } from '../../components/integrations-section'
+import { ExecutiveReviewSection } from '../../components/executive-review-section'
 import { HeroSinapsiGraph } from '../../components/hero-sinapsi-graph'
 import { SelectedMovement } from '../../components/selected-movement'
 import { VisionLoopEvidenceSection } from '../../components/vision-loop-evidence-section'
@@ -157,6 +159,9 @@ export default async function WebsitePage({
             </article>
           </div>
         </section>
+
+        <IntegrationsSection locale={locale} />
+        <ExecutiveReviewSection locale={locale} />
 
         <section className="voice-band" id="voice">
           <VoicePreview />

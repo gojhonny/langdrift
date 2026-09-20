@@ -7,7 +7,9 @@
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit"
   },
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     "./styles.css": "./src/styles.css",
     "./tokens.css": "./src/tokens.css",
@@ -20,6 +22,7 @@
     "./ui/product-vision-curve": "./src/ui/product-vision-curve/index.ts",
     "./ui/status-pill": "./src/ui/status-pill/index.ts",
     "./ui/theme-toggle": "./src/ui/theme-toggle/index.ts",
+    "./ui/target-distribution-chart": "./src/ui/target-distribution-chart/index.tsx",
     "./vendors/shadcn": "./src/vendors/shadcn/index.ts",
     "./vendors/smoothui": "./src/vendors/smoothui/index.ts",
     "./utilities": "./src/utilities/index.ts"
@@ -37,7 +40,9 @@
     "react-dom": ">=19"
   },
   "peerDependenciesMeta": {
-    "next": { "optional": true }
+    "next": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^19",
