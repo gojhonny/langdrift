@@ -3,37 +3,22 @@ set -eu
 . "$DRIFT_CLI_DIR/core/common.sh"
 [ "$#" -eq 0 ] || drift_die "Help does not accept arguments." 2
 
-drift_print_logo
-cat <<'EOF'
-Lang Drift monorepo platform CLI
+drift_print_opening_logo
 
-Usage:
-  drift [--logs] <command> [--logs] [arguments]
-  drift --help
+drift_print_command() {
+  printf '%s %s\n' "$1" "$2"
+}
 
-Commands:
-  help                                  Show this guide
-  --version                             Print the Drift version
-  bootstrap                             Install and configure a checkout
-  setup [--bin-dir <directory>]         Install the user-scoped launcher
-  doctor [--ci]                         Diagnose repository prerequisites
-  harness [--json] [--min-level <1-4>] Inspect placeholder harness maturity
-  cleanup                               Remove generated state and dependencies
-  runtime <dev|start|build>             Run frontend workspace runtime tasks
-  changelog <product> [options]         Prepare a product changelog
-  adr [name]                            Create the next empty ADR
-  rule [name]                           Create the next empty rule
-  skill [name]                          Create an empty local skill
-  spec [name]                           Create the next empty spec
-  env <setup|validate>                  Prepare or validate environment files
-  git <setup|doctor|pre-commit|commit-msg|lint-history>
-  check <all|architecture|canonical|harness|imports|memory|platform|rules|runtime|skills|specs>
-                                        Run audit checkers once implemented
-
-First checkout:
-  pnpm install
-  pnpm postclone
-  ./cli/drift setup
-
-Drift never edits shell profiles or installs a global npm package.
-EOF
+printf '%s\n' --version
+printf '%s\n' --loader
+drift_print_command "$DRIFT_ICON_SETUP" setup
+drift_print_command "$DRIFT_ICON_DOCTOR" doctor
+drift_print_command "$DRIFT_ICON_HARNESS" harness
+drift_print_command "$DRIFT_ICON_CLEANUP" cleanup
+drift_print_command "$DRIFT_ICON_RUNTIME" runtime
+drift_print_command "$DRIFT_ICON_RUNTIME" 'run <app>'
+drift_print_command "$DRIFT_ICON_DEV" 'dev <app>'
+drift_print_command "$DRIFT_ICON_SHOWCASE" showcase
+drift_print_command '⚙️ ' env
+drift_print_command "$DRIFT_ICON_GIT" git
+drift_print_command "$DRIFT_ICON_VERIFY" 'verify packages'

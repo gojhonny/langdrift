@@ -30,11 +30,41 @@ drift_git_checkout() {
   git -C "$DRIFT_PROJECT_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
+drift_path_has() {
+  case ":${PATH:-}:" in
+    *:"$1":*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 drift_default_bin_dir() {
-  if [ -n "${DRIFT_BIN_DIR:-}" ]; then printf '%s\n' "$DRIFT_BIN_DIR"
-  elif [ -n "${PNPM_HOME:-}" ]; then printf '%s\n' "$PNPM_HOME"
-  elif [ -n "${XDG_BIN_HOME:-}" ]; then printf '%s\n' "$XDG_BIN_HOME"
-  elif [ -n "${HOME:-}" ]; then printf '%s\n' "$HOME/.local/bin"
-  else return 1
+  if [ -n "${DRIFT_BIN_DIR:-}" ]; then
+    printf '%s\n' "$DRIFT_BIN_DIR"
+    return 0
   fi
+
+  if [ -n "${PNPM_HOME:-}" ]; then
+    if drift_path_has "$PNPM_HOME/bin" || [ -d "$PNPM_HOME/bin" ]; then
+      printf '%s\n' "$PNPM_HOME/bin"
+      return 0
+    fi
+    if drift_path_has "$PNPM_HOME"; then
+      printf '%s\n' "$PNPM_HOME"
+      return 0
+    fi
+    printf '%s\n' "$PNPM_HOME/bin"
+    return 0
+  fi
+
+  if [ -n "${XDG_BIN_HOME:-}" ]; then
+    printf '%s\n' "$XDG_BIN_HOME"
+    return 0
+  fi
+
+  if [ -n "${HOME:-}" ]; then
+    printf '%s\n' "$HOME/.local/bin"
+    return 0
+  fi
+
+  return 1
 }

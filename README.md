@@ -1,4 +1,4 @@
-<div align="center">
+
 
 # LangDrift
 
@@ -10,11 +10,9 @@ Visual product intelligence for founders and teams building with humans and AI.
 
 [Explore LangDrift](https://langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
 
-</div>
+![LangDrift product preview: a Product Vision curve connects illustrative changes to people, decisions, and a graph of supporting context.](./assets/readme/banner.png)
 
-[![LangDrift product preview: a Product Vision curve connects illustrative changes to people, decisions, and a graph of supporting context.](https://raw.githubusercontent.com/gojhonny/langdrift/staging/apps/website/docs/sinapsi-integration/desktop-en-light.png)](https://langdrift.md/)
-
-<p align="center"><sub>Product preview · Illustrative data</sub></p>
+Product preview · Illustrative data
 
 ## Every release changes your product. Keep the why.
 
@@ -27,11 +25,15 @@ LangDrift connects that movement to its context: **what changed, why it happened
 - **Keep accountability clear.** Trace contributions across people, teams, and agents.
 - **Invest with context.** Revisit compromises and recognize opportunities before the next release.
 
+
+
 ## Vision → Loop → Evidence
 
-| Vision | Loop | Evidence |
-| :--- | :--- | :--- |
+
+| Vision                           | Loop                                            | Evidence                                       |
+| -------------------------------- | ----------------------------------------------- | ---------------------------------------------- |
 | Define what you want to achieve. | Follow the decisions and changes that shape it. | Understand what happened and what supports it. |
+
 
 **Drift can reveal a gap, a deliberate trade-off, or a better direction.** Its meaning comes from context and evidence.
 
@@ -41,11 +43,9 @@ Visual-first for understanding. Voice-first for inquiry. One product story, from
 
 **[Explore the interactive demo →](https://langdrift.md/)**
 
-<sub>In active development. The website demonstrates the intended experience; live platform integrations and voice inquiry are not yet available. SDK and setup packages are implemented but unpublished.</sub>
+In active development. The website demonstrates the intended experience; live platform integrations and voice inquiry are not yet available. SDK and setup packages are implemented but unpublished.
 
 ---
 
-<p align="center">
-  <strong>From vision to reality, and everything in between.</strong><br />
-  <sub>Made in Brazil · <a href="https://neongate.com.br/">Neongate AI</a></sub>
-</p>
+**From vision to reality, and everything in between.**  
+Made in Brazil · [Neongate AI](https://neongate.com.br/)

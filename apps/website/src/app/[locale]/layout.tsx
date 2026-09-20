@@ -35,7 +35,9 @@ export async function generateMetadata({
     title: t('title'),
     description: t('description'),
     applicationName: 'LangDrift',
-    icons: { icon: '/favicon.ico' },
+    icons: {
+      icon: [{ url: '/favicon.ico', sizes: 'any' }]
+    },
     alternates: {
       canonical: localePath[locale],
       languages: { ...localePath, 'x-default': '/' }

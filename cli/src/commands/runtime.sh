@@ -4,8 +4,10 @@ set -eu
 command=${1:-}
 [ "$#" -eq 0 ] || shift
 case "$command" in
-  dev) exec pnpm -C "$DRIFT_PROJECT_ROOT" dev "$@" ;;
-  start) exec pnpm -C "$DRIFT_PROJECT_ROOT" start "$@" ;;
-  build) exec pnpm -C "$DRIFT_PROJECT_ROOT" build "$@" ;;
-  *) drift_die "Usage: drift runtime <dev|start|build>" 2 ;;
+  website|console|sso|mobile|build)
+    drift_print_opening_logo
+    drift_queue_scene "$DRIFT_ICON_RUNTIME" "$DRIFT_RUNTIME_PHRASE"
+    pnpm -C "$DRIFT_PROJECT_ROOT" "$command" "$@"
+    ;;
+  *) drift_die "Usage: drift runtime <website|console|sso|mobile|build>" 2 ;;
 esac

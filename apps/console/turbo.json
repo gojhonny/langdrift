@@ -1,1 +1,6 @@
-{"extends":["//"],"tasks":{"dev":{"persistent":true,"cache":false}}}
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": { "dependsOn": ["^build"], "persistent": true, "cache": false }
+  }
+}

@@ -1,7 +1,7 @@
 {
-  "name": "@langdrift/sdk",
+  "name": "@langdrift/setup",
   "version": "0.1.0",
-  "description": "Deterministic Vision, Loop and Evidence protocol for LangDrift",
+  "description": "Explicit, non-destructive LangDrift project setup",
   "type": "module",
   "engines": {
     "node": ">=24"
@@ -11,22 +11,13 @@
     "README.md",
     "CHANGELOG.md"
   ],
+  "bin": {
+    "langdrift": "./dist/bin.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "import": "./dist/schema.js"
-    },
-    "./mcp": {
-      "types": "./dist/mcp.d.ts",
-      "import": "./dist/mcp.js"
-    },
-    "./integrations": {
-      "types": "./dist/integrations.d.ts",
-      "import": "./dist/integrations.js"
     }
   },
   "scripts": {
@@ -40,12 +31,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gojhonny/langdrift.git",
-    "directory": "packages/sdk"
+    "directory": "packages/core"
   },
   "dependencies": {
-    "ajv": "8.20.0",
-    "ajv-formats": "3.0.1",
-    "yaml": "2.9.1"
+    "@langdrift/sdk": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "24.13.6",

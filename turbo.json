@@ -20,10 +20,11 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
+    "@repo/react#build": { "dependsOn": ["^build"], "outputs": [] },
+    "@repo/design-system#build": { "dependsOn": ["^build"], "outputs": [] },
     "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] },
     "@langdrift/setup#typecheck": { "dependsOn": ["^build"], "outputs": [] },
-    "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
-    "dev": { "cache": false, "persistent": true },
+    "dev": { "dependsOn": ["^build"], "cache": false, "persistent": true },
     "start": { "dependsOn": ["build"], "cache": false, "persistent": true },
     "clean": { "cache": false }
   }

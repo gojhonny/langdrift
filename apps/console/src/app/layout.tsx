@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   title: 'LangDrift Console',
   description: 'Product Vision, Drift, decisions, people, and reports.',
   applicationName: 'LangDrift',
-  icons: { icon: '/favicon.ico' }
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: 'any' }]
+  }
 }
 
 export const viewport: Viewport = {
