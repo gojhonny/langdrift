@@ -42,6 +42,8 @@ for (const [path, locale] of routes) {
         'executive-review',
         'voice',
         'pricing',
+        'roi',
+        'faq',
         'early-access'
       ]) {
         assert.equal(
@@ -61,11 +63,11 @@ for (const [path, locale] of routes) {
           html.indexOf('id="executive-review"')
       )
       assert.ok(
-        html.indexOf('id="executive-review"') < html.indexOf('id="voice"')
+        html.indexOf('id="executive-review"') < html.indexOf('id="roi"')
       )
       const review = html
         .split('id="executive-review"')[1]
-        ?.split('id="voice"')[0]
+        ?.split('id="roi"')[0]
       assert.ok(review, 'Executive review is available before hydration')
       assert.equal([...review.matchAll(/data-review-question=/g)].length, 3)
       assert.equal([...review.matchAll(/data-review-event=/g)].length, 12)
@@ -114,10 +116,24 @@ for (const [path, locale] of routes) {
         html,
         /Visual-first for truth · Voice-first for inquiry/
       )
+      assert.equal([...html.matchAll(/<form\b/g)].length, 1)
+      assert.match(html, /<input\b[^>]*type="email"/)
+      assert.ok(html.indexOf('id="roi"') < html.indexOf('id="faq"'))
+      assert.ok(html.indexOf('id="faq"') < html.indexOf('id="early-access"'))
+      assert.match(header, /href="[^"]*\/pricing"/)
+      assert.doesNotMatch(header, /href="[^"]*#pricing"/)
+      const footer = html.split('<footer')[1]
+      assert.match(footer, /preset="neongate"/)
+      assert.match(footer, /Neongate AI/)
+      assert.match(footer, /© 2026 LangDrift made in Brazil/)
+      assert.match(footer, /href="https:\/\/github.com\/gojhonny\/langdrift"/)
+      assert.match(
+        footer,
+        /href="https:\/\/www.linkedin.com\/company\/langdrift\/"/
+      )
       assert.doesNotMatch(
-        html,
-        /<form\b/,
-        'Informational early access does not simulate capture'
+        footer,
+        /Visual-first for truth|Voice-first for inquiry/
       )
     }
   })
@@ -149,7 +165,8 @@ test('Localization reaches the existing sections below the hero', async () => {
     'integrations',
     'executive-review',
     'voice',
-    'pricing'
+    'roi',
+    'faq'
   ]) {
     const headings = pages.map((html) => {
       const section = html.split(`id="${id}"`)[1]?.split('</section>')[0]

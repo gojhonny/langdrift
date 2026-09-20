@@ -18,6 +18,7 @@
     "./ui/brand": "./src/ui/brand/index.ts",
     "./ui/drift-curve": "./src/ui/drift-curve/index.ts",
     "./ui/icons": "./src/ui/icons/index.ts",
+    "./ui/icons/server": "./src/ui/icons/server.ts",
     "./ui/metric": "./src/ui/metric/index.ts",
     "./ui/product-vision-curve": "./src/ui/product-vision-curve/index.ts",
     "./ui/status-pill": "./src/ui/status-pill/index.ts",
