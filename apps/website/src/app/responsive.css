@@ -20,10 +20,6 @@
 }
 
 @media (max-width: 760px) {
-  body {
-    overflow-x: hidden;
-  }
-
   .header-four-stage,
   .header-four-copy,
   .header-four-visual,
