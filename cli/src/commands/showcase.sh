@@ -13,4 +13,5 @@ exec pnpm exec turbo run start \
   --filter=website \
   --filter=console \
   --filter=sso \
-  --filter=mobile
+  --filter=mobile \
+  --filter=docs

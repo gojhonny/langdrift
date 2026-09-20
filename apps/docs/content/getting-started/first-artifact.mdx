@@ -1,0 +1,57 @@
+---
+title: First artifact
+description: Add a PRD whose identity and relationships are explicit while its context remains Markdown.
+---
+
+# Create a first artifact
+
+Markdown artifacts live under the package-defined `.drifts` paths. Add this PRD
+at a path such as `.drifts/vision/prd/product-vision-dashboard.md`:
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Product Vision Dashboard
+  owners:
+    - user_42
+  research:
+    - RES-001
+  vision_targets:
+    - VT-001
+---
+
+# Product Vision Dashboard
+
+## Purpose
+
+Give leadership an auditable view of movement against recorded product intent.
+
+## Open questions
+
+- Which source observations support each change?
+- Which decisions explain the movement?
+```
+
+The `langdrift` frontmatter is the deterministic envelope:
+
+- `type` and `id` establish the artifact identity.
+- `schema_version` selects the protocol version.
+- `title` and at least one `owners` identifier are required.
+- `research` explicitly relates the PRD to `RES-001`.
+- `vision_targets` explicitly relates it to `VT-001`.
+
+The Markdown body carries rich context for people and downstream applications.
+The SDK preserves it as text. It does not infer identity or relationships from
+headings, prose, filenames, or links.
+
+The SDK rejects unknown frontmatter fields, malformed YAML, duplicate keys,
+aliases, and unsupported schema versions. During reference resolution,
+`RES-001` must resolve to a discovered research artifact. `VT-001` can be
+supplied as an explicitly known `vision-target` identity; reference resolution
+does not perform a remote lookup.
+
+Next, read [Vision → Loop → Evidence](/concepts/vision-loop-evidence) or follow
+[a Record into a Drift Event](/concepts/records-and-drift).

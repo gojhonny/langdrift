@@ -1,0 +1,59 @@
+---
+title: References
+description: Explicit local and external identity resolution without remote lookup.
+---
+
+# References
+
+References are explicit protocol data. The SDK does not infer them from prose,
+headings, branch names, or provider URLs.
+
+```ts
+interface ArtifactRef {
+  type: string
+  id: string
+  path?: string
+  integration?: string
+  external_id?: string
+}
+```
+
+`type` and `id` form the protocol identity. `path` can constrain a local
+reference to one artifact path. `integration` and `external_id` are an
+all-or-nothing pair for an external identity.
+
+Document metadata can provide `references`, `supersedes`, `superseded_by`, and
+typed relationship arrays such as `research`, `specs`, or `vision_targets`.
+The `external: { integration, id }` field registers the document's own
+provider identity as an external reference. Drift Events also reference their
+`vision_target_id`.
+
+## Resolve a set
+
+```ts
+const resolution = await resolveReferences(
+  root,
+  artifacts,
+  [{ type: 'vision-target', id: 'VT-001' }]
+)
+```
+
+Resolution indexes local artifacts by the exact `(type, id)` pair.
+
+- A matching local identity is `resolved`. If the reference includes `path`,
+  that path must equal the target artifact path.
+- A reference with `integration` and `external_id` is `external`.
+- A pathless reference matching the optional third argument is also
+  `external`. This list is an explicit registry of identities already known to
+  the caller.
+- Anything else produces a `REFERENCE_NOT_FOUND` issue.
+- Cycles among resolved local references produce `REFERENCE_CYCLE` issues.
+
+Issues are returned in `resolution.issues`; missing references and cycles do
+not throw. Duplicate local `(type, id)` identities are ambiguous and throw
+`LangDriftError` with code `ARTIFACT_INVALID`.
+
+Reference paths pass the same safe-path checks as artifacts. A path does not
+trigger a remote lookup, and the known-reference list does not query or prove
+the existence of backend data. Resolution is local-only and must be treated as
+a separate gate before transport.

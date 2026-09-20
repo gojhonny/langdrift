@@ -1,0 +1,55 @@
+---
+title: Schemas
+description: Versioned JSON Schema definitions for projects, documents, Records, and Drift Events.
+---
+
+# Schemas
+
+Protocol version `1` uses JSON Schema Draft 2020-12:
+
+```text
+https://json-schema.org/draft/2020-12/schema
+```
+
+The canonical model has exactly three pillars:
+
+- **Vision** — `research`, `prd`, `context`
+- **Loop** — `triage`, `design-document`, `spec`, `ticket`
+- **Evidence** — `adr`, `audit`, `record`, `drift`
+
+Drift is an Evidence type, not a pillar. The first nine types are Markdown
+document families. Records and Drift Events are JSON envelopes.
+
+## Exports
+
+`@langdrift/sdk/schema` exports:
+
+- `SCHEMA_VERSION`, currently the literal `1`
+- `schemas`, one schema for each artifact type
+- `projectSchema`
+- `pillarSchemas.vision`, `.loop`, and `.evidence`
+- `artifactPillars`, the type-to-pillar mapping
+
+Each pillar schema embeds the definitions and artifact shapes it needs, so the
+generated schema file is self-contained.
+
+## Validation behavior
+
+Schemas require explicit `schema_version: 1`. Artifact IDs are nonempty and
+contain no whitespace. Markdown metadata requires `type`, `schema_version`,
+`id`, `title`, and at least one `owner`. Record, Drift Event, reference, actor,
+and project fields are defined separately.
+
+Objects reject unknown properties where the protocol defines a closed shape.
+The validator does not coerce types, apply defaults, remove fields, or migrate
+unsupported versions. Format checks cover date, date-time, and other
+protocol-specific strings.
+
+`x-langdrift` is protocol guidance beside standard JSON Schema assertions. It
+records information such as document type, version, package-owned source glob,
+frontmatter namespace and required fields, reference relationships, pillar,
+and payload resource. A general JSON Schema validator can ignore this
+extension; LangDrift uses it to describe interpretation.
+
+The schemas describe portable inputs. They do not define a Product Vision
+formula or prove that a backend, integration, or MCP server exists.

@@ -8,6 +8,7 @@ out/
 dist/
 .turbo/
 coverage/
+**/public/_pagefind/
 
 # local environment
 .env

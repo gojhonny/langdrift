@@ -1,0 +1,109 @@
+---
+title: Troubleshooting
+description: Current SDK and setup failure cases with code-based recovery guidance.
+---
+
+# Troubleshooting
+
+Use the error `code` first. `LangDriftError.issues` contains JSON Pointer paths
+for validation failures. `SetupError.files` and `.fields` identify setup
+conflicts and missing input.
+
+## Project loading
+
+### `PROJECT_NOT_FOUND`
+
+Either no `.git` root was found while searching upward, or
+`.drifts/project.json` is missing. Pass the intended existing root explicitly
+or run local setup there.
+
+### `PROJECT_INVALID`
+
+The project file is malformed JSON or does not match the project schema.
+Review it manually. Setup preserves conflicting content and does not replace
+it.
+
+### `SCHEMA_UNSUPPORTED`
+
+An event, artifact, project, or reasoning envelope declares a schema version
+other than `1`. This release candidate has no migration path. Do not change the
+number without reviewing the data against the version 1 schema.
+
+## Artifacts and references
+
+### `ARTIFACT_INVALID`
+
+Current causes include:
+
+- malformed JSON or missing/invalid `langdrift` frontmatter
+- unsupported `.md` / `.json` usage or a type-directory mismatch
+- unknown fields or another schema mismatch
+- a file or body over 1 MiB
+- invalid discovery limits or exceeded file/directory limits
+- duplicate local `(type, id)` identities
+- inconsistent Drift impact or missing Evidence provenance
+- an invalid GitHub merged-pull-request fixture
+
+Read the field paths in `issues`. The parser does not infer missing identity
+from a heading or filename.
+
+### `PATH_OUTSIDE_ROOT`
+
+The path is absolute, traverses upward, contains a forbidden segment or
+character, or reaches a symbolic link. Use a normal relative path under the
+project's `.drifts` tree. Discovery never follows symlinks.
+
+### Reference issues
+
+`REFERENCE_NOT_FOUND` and `REFERENCE_CYCLE` are returned in
+`resolveReferences(...).issues`; they are not thrown. Register an explicitly
+known external identity, correct the exact type/ID/path, or remove the local
+cycle before transport.
+
+## Credentials and transport
+
+### `CREDENTIAL_MISSING`
+
+The reference is not in `env:NAME` form, or the environment value is absent or
+contains a newline or null byte. Pass only a reference and provide the value
+to the runtime environment.
+
+### `REMOTE_UNAUTHORIZED`
+
+The injected transport reported `401` or `403`. Routing `account_id` and
+`project_id` do not grant authorization; review the runtime credential and
+destination policy.
+
+### `REMOTE_REJECTED`
+
+The injected transport reported another `4xx` status. Review the validated
+envelope and destination contract.
+
+### `MCP_UNAVAILABLE`
+
+The transport failed without a classified `4xx` response. Nothing is queued
+locally. Retry only after checking the caller-supplied adapter.
+
+## Setup
+
+- `ROOT_INVALID` — `--root` does not resolve to an existing directory.
+- `SETUP_ARGUMENT_MISSING` — provide project ID, account ID, and name in a
+  noninteractive run.
+- `SETUP_ARGUMENT_INVALID` — review the supported flags, conflicting boolean
+  flags, and the paired numeric GitHub installation ID plus
+  `owner/repository`.
+- `SETUP_CONFLICT` — inspect every file status and reason. Preflight wrote
+  nothing.
+- `SETUP_PATH_CONFLICT` — a managed path is a symlink or has a non-directory
+  parent.
+- `SETUP_CONCURRENT_CHANGE` — a destination changed after preflight and was
+  preserved.
+- `SETUP_WRITE_FAILED` — an I/O failure interrupted creation. Earlier created
+  files can remain; inspect and rerun.
+
+`.drifts/execution` is a deliberate conflict because this version uses Loop
+and performs no legacy migration.
+
+For safe application diagnostics, `reportError(error, logger)` emits the code,
+a generic message, and validation issues. It omits unknown exception bodies
+and stacks.

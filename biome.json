@@ -11,6 +11,7 @@
       "!**/.drifts",
       "!**/.audits",
       "!**/coverage",
+      "!**/public/_pagefind",
       "!**/next-env.d.ts"
     ]
   },

@@ -1,0 +1,29 @@
+---
+title: Linear and Obsidian
+description: Optional interface configuration without provider connections or synchronization.
+---
+
+# Linear and Obsidian
+
+Both integrations currently have `interface-only` capability.
+
+Setup accepts `--linear` / `--no-linear` and `--obsidian` /
+`--no-obsidian`. These flags only write the corresponding `enabled` boolean in
+the local project configuration. They request no credential and establish no
+connection.
+
+The SDK's only common provider extension is `RecordSourceAdapter`, whose
+`readRecords()` method returns an asynchronous stream of Records. No Linear- or
+Obsidian-specific adapter is implemented.
+
+There is currently no:
+
+- provider authentication
+- API or vault client
+- polling, webhook, or file-watching runtime
+- provider write path
+- bidirectional synchronization
+- conflict resolution or automatic link extraction
+
+Applications may implement the ingestion interface separately. Enabling the
+local setting does not activate such an implementation.

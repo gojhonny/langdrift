@@ -1,0 +1,113 @@
+---
+title: Records and Drift
+description: Normalize an observed change as a Record, then interpret it against a Vision Target with explicit evidence.
+---
+
+# Records and Drift
+
+A Record and a Drift Event answer different questions:
+
+- A **Record** is a normalized observed fact.
+- A **Drift Event** interprets observed movement against a Vision Target and
+  cites the Evidence supporting that interpretation.
+
+## 1. Normalize a merged pull request
+
+Assume an integration has observed GitHub pull request `481` in its merged
+state. The normalized event can be created with the exact `RecordEvent` shape:
+
+```ts
+import { createRecord } from '@langdrift/sdk'
+
+const record = createRecord({
+  id: 'REC-001',
+  kind: 'github.pull_request.merged',
+  occurred_at: '2026-09-19T18:00:00Z',
+  source: {
+    integration: 'github',
+    repository: 'example/product',
+    external_id: '9001'
+  },
+  actors: [{ type: 'human', external_id: 'github:12345' }],
+  references: [
+    { type: 'prd', id: 'PRD-001' },
+    { type: 'vision-target', id: 'VT-001' }
+  ],
+  data: {
+    number: 481,
+    title: 'Add Product Vision summary',
+    state: 'closed',
+    author: { type: 'human', external_id: 'github:12345' },
+    created_at: '2026-09-18T10:00:00Z',
+    updated_at: '2026-09-19T18:00:00Z',
+    merged_at: '2026-09-19T18:00:00Z',
+    head: { ref: 'product-vision-summary', sha: 'abc123' },
+    base: { ref: 'main', sha: 'def456' },
+    labels: ['product-vision']
+  }
+})
+```
+
+`createRecord` adds `type: 'record'` and `schema_version: 1`, then validates the
+caller-supplied facts. It does not invent timestamps, references, or scores.
+
+The SDK also provides `recordFromGitHubPullRequest` for a validated
+webhook/API-shaped merged pull request. That helper derives a stable hashed
+Record ID from immutable GitHub identity and maps only explicit provider
+fields. The readable `REC-001` above is supplied directly for this example.
+
+<Callout type="info">
+**Not connected yet.** The GitHub helper maps an in-memory event. It does not
+receive webhooks, fetch GitHub APIs, authenticate an app, or extract artifact
+links from prose.
+</Callout>
+
+## 2. Interpret the movement
+
+The interpretation names its target, references the observed Record, and cites
+that Record as reasoning evidence:
+
+```ts
+import { createDrift } from '@langdrift/sdk'
+
+const drift = createDrift({
+  id: 'DRIFT-001',
+  vision_target_id: 'VT-001',
+  state: 'expected',
+  impact: {
+    unit: 'score_points',
+    before: 10,
+    delta: 2,
+    after: 12
+  },
+  actors: [{ type: 'human', id: 'user_42' }],
+  references: [
+    { type: 'record', id: record.id },
+    { type: 'prd', id: 'PRD-001' }
+  ],
+  reasoning: {
+    method: 'human',
+    evidence_refs: [record.id],
+    schema_version: 1
+  }
+})
+```
+
+The relationships are explicit:
+
+- `vision_target_id` identifies the comparison target.
+- `references` links the interpretation to `REC-001` and `PRD-001`.
+- `reasoning.evidence_refs` identifies `REC-001` as supporting Evidence and
+  must match an entry in `references`.
+- `actors` attributes the interpretation.
+
+`createDrift` adds the Drift envelope type and protocol version. It checks that
+`after` equals `before + delta` and that every evidence ID appears in
+`references`. The caller owns the interpretation, impact unit, and values; the
+SDK does not calculate a Product Vision formula.
+
+<Callout type="info">
+**Expected is not beneficial.** `expected` means the movement matches recorded
+intent. `unexpected` means it does not. Neither state determines whether the
+change is helpful or harmful.
+</Callout>

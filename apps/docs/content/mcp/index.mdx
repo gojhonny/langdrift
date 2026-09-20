@@ -1,0 +1,101 @@
+---
+title: Payloads and transport
+description: Validated payload envelopes, source provenance, credentials, and the injected transport boundary.
+---
+
+# Payloads and transport
+
+<Callout type="info">
+  **Not connected yet.** The SDK defines payload and transport interfaces. It
+  does not contain or prove the existence of a production MCP server.
+</Callout>
+
+## Envelope
+
+```ts
+interface PayloadEnvelope {
+  schema_version: 1
+  account_id: string
+  project_id: string
+  resource: string
+  resource_id: string
+  source: PayloadSource
+  references: ArtifactRef[]
+  payload: JsonObject
+}
+```
+
+`account_id` and `project_id` come from the validated project. They route and
+contextualize a payload; they are not credentials and do not authorize access.
+`resource` is the pillar and type, such as `vision.prd`, and `resource_id` is
+the artifact or event ID.
+
+For a Markdown artifact, `payload` is `{ metadata, body }`. Record and Drift
+Event payloads are their validated JSON envelopes. `references` are the
+explicit references derived from the validated input.
+
+## Source provenance
+
+`PayloadSource.kind` is one of:
+
+- `markdown` — requires a safe relative `path`
+- `json` — requires a safe relative `path`
+- `integration` — requires `integration` and `external_id`
+
+Parsed artifacts infer `markdown` or `json` from their path. A direct Record
+infers its integration source. A direct Drift Event has no source field, so
+the caller must provide source provenance explicitly.
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+```
+
+Source objects reject extra fields and invalid combinations. File provenance
+uses the same relative-path syntax restrictions as local artifacts.
+
+## Injected transport
+
+```ts
+interface PayloadTransport {
+  send(
+    payload: PayloadEnvelope,
+    context: { authorization: string }
+  ): Promise<{ correlationId?: string }>
+}
+```
+
+`sendPayload` validates and constructs the envelope, resolves a credential,
+and invokes this caller-supplied interface. It does not choose an endpoint or
+protocol topology.
+
+Credentials use an `env:NAME` reference. `resolveCredential` reads the value
+at runtime and rejects missing values or values containing a newline or null
+byte. The credential is passed separately in transport context and is never
+included in the payload envelope.
+
+```ts
+await sendPayload(project, input, transport, {
+  credentialRef: 'env:LANGDRIFT_TOKEN',
+  source
+})
+```
+
+The SDK provides no HTTP client, persistence, batching, background queue,
+automatic retry, or automatic upload. Keep secrets out of Markdown bodies and
+Record data because those fields are payload content.
+
+## Transport errors
+
+An injected adapter can throw `TransportError(status)`. `sendPayload` maps:
+
+- `401` or `403` to `REMOTE_UNAUTHORIZED`
+- other `4xx` statuses to `REMOTE_REJECTED`
+- all other transport failures to `MCP_UNAVAILABLE`
+
+These become `LangDriftError` values. Raw remote response bodies, stacks, and
+credentials are not forwarded. Unavailable transport data is not queued
+locally; any retry is explicit.
