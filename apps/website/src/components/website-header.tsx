@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
+import { websiteLinks } from '../app/app-links'
 import { Link, usePathname, useRouter } from '../i18n/navigation'
 import { themeAtom } from '../state'
 
@@ -95,25 +96,16 @@ function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
   )
 }
 
-function AccessLinks({
-  descriptionId = 'website-early-access-description',
-  onNavigate
-}: {
-  descriptionId?: string
-  onNavigate?: () => void
-}) {
+function AccessLinks({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('header')
 
   return (
     <>
-      <Link
-        aria-describedby={descriptionId}
-        className="website-sign-in"
-        href="/#early-access"
-        onClick={onNavigate}
-      >
-        {t('signIn')}
-      </Link>
+      {/* Docs is an external, environment-configured origin: a plain anchor
+          keeps the i18n router from prefixing or rewriting it. */}
+      <a className="website-docs-link" href={websiteLinks.docs}>
+        {t('docs')}
+      </a>
       <Link
         className="website-get-started"
         href="/#early-access"
@@ -258,12 +250,6 @@ export function WebsiteHeader() {
             </button>
           </div>
         </div>
-        <span
-          className="website-header-sr-only"
-          id="website-early-access-description"
-        >
-          {t('earlyAccessDescription')}
-        </span>
       </header>
       <dialog
         aria-label={t('navigation')}
@@ -297,17 +283,8 @@ export function WebsiteHeader() {
         <div className="website-drawer-access">
           <LanguagePill fromDrawer />
           <div className="website-drawer-buttons">
-            <AccessLinks
-              descriptionId="website-drawer-early-access-description"
-              onNavigate={closeDrawer}
-            />
+            <AccessLinks onNavigate={closeDrawer} />
           </div>
-          <span
-            className="website-header-sr-only"
-            id="website-drawer-early-access-description"
-          >
-            {t('earlyAccessDescription')}
-          </span>
         </div>
       </dialog>
     </>

@@ -20,5 +20,11 @@ jobs:
       # Repository scaffolds are being restructured; check application code directly.
       - run: pnpm lint
       - run: pnpm typecheck
+      # The website fails fast on missing NEXT_PUBLIC_* (see
+      # apps/docs/content/decisions/2026-09-20-environment-variables-fail-fast.mdx).
+      # Build-safe values are set here explicitly instead of weakening that check.
       - run: pnpm build
+        env:
+          NEXT_PUBLIC_DOCS_URL: http://localhost:3004
+          NEXT_PUBLIC_SSO_URL: http://localhost:3002
       - run: ./cli/drift verify packages

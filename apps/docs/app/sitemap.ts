@@ -4,9 +4,22 @@ import { getPageMap } from 'nextra/page-map'
 
 import { siteConfig } from '../site.config'
 
+// Internal decision records stay out of the public sitemap.
+const internalPrefixes = ['/decisions']
+
+function isInternal(route: string) {
+  return internalPrefixes.some(
+    (prefix) => route === prefix || route.startsWith(`${prefix}/`)
+  )
+}
+
 function collectRoutes(items: PageMapItem[], routes = new Set<string>()) {
   for (const item of items) {
-    if ('route' in item && typeof item.route === 'string') {
+    if (
+      'route' in item &&
+      typeof item.route === 'string' &&
+      !isInternal(item.route)
+    ) {
       routes.add(item.route)
     }
 

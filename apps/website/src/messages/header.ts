@@ -13,9 +13,8 @@ export const headerMessages = {
       chinese: 'Traditional Chinese',
       japanese: 'Japanese'
     },
-    signIn: 'Sign in',
+    docs: 'Docs',
     getStarted: 'Get started',
-    earlyAccessDescription: 'Currently takes you to early access information.',
     lightTheme: 'Switch to light mode',
     darkTheme: 'Switch to dark mode',
     openNavigation: 'Open navigation',
@@ -35,10 +34,8 @@ export const headerMessages = {
       chinese: 'Chinês tradicional',
       japanese: 'Japonês'
     },
-    signIn: 'Entrar',
+    docs: 'Docs',
     getStarted: 'Começar',
-    earlyAccessDescription:
-      'No momento, leva às informações sobre o acesso antecipado.',
     lightTheme: 'Ativar modo claro',
     darkTheme: 'Ativar modo escuro',
     openNavigation: 'Abrir navegação',
@@ -58,9 +55,8 @@ export const headerMessages = {
       chinese: '繁體中文',
       japanese: '日語'
     },
-    signIn: '登入',
+    docs: '文件',
     getStarted: '開始使用',
-    earlyAccessDescription: '目前會前往搶先體驗資訊。',
     lightTheme: '切換至淺色模式',
     darkTheme: '切換至深色模式',
     openNavigation: '開啟導覽',
@@ -80,9 +76,8 @@ export const headerMessages = {
       chinese: '繁体字中国語',
       japanese: '日本語'
     },
-    signIn: 'ログイン',
+    docs: 'ドキュメント',
     getStarted: 'はじめる',
-    earlyAccessDescription: '現在は早期アクセスのご案内に移動します。',
     lightTheme: 'ライトモードに切り替え',
     darkTheme: 'ダークモードに切り替え',
     openNavigation: 'ナビゲーションを開く',

@@ -11,7 +11,11 @@ const meta: MetaRecord = {
   integrations: 'Integrations',
   api: 'API reference',
   troubleshooting: 'Troubleshooting',
-  changelog: 'Changelog'
+  changelog: 'Changelog',
+  // Canonical decision records: internal for now, reachable by URL only.
+  // Excluded from the sitemap (app/sitemap.ts) and from search via
+  // `searchable: false` frontmatter in each record.
+  decisions: { display: 'hidden' }
 }
 
 export default meta

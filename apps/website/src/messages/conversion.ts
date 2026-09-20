@@ -121,9 +121,9 @@ export const conversionMessages = {
             'LangDrift’s core setup requires the platform’s SDK/MCP connection to bring project context and records into the dashboard. Additional integrations extend the workflow into the tools your team uses.'
         },
         tools: {
-          question: 'Do I need GitHub, Linear, and Slack?',
+          question: 'Do I need GitHub, Obsidian, and Linear?',
           answer:
-            'In the planned workflow, GitHub is required for automatically opening pull requests. Linear and Slack are optional: Linear can replicate specs and tickets into your planning workflow, while Slack can deliver notifications. Choose the additional connections that fit your team.'
+            'In the planned workflow, GitHub is required for automatically opening pull requests. Obsidian and Linear are optional: Obsidian can be used to begin PRDs and Research in the knowledge workspace your team already uses, while Linear can replicate specs and tickets into your planning workflow. Choose the additional connections that fit your team.'
         },
         trial: {
           question: 'When does the 15-day trial start?',
@@ -269,9 +269,9 @@ export const conversionMessages = {
             'A configuração principal do LangDrift exige a conexão SDK/MCP da plataforma para levar contexto e registros do projeto ao dashboard. Integrações adicionais estendem o fluxo às ferramentas usadas pela sua equipe.'
         },
         tools: {
-          question: 'Preciso de GitHub, Linear e Slack?',
+          question: 'Preciso de GitHub, Obsidian e Linear?',
           answer:
-            'No fluxo planejado, o GitHub é necessário para abrir pull requests automaticamente. Linear e Slack são opcionais: o Linear pode replicar specs e tickets no seu planejamento, enquanto o Slack pode enviar notificações. Escolha as conexões adicionais que fazem sentido para sua equipe.'
+            'No fluxo planejado, o GitHub é necessário para abrir pull requests automaticamente. Obsidian e Linear são opcionais: o Obsidian pode ser usado para começar PRDs e Research no espaço de conhecimento que sua equipe já utiliza, enquanto o Linear pode replicar specs e tickets no seu planejamento. Escolha as conexões adicionais que fazem sentido para sua equipe.'
         },
         trial: {
           question: 'Quando começa o teste de 15 dias?',
@@ -410,9 +410,9 @@ export const conversionMessages = {
             'LangDrift 的核心設定需要透過平台的 SDK/MCP 連線，將專案脈絡與紀錄帶入儀表板。其他整合則將工作流程延伸到團隊使用的工具。'
         },
         tools: {
-          question: '一定要使用 GitHub、Linear 和 Slack 嗎？',
+          question: '一定要使用 GitHub、Obsidian 和 Linear 嗎？',
           answer:
-            '在規劃中的流程裡，自動建立 pull request 需要 GitHub。Linear 與 Slack 為選用：Linear 可將規格與工單複製到規劃流程，Slack 則可傳送通知。請選擇適合團隊的額外連接。'
+            '在規劃中的流程裡，自動建立 pull request 需要 GitHub。Obsidian 與 Linear 為選用：Obsidian 可用來在團隊熟悉的知識工作空間開始撰寫 PRD 與 Research，Linear 則可將規格與工單複製到規劃流程。請選擇適合團隊的額外連接。'
         },
         trial: {
           question: '15 天試用何時開始？',
@@ -547,9 +547,9 @@ export const conversionMessages = {
             'LangDriftの基本設定には、プロジェクトの背景情報や記録をダッシュボードに届けるため、プラットフォームのSDK/MCP接続が必要です。追加の連携により、チームが使うツールへ業務を広げられます。'
         },
         tools: {
-          question: 'GitHub、Linear、Slackはすべて必要ですか？',
+          question: 'GitHub、Obsidian、Linearはすべて必要ですか？',
           answer:
-            '計画中のワークフローでは、pull requestを自動作成するためにGitHubが必要です。LinearとSlackは任意です。Linearでは仕様やチケットを計画業務に複製でき、Slackでは通知を受け取れます。チームに合う追加接続を選べます。'
+            '計画中のワークフローでは、pull requestを自動作成するためにGitHubが必要です。ObsidianとLinearは任意です。Obsidianではチームが普段使う知識のワークスペースでPRDやResearchを書き始められ、Linearでは仕様やチケットを計画業務に複製できます。チームに合う追加接続を選べます。'
         },
         trial: {
           question: '15日間のトライアルはいつ始まりますか？',
