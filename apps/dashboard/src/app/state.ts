@@ -2,11 +2,15 @@
 
 import { create } from 'zustand'
 
-export type ConsoleTheme = 'dark' | 'light'
-export type EvolutionClassification = 'all' | 'intentional' | 'review' | 'unexplained'
+export type DashboardTheme = 'dark' | 'light'
+export type EvolutionClassification =
+  | 'all'
+  | 'intentional'
+  | 'review'
+  | 'unexplained'
 export type EvolutionGroup = 'event' | 'product-area' | 'team'
 
-interface ConsoleState {
+interface DashboardState {
   accountMenuOpen: boolean
   classification: EvolutionClassification
   groupBy: EvolutionGroup
@@ -15,21 +19,21 @@ interface ConsoleState {
   range: '30d' | '90d' | '1y' | 'all'
   selectedPoint: number
   selectedProduct: string
-  theme: ConsoleTheme
+  theme: DashboardTheme
   voiceOpen: boolean
   setClassification: (classification: EvolutionClassification) => void
   setGroupBy: (groupBy: EvolutionGroup) => void
-  setRange: (range: ConsoleState['range']) => void
+  setRange: (range: DashboardState['range']) => void
   setSelectedPoint: (point: number) => void
   setSelectedProduct: (product: string) => void
-  setTheme: (theme: ConsoleTheme) => void
+  setTheme: (theme: DashboardTheme) => void
   toggleAccountMenu: () => void
   toggleNotifications: () => void
   toggleProductMenu: () => void
   toggleVoice: () => void
 }
 
-export const useConsoleStore = create<ConsoleState>((set) => ({
+export const useDashboardStore = create<DashboardState>((set) => ({
   accountMenuOpen: false,
   classification: 'all',
   groupBy: 'event',
@@ -56,7 +60,7 @@ export const useConsoleStore = create<ConsoleState>((set) => ({
   toggleVoice: () => set((state) => ({ voiceOpen: !state.voiceOpen }))
 }))
 
-function snapshot(state: ConsoleState) {
+function snapshot(state: DashboardState) {
   return Object.fromEntries(
     Object.entries(state).filter(([, value]) => typeof value !== 'function')
   )
@@ -64,13 +68,16 @@ function snapshot(state: ConsoleState) {
 
 let loggerConnected = false
 
-export function connectConsoleStateLogger() {
+export function connectDashboardStateLogger() {
   if (!loggerConnected) {
     loggerConnected = true
-    console.log('LangDrift Zustand:', { updates: 0, state: snapshot(useConsoleStore.getState()) })
+    console.log('LangDrift Zustand:', {
+      updates: 0,
+      state: snapshot(useDashboardStore.getState())
+    })
   }
 
-  return useConsoleStore.subscribe((state, previous) => {
+  return useDashboardStore.subscribe((state, previous) => {
     console.log('LangDrift Zustand:', {
       previous: snapshot(previous),
       state: snapshot(state)

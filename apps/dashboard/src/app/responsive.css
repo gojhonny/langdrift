@@ -1,28 +1,28 @@
-.console-topbar-leading {
+.dashboard-topbar-leading {
   align-items: center;
   display: flex;
   gap: 8px;
   min-width: 0;
 }
 
-.console-mobile-menu,
-.console-mobile-nav-layer {
+.dashboard-mobile-menu,
+.dashboard-mobile-nav-layer {
   display: none;
 }
 
 @media (max-width: 640px) {
-  .console-topbar {
+  .dashboard-topbar {
     gap: 8px;
     height: 56px;
     padding-inline: 10px;
   }
 
-  .console-topbar-leading {
+  .dashboard-topbar-leading {
     flex: 1 1 auto;
     min-width: 0;
   }
 
-  .console-mobile-menu {
+  .dashboard-mobile-menu {
     align-items: center;
     background: var(--ld-surface);
     border: 1px solid var(--ld-hairline);
@@ -36,49 +36,49 @@
     width: 32px;
   }
 
-  .console-breadcrumb {
+  .dashboard-breadcrumb {
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
   }
 
-  .console-breadcrumb > span:first-child,
-  .console-breadcrumb > span:nth-child(2) {
+  .dashboard-breadcrumb > span:first-child,
+  .dashboard-breadcrumb > span:nth-child(2) {
     display: none;
   }
 
-  .console-breadcrumb > strong:first-of-type {
+  .dashboard-breadcrumb > strong:first-of-type {
     max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .console-actions {
+  .dashboard-actions {
     flex: 0 0 auto;
     gap: 2px;
   }
 
-  .console-actions > button,
-  .console-profile-button,
-  .console-orb-button {
+  .dashboard-actions > button,
+  .dashboard-profile-button,
+  .dashboard-orb-button {
     height: 30px;
     min-width: 30px;
     width: 30px;
   }
 
-  .console-account > button {
+  .dashboard-account > button {
     padding: 0;
   }
 
-  .console-mobile-nav-layer {
+  .dashboard-mobile-nav-layer {
     display: block;
     inset: 0;
     position: fixed;
     z-index: 100;
   }
 
-  .console-mobile-nav-backdrop {
+  .dashboard-mobile-nav-backdrop {
     background: rgba(0, 0, 0, .36);
     border: 0;
     cursor: pointer;
@@ -88,7 +88,7 @@
     width: 100%;
   }
 
-  .console-mobile-drawer {
+  .dashboard-mobile-drawer {
     background: var(--ld-surface);
     border-right: 1px solid var(--ld-hairline);
     bottom: 0;
@@ -103,7 +103,7 @@
     width: min(320px, 88vw);
   }
 
-  .console-mobile-nav-close {
+  .dashboard-mobile-nav-close {
     align-items: center;
     align-self: end;
     background: transparent;
@@ -118,40 +118,40 @@
     width: 32px;
   }
 
-  .console-mobile-brand {
+  .dashboard-mobile-brand {
     padding: 4px 6px 16px;
     text-decoration: none;
   }
 
-  .console-mobile-drawer .product-picker {
+  .dashboard-mobile-drawer .product-picker {
     margin-bottom: 14px;
   }
 
-  .console-mobile-drawer .product-picker-trigger {
+  .dashboard-mobile-drawer .product-picker-trigger {
     gap: 7px;
     grid-template-columns: 28px minmax(0, 1fr) auto;
     justify-items: stretch;
     padding: 6px 8px;
   }
 
-  .console-mobile-drawer .product-picker-trigger > span:nth-child(2) {
+  .dashboard-mobile-drawer .product-picker-trigger > span:nth-child(2) {
     display: grid;
     font-size: initial;
     gap: 1px;
     min-width: 0;
   }
 
-  .console-mobile-drawer .product-picker-trigger > svg {
+  .dashboard-mobile-drawer .product-picker-trigger > svg {
     display: block;
   }
 
-  .console-mobile-drawer nav {
+  .dashboard-mobile-drawer nav {
     display: grid;
     gap: 2px;
   }
 
-  .console-mobile-drawer nav a,
-  .console-mobile-drawer .console-settings {
+  .dashboard-mobile-drawer nav a,
+  .dashboard-mobile-drawer .dashboard-settings {
     font-size: 11px;
     gap: 9px;
     justify-content: flex-start;
@@ -159,13 +159,13 @@
     padding-inline: 10px;
   }
 
-  .console-mobile-drawer nav a svg,
-  .console-mobile-drawer .console-settings svg {
+  .dashboard-mobile-drawer nav a svg,
+  .dashboard-mobile-drawer .dashboard-settings svg {
     height: 16px;
     width: 16px;
   }
 
-  .console-mobile-drawer .console-settings {
+  .dashboard-mobile-drawer .dashboard-settings {
     margin-top: auto;
   }
 
@@ -190,7 +190,7 @@
     width: 100%;
   }
 
-  .console-content {
+  .dashboard-content {
     padding: 20px 12px 56px;
   }
 
@@ -262,18 +262,18 @@
 }
 
 @media (max-width: 420px) {
-  .console-breadcrumb > strong:first-of-type,
-  .console-breadcrumb > span:nth-child(4) {
+  .dashboard-breadcrumb > strong:first-of-type,
+  .dashboard-breadcrumb > span:nth-child(4) {
     display: none;
   }
 
-  .console-actions {
+  .dashboard-actions {
     gap: 1px;
   }
 
-  .console-actions > button,
-  .console-profile-button,
-  .console-orb-button {
+  .dashboard-actions > button,
+  .dashboard-profile-button,
+  .dashboard-orb-button {
     height: 29px;
     min-width: 29px;
     width: 29px;

@@ -20,10 +20,10 @@ import Image from 'next/image'
 import {
   type EvolutionClassification,
   type EvolutionGroup,
-  useConsoleStore
+  useDashboardStore
 } from './state'
 
-export type ConsoleSection =
+export type DashboardSection =
   | 'decisions'
   | 'drift-by-product-area'
   | 'drift-by-team'
@@ -134,7 +134,7 @@ const driftEvents = visionPoints.flatMap((point) =>
   point.event ? [point.event] : []
 )
 
-const titles: Record<ConsoleSection, [string, string]> = {
+const titles: Record<DashboardSection, [string, string]> = {
   decisions: [
     'Decisions',
     'Why product direction changed, who approved it, and what it affected.'
@@ -186,7 +186,7 @@ const titles: Record<ConsoleSection, [string, string]> = {
   ]
 }
 
-function Heading({ section }: { section: ConsoleSection }) {
+function Heading({ section }: { section: DashboardSection }) {
   const [title, description] = titles[section]
   return (
     <div className="dashboard-heading">
@@ -218,10 +218,10 @@ function ClassificationPill({
 }
 
 function VisionPanel() {
-  const selectedPoint = useConsoleStore((state) => state.selectedPoint)
-  const setSelectedPoint = useConsoleStore((state) => state.setSelectedPoint)
-  const range = useConsoleStore((state) => state.range)
-  const setRange = useConsoleStore((state) => state.setRange)
+  const selectedPoint = useDashboardStore((state) => state.selectedPoint)
+  const setSelectedPoint = useDashboardStore((state) => state.setSelectedPoint)
+  const range = useDashboardStore((state) => state.range)
+  const setRange = useDashboardStore((state) => state.setRange)
   const selectedEventId = visionPoints[selectedPoint]?.event?.id ?? 'exports'
 
   function selectEvent(event: VisionDriftEvent) {
@@ -330,8 +330,8 @@ function Attention() {
 }
 
 function Overview() {
-  const product = useConsoleStore((state) => state.selectedProduct)
-  const range = useConsoleStore((state) => state.range)
+  const product = useDashboardStore((state) => state.selectedProduct)
+  const range = useDashboardStore((state) => state.range)
   return (
     <>
       <section className="overview-score-grid">
@@ -408,10 +408,12 @@ function BaselineProvenance() {
 }
 
 function EvolutionControls() {
-  const classification = useConsoleStore((state) => state.classification)
-  const groupBy = useConsoleStore((state) => state.groupBy)
-  const setClassification = useConsoleStore((state) => state.setClassification)
-  const setGroupBy = useConsoleStore((state) => state.setGroupBy)
+  const classification = useDashboardStore((state) => state.classification)
+  const groupBy = useDashboardStore((state) => state.groupBy)
+  const setClassification = useDashboardStore(
+    (state) => state.setClassification
+  )
+  const setGroupBy = useDashboardStore((state) => state.setGroupBy)
 
   const classifications: Array<[EvolutionClassification, string]> = [
     ['all', 'All'],
@@ -458,8 +460,8 @@ function EvolutionControls() {
 }
 
 function GroupedEvolution() {
-  const classification = useConsoleStore((state) => state.classification)
-  const groupBy = useConsoleStore((state) => state.groupBy)
+  const classification = useDashboardStore((state) => state.classification)
+  const groupBy = useDashboardStore((state) => state.groupBy)
   const filtered = driftEvents.filter(
     (event) =>
       event.classification !== 'baseline' &&
@@ -681,8 +683,8 @@ function Evidence() {
 }
 
 function Settings() {
-  const theme = useConsoleStore((state) => state.theme)
-  const setTheme = useConsoleStore((state) => state.setTheme)
+  const theme = useDashboardStore((state) => state.theme)
+  const setTheme = useDashboardStore((state) => state.setTheme)
 
   return (
     <section className="dashboard-card settings-list">
@@ -711,12 +713,14 @@ function LegacyEvolution({
 }: {
   classification?: EvolutionClassification
 }) {
-  const setClassification = useConsoleStore((state) => state.setClassification)
+  const setClassification = useDashboardStore(
+    (state) => state.setClassification
+  )
   if (classification) setClassification(classification)
   return <Evolution />
 }
 
-export function DashboardView({ section }: { section: ConsoleSection }) {
+export function DashboardView({ section }: { section: DashboardSection }) {
   return (
     <>
       <Heading section={section} />

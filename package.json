@@ -19,7 +19,7 @@
     "website": "./cli/drift dev website",
     "docs": "./cli/drift dev docs",
     "sso": "./cli/drift dev sso",
-    "console": "./cli/drift dev console",
+    "dashboard": "./cli/drift dev dashboard",
     "mobile": "./cli/drift dev mobile",
     "showcase": "./cli/drift showcase",
     "prepare": "husky cli/.husky"

@@ -1,10 +1,10 @@
-.console-actions .shadcn-tooltip,
-.console-account .shadcn-tooltip {
+.dashboard-actions .shadcn-tooltip,
+.dashboard-account .shadcn-tooltip {
   align-items: center;
 }
 
-.console-orb-button,
-.console-profile-button {
+.dashboard-orb-button,
+.dashboard-profile-button {
   align-items: center;
   background: transparent;
   border: 0;
@@ -17,14 +17,14 @@
   width: 31px;
 }
 
-.console-orb-button:focus-visible,
-.console-profile-button:focus-visible {
+.dashboard-orb-button:focus-visible,
+.dashboard-profile-button:focus-visible {
   border-radius: 999px;
   outline: 2px solid var(--ld-brand, #f97316);
   outline-offset: 2px;
 }
 
-.console-profile-button img {
+.dashboard-profile-button img {
   border-radius: 999px;
   display: block;
   height: 28px;

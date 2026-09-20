@@ -2,10 +2,10 @@
 set -eu
 . "$DRIFT_CLI_DIR/core/common.sh"
 app=${1:-}
-[ "$#" -eq 1 ] || drift_die "Usage: drift run <website|console|sso|mobile|docs>" 2
+[ "$#" -eq 1 ] || drift_die "Usage: drift run <website|dashboard|sso|mobile|docs>" 2
 case "$app" in
-  website|console|sso|mobile|docs) ;;
-  *) drift_die "Usage: drift run <website|console|sso|mobile|docs>" 2 ;;
+  website|dashboard|sso|mobile|docs) ;;
+  *) drift_die "Usage: drift run <website|dashboard|sso|mobile|docs>" 2 ;;
 esac
 
 drift_need pnpm
