@@ -25,6 +25,7 @@ let pendingDrawerFocusLocale: (typeof languages)[number]['locale'] | undefined
 const sections = [
   { label: 'product', hash: 'why' },
   { label: 'attribution', hash: 'attribution' },
+  { label: 'integrations', hash: 'integrations' },
   { label: 'voice', hash: 'voice' },
   { label: 'plans', hash: 'pricing' }
 ] as const
@@ -139,6 +140,9 @@ export function WebsiteHeader() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     document.documentElement.style.colorScheme = theme
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? '#0b0b0c' : '#f7f6f2')
   }, [theme])
 
   useEffect(() => {
@@ -185,7 +189,7 @@ export function WebsiteHeader() {
   }, [drawerOpen])
 
   useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 1360px)')
+    const desktop = window.matchMedia('(min-width: 1440px)')
     const closeOnDesktop = () => {
       if (desktop.matches) setDrawerOpen(false)
     }

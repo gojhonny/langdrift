@@ -10,13 +10,13 @@ import {
   getHeroPointFromNodeClick,
   getHeroPoints
 } from '../lib/hero-demo-data'
-import { selectedPointAtom, themeAtom } from '../state'
+import { selectHeroGraphPointAtom, themeAtom } from '../state'
 
 export function HeroSinapsiGraph() {
   const t = useTranslations('demo')
   const locale = useLocale()
   const theme = useAtomValue(themeAtom)
-  const setSelectedPoint = useSetAtom(selectedPointAtom)
+  const setSelectedPoint = useSetAtom(selectHeroGraphPointAtom)
   const elementRef = useRef<SinapsiElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'failed'>(
     'loading'
