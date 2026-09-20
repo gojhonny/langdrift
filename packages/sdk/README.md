@@ -101,8 +101,5 @@ The example intentionally supplies a transport interface, not an existing MCP se
 
 ```sh
 pnpm --filter @langdrift/sdk build
-pnpm --filter @langdrift/sdk test
-./scripts/verify-packages.sh
+./cli/drift verify packages
 ```
-
-Publication and migration instructions: [package release guide](../../docs/packages-release.md).

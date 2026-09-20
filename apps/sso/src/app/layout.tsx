@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   title: 'LangDrift — Account',
   description: 'Access and set up your LangDrift organization.',
   applicationName: 'LangDrift',
-  icons: { icon: '/favicon.ico' }
+  icons: {
+    icon: [{ url: '/favicon.ico', sizes: 'any' }]
+  }
 }
 
 export const viewport: Viewport = {

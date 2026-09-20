@@ -53,4 +53,9 @@ fi
 
 drift_need npx
 cd "$DRIFT_PROJECT_ROOT"
-exec npx --yes harness-score@1.5.2 "$@"
+if [ "$harness_json" = true ]; then
+  exec npx --yes harness-score@1.5.2 "$@"
+fi
+drift_print_opening_logo
+drift_queue_scene "$DRIFT_ICON_HARNESS" "$DRIFT_HARNESS_PHRASE"
+npx --yes harness-score@1.5.2 "$@"

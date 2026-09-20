@@ -229,13 +229,7 @@ importers:
         specifier: ^5
         version: 5.9.2
 
-  packages/design-system:
-    devDependencies:
-      typescript:
-        specifier: ^5
-        version: 5.9.2
-
-  packages/langdrift:
+  packages/core:
     dependencies:
       '@langdrift/sdk':
         specifier: workspace:^
@@ -246,6 +240,12 @@ importers:
         version: 24.13.6
       typescript:
         specifier: 5.9.2
+        version: 5.9.2
+
+  packages/design-system:
+    devDependencies:
+      typescript:
+        specifier: ^5
         version: 5.9.2
 
   packages/react:
