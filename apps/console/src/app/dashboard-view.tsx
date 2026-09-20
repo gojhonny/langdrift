@@ -15,6 +15,7 @@ import {
 } from '@repo/react/ui/product-vision-curve'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { AnimatedAvatarGroup, FigmaComment } from '@repo/react/vendors/smoothui'
+import Image from 'next/image'
 
 import {
   type EvolutionClassification,
@@ -45,14 +46,22 @@ const visionPoints: VisionPoint[] = [
     label: 'Apr',
     value: 91,
     event: {
-      actors: [{ initials: 'MR', name: 'Marina Reis', src: aiAvatars.marina, team: 'Leadership' }],
+      actors: [
+        {
+          initials: 'MR',
+          name: 'Marina Reis',
+          src: aiAvatars.marina,
+          team: 'Leadership'
+        }
+      ],
       classification: 'baseline',
       date: 'Apr 02',
       decision: 'Vision baseline recorded',
       delta: 0,
       id: 'baseline',
       productArea: 'Vision',
-      reason: 'Leadership recorded the product direction used as the reference for this period.',
+      reason:
+        'Leadership recorded the product direction used as the reference for this period.',
       title: 'Vision baseline approved'
     }
   },
@@ -63,7 +72,12 @@ const visionPoints: VisionPoint[] = [
     event: {
       actors: [
         { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' },
-        { initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }
+        {
+          initials: 'CA',
+          name: 'Carlos',
+          src: aiAvatars.carlos,
+          team: 'Platform'
+        }
       ],
       classification: 'intentional',
       date: 'Jun 28',
@@ -79,7 +93,14 @@ const visionPoints: VisionPoint[] = [
     label: 'Jul',
     value: 79,
     event: {
-      actors: [{ initials: 'CA', name: 'Carlos', src: aiAvatars.carlos, team: 'Platform' }],
+      actors: [
+        {
+          initials: 'CA',
+          name: 'Carlos',
+          src: aiAvatars.carlos,
+          team: 'Platform'
+        }
+      ],
       classification: 'unexplained',
       date: 'Jul 22',
       decision: 'Decision not found',
@@ -94,7 +115,9 @@ const visionPoints: VisionPoint[] = [
     label: 'Aug',
     value: 73,
     event: {
-      actors: [{ initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }],
+      actors: [
+        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }
+      ],
       classification: 'review',
       date: 'Aug 20',
       decision: 'Review pending',
@@ -107,25 +130,60 @@ const visionPoints: VisionPoint[] = [
   }
 ]
 
-const driftEvents = visionPoints.flatMap((point) => (point.event ? [point.event] : []))
+const driftEvents = visionPoints.flatMap((point) =>
+  point.event ? [point.event] : []
+)
 
 const titles: Record<ConsoleSection, [string, string]> = {
-  decisions: ['Decisions', 'Why product direction changed, who approved it, and what it affected.'],
-  'drift-by-product-area': ['Evolution', 'Product-area grouping of Product Vision movement.'],
+  decisions: [
+    'Decisions',
+    'Why product direction changed, who approved it, and what it affected.'
+  ],
+  'drift-by-product-area': [
+    'Evolution',
+    'Product-area grouping of Product Vision movement.'
+  ],
   'drift-by-team': ['Evolution', 'Team grouping of Product Vision movement.'],
-  'drift-events': ['Evolution', 'Important Product Vision events and their classifications.'],
+  'drift-events': [
+    'Evolution',
+    'Important Product Vision events and their classifications.'
+  ],
   'drift-graph': ['Evolution', 'How Product Vision moved over time.'],
   'drift-report': ['Reports', 'Executive explanations over a selected period.'],
   'drift-timeline': ['Evolution', 'Product evolution in chronological order.'],
   evidence: ['Evidence', 'Contextual proof behind product conclusions.'],
-  evolution: ['Evolution', 'See the curve, filter movement, and inspect the baseline.'],
-  'intentional-drift': ['Evolution', 'Intentional Evolution filtered from the same product history.'],
-  overview: ['Overview', 'Where we are now, why we moved, and what needs attention.'],
-  people: ['People', 'Ownership, decisions, implementation, and review participation.'],
-  reports: ['Reports', 'Executive summaries of Product Vision movement and attention items.'],
-  settings: ['Settings', 'Workspace appearance and deterministic product context.'],
-  'unexplained-drift': ['Evolution', 'Unexplained movement filtered from the same product history.'],
-  'vision-baseline': ['Evolution', 'Auditable provenance for the current Vision baseline.']
+  evolution: [
+    'Evolution',
+    'See the curve, filter movement, and inspect the baseline.'
+  ],
+  'intentional-drift': [
+    'Evolution',
+    'Intentional Evolution filtered from the same product history.'
+  ],
+  overview: [
+    'Overview',
+    'Where we are now, why we moved, and what needs attention.'
+  ],
+  people: [
+    'People',
+    'Ownership, decisions, implementation, and review participation.'
+  ],
+  reports: [
+    'Reports',
+    'Executive summaries of Product Vision movement and attention items.'
+  ],
+  settings: [
+    'Settings',
+    'Workspace appearance and deterministic product context.'
+  ],
+  'unexplained-drift': [
+    'Evolution',
+    'Unexplained movement filtered from the same product history.'
+  ],
+  'vision-baseline': [
+    'Evolution',
+    'Auditable provenance for the current Vision baseline.'
+  ]
 }
 
 function Heading({ section }: { section: ConsoleSection }) {
@@ -141,7 +199,11 @@ function Heading({ section }: { section: ConsoleSection }) {
   )
 }
 
-function ClassificationPill({ classification }: { classification: VisionDriftEvent['classification'] }) {
+function ClassificationPill({
+  classification
+}: {
+  classification: VisionDriftEvent['classification']
+}) {
   const labels = {
     baseline: 'Baseline',
     intentional: 'Intentional Evolution',
@@ -163,7 +225,9 @@ function VisionPanel() {
   const selectedEventId = visionPoints[selectedPoint]?.event?.id ?? 'exports'
 
   function selectEvent(event: VisionDriftEvent) {
-    const index = visionPoints.findIndex((point) => point.event?.id === event.id)
+    const index = visionPoints.findIndex(
+      (point) => point.event?.id === event.id
+    )
     if (index >= 0) setSelectedPoint(index)
   }
 
@@ -207,7 +271,9 @@ function VisionPanel() {
 }
 
 function MovementList() {
-  const rows = driftEvents.filter((event) => event.classification !== 'baseline')
+  const rows = driftEvents.filter(
+    (event) => event.classification !== 'baseline'
+  )
   return (
     <section className="dashboard-card movement-card">
       <div className="section-card-heading">
@@ -308,13 +374,34 @@ function BaselineProvenance() {
         <span>Current</span>
       </div>
       <dl>
-        <div><dt>Approved at</dt><dd>Apr 02</dd></div>
-        <div><dt>Approved by</dt><dd>Marina Reis · CEO</dd></div>
-        <div><dt>Source artifacts</dt><dd>PRD-001 · Product Strategy v3</dd></div>
-        <div><dt>Scope</dt><dd>Atlas Home Hub · Core product</dd></div>
-        <div><dt>Product areas</dt><dd>Pricing · Authentication · Onboarding · Exports</dd></div>
-        <div><dt>Supersedes</dt><dd>Initial founder intent snapshot</dd></div>
-        <div><dt>Reason</dt><dd>First organization-approved product reference.</dd></div>
+        <div>
+          <dt>Approved at</dt>
+          <dd>Apr 02</dd>
+        </div>
+        <div>
+          <dt>Approved by</dt>
+          <dd>Marina Reis · CEO</dd>
+        </div>
+        <div>
+          <dt>Source artifacts</dt>
+          <dd>PRD-001 · Product Strategy v3</dd>
+        </div>
+        <div>
+          <dt>Scope</dt>
+          <dd>Atlas Home Hub · Core product</dd>
+        </div>
+        <div>
+          <dt>Product areas</dt>
+          <dd>Pricing · Authentication · Onboarding · Exports</dd>
+        </div>
+        <div>
+          <dt>Supersedes</dt>
+          <dd>Initial founder intent snapshot</dd>
+        </div>
+        <div>
+          <dt>Reason</dt>
+          <dd>First organization-approved product reference.</dd>
+        </div>
       </dl>
     </section>
   )
@@ -374,7 +461,8 @@ function GroupedEvolution() {
   const classification = useConsoleStore((state) => state.classification)
   const groupBy = useConsoleStore((state) => state.groupBy)
   const filtered = driftEvents.filter(
-    (event) => event.classification !== 'baseline' &&
+    (event) =>
+      event.classification !== 'baseline' &&
       (classification === 'all' || event.classification === classification)
   )
 
@@ -419,7 +507,10 @@ function GroupedEvolution() {
           <time>{event.date}</time>
           <div>
             <strong>{event.title}</strong>
-            <span>{event.productArea} · {event.actors.map((actor) => actor.name).join(' + ')}</span>
+            <span>
+              {event.productArea} ·{' '}
+              {event.actors.map((actor) => actor.name).join(' + ')}
+            </span>
           </div>
           <b>{event.delta}</b>
           <ClassificationPill classification={event.classification} />
@@ -452,7 +543,12 @@ function Decisions() {
     },
     {
       date: 'Jul 22',
-      evidence: ['PR #821', 'ADR-042', 'Review by Ana', 'No matching product decision'],
+      evidence: [
+        'PR #821',
+        'ADR-042',
+        'Review by Ana',
+        'No matching product decision'
+      ],
       impact: 'Authentication · −6',
       people: 'Carlos implemented · Ana reviewed',
       title: 'Authentication redesign'
@@ -461,7 +557,10 @@ function Decisions() {
   return (
     <div className="decision-grid">
       {decisions.map((decision) => (
-        <article className="dashboard-card decision-detail" key={decision.title}>
+        <article
+          className="dashboard-card decision-detail"
+          key={decision.title}
+        >
           <GitBranch aria-hidden="true" size={17} />
           <span className="card-kicker">{decision.date}</span>
           <h2>{decision.title}</h2>
@@ -469,7 +568,11 @@ function Decisions() {
           <strong>{decision.impact}</strong>
           <details>
             <summary>Why do we believe this?</summary>
-            <ul>{decision.evidence.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>
+              {decision.evidence.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </details>
         </article>
       ))}
@@ -479,18 +582,38 @@ function Decisions() {
 
 function People() {
   const people = [
-    [aiAvatars.ana, 'Ana', 'Product Director', '5 decisions · 3 approvals · owns Pricing'],
-    [aiAvatars.carlos, 'Carlos', 'Engineering Lead', '4 implementations · 2 reviews · owns Authentication'],
+    [
+      aiAvatars.ana,
+      'Ana',
+      'Product Director',
+      '5 decisions · 3 approvals · owns Pricing'
+    ],
+    [
+      aiAvatars.carlos,
+      'Carlos',
+      'Engineering Lead',
+      '4 implementations · 2 reviews · owns Authentication'
+    ],
     [aiAvatars.marina, 'Marina', 'CEO', '3 approvals · Vision owner'],
-    [aiAvatars.lia, 'Lia', 'Design Lead', '3 proposals · owns product navigation']
+    [
+      aiAvatars.lia,
+      'Lia',
+      'Design Lead',
+      '3 proposals · owns product navigation'
+    ]
   ]
 
   return (
     <section className="dashboard-card people-list">
       {people.map(([src, name, role, detail]) => (
         <article key={name}>
-          <span className="person-avatar"><img alt={name} src={src} /></span>
-          <div><strong>{name}</strong><span>{role}</span></div>
+          <span className="person-avatar">
+            <Image alt={name} height={28} src={src} unoptimized width={28} />
+          </span>
+          <div>
+            <strong>{name}</strong>
+            <span>{role}</span>
+          </div>
           <small>{detail}</small>
         </article>
       ))}
@@ -504,7 +627,11 @@ function Reports() {
       <section className="dashboard-card report-lead">
         <span className="card-kicker">Weekly executive digest</span>
         <h2>Product Vision moved from 79 to 73.</h2>
-        <p>Authentication was the largest unresolved contributor. Export behavior remains under review. Pricing movement is linked to an approved decision.</p>
+        <p>
+          Authentication was the largest unresolved contributor. Export behavior
+          remains under review. Pricing movement is linked to an approved
+          decision.
+        </p>
       </section>
       <section className="dashboard-card report-stat intentional">
         <CheckCircle aria-hidden="true" size={20} />
@@ -523,15 +650,30 @@ function Reports() {
 function Evidence() {
   return (
     <section className="dashboard-card compact-table-card">
-      <div className="context-warning">Evidence is a contextual drill-down, not a primary executive destination.</div>
+      <div className="context-warning">
+        Evidence is a contextual drill-down, not a primary executive
+        destination.
+      </div>
       <table>
-        <thead><tr><th>Artifact</th><th>Observation</th><th>Status</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Artifact</th>
+            <th>Observation</th>
+            <th>Status</th>
+          </tr>
+        </thead>
         <tbody>
           {[
             ['PR #821', 'Authentication implementation changed', 'Linked'],
             ['ADR-042', 'Enterprise authentication strategy', 'Linked'],
             ['exports-roadmap.md', 'Export behavior changed', 'Under Review']
-          ].map((row) => <tr key={row[0]}>{row.map((cell) => <td key={cell}>{cell}</td>)}</tr>)}
+          ].map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell) => (
+                <td key={cell}>{cell}</td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     </section>
@@ -545,17 +687,30 @@ function Settings() {
   return (
     <section className="dashboard-card settings-list">
       <div>
-        <span><strong>Appearance</strong><small>Light and dark are first-class product themes.</small></span>
-        <ThemeToggle onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')} theme={theme} />
+        <span>
+          <strong>Appearance</strong>
+          <small>Light and dark are first-class product themes.</small>
+        </span>
+        <ThemeToggle
+          onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          theme={theme}
+        />
       </div>
       <div>
-        <span><strong>Executive Voice</strong><small>Voice stays focused on structured product context.</small></span>
+        <span>
+          <strong>Executive Voice</strong>
+          <small>Voice stays focused on structured product context.</small>
+        </span>
       </div>
     </section>
   )
 }
 
-function LegacyEvolution({ classification }: { classification?: EvolutionClassification }) {
+function LegacyEvolution({
+  classification
+}: {
+  classification?: EvolutionClassification
+}) {
   const setClassification = useConsoleStore((state) => state.setClassification)
   if (classification) setClassification(classification)
   return <Evolution />
@@ -572,10 +727,20 @@ export function DashboardView({ section }: { section: ConsoleSection }) {
       {section === 'reports' || section === 'drift-report' ? <Reports /> : null}
       {section === 'settings' ? <Settings /> : null}
       {section === 'vision-baseline' ? <BaselineProvenance /> : null}
-      {section === 'drift-graph' || section === 'drift-timeline' || section === 'drift-events' ? <Evolution /> : null}
-      {section === 'drift-by-team' || section === 'drift-by-product-area' ? <Evolution /> : null}
-      {section === 'intentional-drift' ? <LegacyEvolution classification="intentional" /> : null}
-      {section === 'unexplained-drift' ? <LegacyEvolution classification="unexplained" /> : null}
+      {section === 'drift-graph' ||
+      section === 'drift-timeline' ||
+      section === 'drift-events' ? (
+        <Evolution />
+      ) : null}
+      {section === 'drift-by-team' || section === 'drift-by-product-area' ? (
+        <Evolution />
+      ) : null}
+      {section === 'intentional-drift' ? (
+        <LegacyEvolution classification="intentional" />
+      ) : null}
+      {section === 'unexplained-drift' ? (
+        <LegacyEvolution classification="unexplained" />
+      ) : null}
       {section === 'evidence' ? <Evidence /> : null}
     </>
   )

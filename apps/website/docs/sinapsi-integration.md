@@ -4,7 +4,7 @@ O hero conecta o grafo ao Product Vision Curve: selecionar um node abre o card n
 
 ## Publicação e reprodução
 
-A integração final depende de `sinapsi@0.2.0`. A versão foi validada localmente por tarball; a publicação no npm será feita pelo proprietário e ainda está pendente neste registro. Uma instalação limpa com a dependência de registro exige que essa versão esteja publicada. Este relatório não representa uma publicação do website.
+A integração final depende de `sinapsi@0.2.0`. A verificação original descrita neste relatório usou o tarball local. Durante a entrega seguinte, Vision → Loop → Evidence, o proprietário publicou a versão no npm; a consulta ao registro confirmou a mesma integridade presente no lockfile. A publicação não está mais pendente. Este relatório não representa uma publicação do website; a validação posterior está registrada em [Vision → Loop → Evidence](vision-loop-evidence.md).
 
 ## Comportamento implementado
 

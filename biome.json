@@ -7,6 +7,10 @@
       "!**/.turbo",
       "!**/dist",
       "!**/node_modules",
+      "!**/.agents",
+      "!**/.drifts",
+      "!**/.audits",
+      "!**/coverage",
       "!**/next-env.d.ts"
     ]
   },
@@ -33,6 +37,16 @@
       "suspicious": { "noArrayIndexKey": "warn" }
     }
   },
+  "overrides": [
+    {
+      "includes": ["packages/react/**"],
+      "linter": {
+        "rules": {
+          "performance": { "noImgElement": "off" }
+        }
+      }
+    }
+  ],
   "formatter": { "lineWidth": 80, "indentStyle": "space", "indentWidth": 2 },
   "javascript": {
     "formatter": {

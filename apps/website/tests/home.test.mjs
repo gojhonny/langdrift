@@ -35,13 +35,46 @@ for (const [path, locale] of routes) {
       }
       for (const id of [
         'why',
+        'movement-details',
         'attribution',
         'voice',
         'pricing',
         'early-access'
       ]) {
-        assert.match(html, new RegExp(`id="${id}"`))
+        assert.equal(
+          [...html.matchAll(new RegExp(`id="${id}"`, 'g'))].length,
+          1
+        )
       }
+      assert.ok(
+        html.indexOf('id="why"') < html.indexOf('id="movement-details"')
+      )
+      assert.ok(
+        html.indexOf('id="movement-details"') < html.indexOf('id="attribution"')
+      )
+      const scenarioSection = html.split('id="why"')[1]?.split('</section>')[0]
+      assert.ok(
+        scenarioSection,
+        'The explanation follows the hero in server HTML'
+      )
+      assert.equal([...scenarioSection.matchAll(/role="tab"/g)].length, 3)
+      assert.equal(
+        [...scenarioSection.matchAll(/aria-selected="true"/g)].length,
+        1
+      )
+      assert.match(scenarioSection, /data-scenario="priority-shift"/)
+      assert.doesNotMatch(
+        scenarioSection,
+        /data-scenario="(?:product-trade-off|new-opportunity)"/
+      )
+      assert.equal(
+        [...scenarioSection.matchAll(/class="vle-evidence-record"/g)].length,
+        3
+      )
+      assert.equal(
+        [...scenarioSection.matchAll(/aria-expanded="false"/g)].length,
+        3
+      )
       const header = html.match(/<header\b[^>]*>[\s\S]*?<\/header>/)?.[0]
       assert.ok(header, 'Header is present in the server response')
       assert.ok([...header.matchAll(/href="[^"]*#early-access"/g)].length >= 2)
@@ -73,7 +106,13 @@ test('Localization reaches the existing sections below the hero', async () => {
   const pages = await Promise.all(
     routes.map(async ([path]) => (await readPage(path)).html)
   )
-  for (const id of ['why', 'attribution', 'voice', 'pricing']) {
+  // The new #why heading intentionally preserves the three canonical pillar names.
+  const introductions = pages.map(
+    (html) => html.split('id="why"')[1]?.match(/<p>([\s\S]*?)<\/p>/)?.[1]
+  )
+  assert.ok(introductions.every(Boolean))
+  assert.equal(new Set(introductions).size, routes.length)
+  for (const id of ['movement-details', 'attribution', 'voice', 'pricing']) {
     const headings = pages.map((html) => {
       const section = html.split(`id="${id}"`)[1]?.split('</section>')[0]
       const heading = section?.match(/<h2\b[^>]*>([\s\S]*?)<\/h2>/)?.[1]

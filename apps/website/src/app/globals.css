@@ -111,7 +111,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 .header-four-visual-score strong { font-size: 31px; font-weight: 500; letter-spacing: -.05em; }
 .header-four-visual-meta { text-align: right; }
 .header-four-visual-meta strong { font-size: 9px; font-weight: 500; }
-.header-four-visual .product-vision-chart { height: 205px !important; }
+.header-four-visual .product-vision-chart { height: 205px; }
 
 .public-auth-actions { align-items: center; display: flex; gap: 9px; }
 .public-sign-in { color: inherit; font-size: 12px; padding: 8px 4px; text-decoration: none; }
@@ -231,7 +231,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
   .header-four-visual { border-radius: 12px; padding: 13px; }
   .header-four-visual-head { align-items: start; flex-direction: column; }
   .header-four-visual-meta { text-align: left; }
-  .header-four-visual .product-vision-chart { height: 170px !important; }
+  .header-four-visual .product-vision-chart { height: 170px; }
   .why-section, .attribution-section, .intent-section, .report-section, .packaging-section { padding: 82px 18px; }
   .reason-card { grid-template-columns: 1fr; }
   .attribution-grid, .intent-grid, .report-section { grid-template-columns: 1fr; }

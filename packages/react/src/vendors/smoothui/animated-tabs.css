@@ -1,0 +1,84 @@
+.smooth-animated-tabs {
+  border-block-end: 1px solid var(--ld-hairline, #ebebeb);
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 4px;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 4px;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ld-hairline, #ebebeb) transparent;
+  vertical-align: top;
+}
+
+.smooth-animated-tab {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px 6px 0 0;
+  color: var(--ld-muted, #6b6b6b);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font: inherit;
+  font-weight: 550;
+  gap: 8px;
+  justify-content: center;
+  min-block-size: 44px;
+  padding: 10px 16px;
+  position: relative;
+  transition: color 150ms ease;
+  white-space: nowrap;
+}
+
+.smooth-animated-tab:hover,
+.smooth-animated-tab[aria-selected='true'] {
+  color: var(--ld-ink, var(--ld-text, #171717));
+}
+
+.smooth-animated-tab:focus-visible {
+  outline: 2px solid var(--ld-ink, var(--ld-text, #171717));
+  outline-offset: 1px;
+}
+
+.smooth-tab-indicator {
+  background: var(--ld-brand, #f97316);
+  block-size: 2px;
+  inset-block-end: 0;
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.smooth-tab-icon,
+.smooth-tab-label { position: relative; }
+.smooth-tab-icon { align-items: center; display: inline-flex; }
+
+.smooth-animated-tabs[data-variant='pill'],
+.smooth-animated-tabs[data-variant='segment'] {
+  background: var(--ld-bg, #fafafa);
+  border: 1px solid var(--ld-hairline, #ebebeb);
+  border-radius: 999px;
+}
+
+.smooth-animated-tabs[data-variant='segment'] { border-radius: 8px; gap: 0; }
+.smooth-animated-tabs[data-variant='pill'] .smooth-animated-tab { border-radius: 999px; }
+.smooth-animated-tabs[data-variant='segment'] .smooth-animated-tab { border-radius: 6px; }
+
+.smooth-animated-tabs[data-variant='pill'] .smooth-tab-indicator,
+.smooth-animated-tabs[data-variant='segment'] .smooth-tab-indicator {
+  background: var(--ld-surface, #ffffff);
+  block-size: auto;
+  border: 1px solid var(--ld-hairline, #ebebeb);
+  border-radius: inherit;
+  inset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smooth-animated-tab { transition: none; }
+  /* biome-ignore lint/complexity/noImportantStyles: Reduced motion must override Motion's inline styles when the preference changes. */
+  .smooth-tab-indicator { transform: none !important; opacity: 1 !important; }
+}
