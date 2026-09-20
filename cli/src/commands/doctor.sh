@@ -19,7 +19,7 @@ check_command git
 check_command node
 check_command pnpm
 
-for path in apps/console apps/website apps/sso apps/mobile apps/docs packages/react cli/drift .agents; do
+for path in apps/dashboard apps/website apps/sso apps/mobile apps/docs packages/react cli/drift .agents; do
   if [ -e "$DRIFT_PROJECT_ROOT/$path" ]; then drift_print_success "$path"
   else drift_print_error "Missing $path"; status=1
   fi

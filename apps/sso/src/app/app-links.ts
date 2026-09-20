@@ -3,9 +3,9 @@ function normalizeBase(value: string | undefined) {
 }
 
 const websiteBase = normalizeBase(process.env.NEXT_PUBLIC_WEBSITE_URL)
-const consoleBase = normalizeBase(process.env.NEXT_PUBLIC_CONSOLE_URL)
+const dashboardBase = normalizeBase(process.env.NEXT_PUBLIC_DASHBOARD_URL)
 
 export const ssoLinks = {
-  console: consoleBase || '/',
+  dashboard: dashboardBase || '/',
   website: websiteBase || '/'
 }

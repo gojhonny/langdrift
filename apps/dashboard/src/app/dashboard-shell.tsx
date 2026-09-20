@@ -23,7 +23,7 @@ import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 import { StateLogger } from './state-logger'
-import { useConsoleStore } from './state'
+import { useDashboardStore } from './state'
 
 const navigation = [
   { href: '/overview', icon: House, label: 'Overview' },
@@ -63,7 +63,7 @@ const voiceAnswers: Record<string, string> = {
 
 const voicePrompts = Object.keys(voiceAnswers)
 
-function ConsoleNavigation({
+function DashboardNavigation({
   mobile = false,
   onNavigate
 }: {
@@ -71,7 +71,7 @@ function ConsoleNavigation({
   onNavigate?: () => void
 }) {
   const pathname = usePathname()
-  const state = useConsoleStore()
+  const state = useDashboardStore()
 
   function chooseProduct(product: string) {
     state.setSelectedProduct(product)
@@ -82,7 +82,7 @@ function ConsoleNavigation({
     <>
       <a
         aria-label="LangDrift overview"
-        className={mobile ? 'console-mobile-brand' : 'console-brand'}
+        className={mobile ? 'dashboard-mobile-brand' : 'dashboard-brand'}
         href="/overview"
         onClick={() => onNavigate?.()}
       >
@@ -127,7 +127,7 @@ function ConsoleNavigation({
           const Icon = item.icon
           return (
             <a
-              className={pathname === item.href ? 'console-nav-active' : ''}
+              className={pathname === item.href ? 'dashboard-nav-active' : ''}
               href={item.href}
               key={item.href}
               onClick={() => onNavigate?.()}
@@ -141,8 +141,8 @@ function ConsoleNavigation({
       <a
         className={
           pathname === '/settings'
-            ? 'console-nav-active console-settings'
-            : 'console-settings'
+            ? 'dashboard-nav-active dashboard-settings'
+            : 'dashboard-settings'
         }
         href="/settings"
         onClick={() => onNavigate?.()}
@@ -153,9 +153,9 @@ function ConsoleNavigation({
   )
 }
 
-export function ConsoleShell({ children }: { children: ReactNode }) {
+export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const state = useConsoleStore()
+  const state = useDashboardStore()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [mobileNavPathname, setMobileNavPathname] = useState(pathname)
   const [voiceQuestion, setVoiceQuestion] = useState('')
@@ -220,35 +220,35 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <main className="console-shell">
+    <main className="dashboard-shell">
       <StateLogger />
-      <aside className="console-sidebar">
-        <ConsoleNavigation />
+      <aside className="dashboard-sidebar">
+        <DashboardNavigation />
       </aside>
 
       {mobileNavOpen ? (
-        <div className="console-mobile-nav-layer">
+        <div className="dashboard-mobile-nav-layer">
           <button
             aria-label="Close navigation"
-            className="console-mobile-nav-backdrop"
+            className="dashboard-mobile-nav-backdrop"
             onClick={() => setMobileNavOpen(false)}
             type="button"
           />
           <aside
             aria-label="Mobile navigation"
-            className="console-mobile-drawer"
-            id="console-mobile-navigation"
+            className="dashboard-mobile-drawer"
+            id="dashboard-mobile-navigation"
           >
             <button
               aria-label="Close navigation"
-              className="console-mobile-nav-close"
+              className="dashboard-mobile-nav-close"
               onClick={() => setMobileNavOpen(false)}
               ref={mobileMenuCloseRef}
               type="button"
             >
               <X aria-hidden="true" size={17} />
             </button>
-            <ConsoleNavigation
+            <DashboardNavigation
               mobile
               onNavigate={() => setMobileNavOpen(false)}
             />
@@ -256,21 +256,21 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
         </div>
       ) : null}
 
-      <section className="console-workspace">
-        <header className="console-topbar">
-          <div className="console-topbar-leading">
+      <section className="dashboard-workspace">
+        <header className="dashboard-topbar">
+          <div className="dashboard-topbar-leading">
             <button
-              aria-controls="console-mobile-navigation"
+              aria-controls="dashboard-mobile-navigation"
               aria-expanded={mobileNavOpen}
               aria-label="Open navigation"
-              className="console-mobile-menu"
+              className="dashboard-mobile-menu"
               onClick={() => setMobileNavOpen(true)}
               ref={mobileMenuTriggerRef}
               type="button"
             >
               <List aria-hidden="true" size={18} />
             </button>
-            <nav className="console-breadcrumb" aria-label="Breadcrumb">
+            <nav className="dashboard-breadcrumb" aria-label="Breadcrumb">
               <span>LangDrift</span>
               <span>/</span>
               <strong>{state.selectedProduct}</strong>
@@ -278,11 +278,11 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               <strong>{currentSection}</strong>
             </nav>
           </div>
-          <div className="console-actions">
+          <div className="dashboard-actions">
             <Tooltip content="Ask LangDrift">
               <button
                 aria-label="Ask LangDrift"
-                className="console-orb-button"
+                className="dashboard-orb-button"
                 onClick={state.toggleVoice}
                 type="button"
               >
@@ -297,12 +297,12 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               <Bell aria-hidden="true" />
             </button>
             <ThemeToggle onToggle={switchTheme} theme={state.theme} />
-            <div className="console-account">
+            <div className="dashboard-account">
               <Tooltip content="Account">
                 <button
                   aria-expanded={state.accountMenuOpen}
                   aria-label="Open account menu"
-                  className="console-profile-button"
+                  className="dashboard-profile-button"
                   onClick={state.toggleAccountMenu}
                   type="button"
                 >
@@ -404,12 +404,12 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               </output>
             ) : null}
             <form className="voice-drawer-composer" onSubmit={submitVoice}>
-              <label htmlFor="console-voice-question">
+              <label htmlFor="dashboard-voice-question">
                 Ask about this product
               </label>
               <div>
                 <input
-                  id="console-voice-question"
+                  id="dashboard-voice-question"
                   onChange={(event) =>
                     setVoiceQuestion(event.currentTarget.value)
                   }
@@ -424,7 +424,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           </div>
         ) : null}
 
-        <div className="console-content">{children}</div>
+        <div className="dashboard-content">{children}</div>
       </section>
     </main>
   )

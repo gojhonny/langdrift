@@ -16,8 +16,8 @@ drift_print_command "$DRIFT_ICON_DOCTOR" doctor
 drift_print_command "$DRIFT_ICON_HARNESS" harness
 drift_print_command "$DRIFT_ICON_CLEANUP" cleanup
 drift_print_command "$DRIFT_ICON_RUNTIME" runtime
-drift_print_command "$DRIFT_ICON_RUNTIME" 'run <website|console|sso|mobile|docs>'
-drift_print_command "$DRIFT_ICON_DEV" 'dev <website|console|sso|mobile|docs>'
+drift_print_command "$DRIFT_ICON_RUNTIME" 'run <website|dashboard|sso|mobile|docs>'
+drift_print_command "$DRIFT_ICON_DEV" 'dev <website|dashboard|sso|mobile|docs>'
 drift_print_command "$DRIFT_ICON_SHOWCASE" showcase
 drift_print_command '⚙️ ' env
 drift_print_command "$DRIFT_ICON_GIT" git

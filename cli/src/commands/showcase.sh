@@ -11,7 +11,7 @@ cd "$DRIFT_PROJECT_ROOT"
 pnpm build
 exec pnpm exec turbo run start \
   --filter=website \
-  --filter=console \
+  --filter=dashboard \
   --filter=sso \
   --filter=mobile \
   --filter=docs
