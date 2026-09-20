@@ -1,0 +1,42 @@
+.smooth-basic-accordion { min-inline-size: 0; }
+.smooth-accordion-item + .smooth-accordion-item { border-block-start: 1px solid var(--ld-hairline, #ebebeb); }
+.smooth-accordion-heading { font: inherit; margin: 0; }
+
+.smooth-accordion-trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  color: var(--ld-ink, var(--ld-text, #171717));
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-weight: 550;
+  gap: 12px;
+  inline-size: 100%;
+  justify-content: space-between;
+  min-block-size: 44px;
+  padding: 10px 0;
+  text-align: start;
+}
+
+.smooth-accordion-trigger > span:first-child { min-inline-size: 0; overflow-wrap: anywhere; }
+.smooth-accordion-trigger:hover { text-decoration: underline; text-underline-offset: 4px; }
+.smooth-accordion-trigger:focus-visible { outline: 2px solid var(--ld-ink, var(--ld-text, #171717)); outline-offset: 3px; }
+.smooth-accordion-chevron { align-items: center; display: inline-flex; flex: 0 0 auto; }
+.smooth-accordion-region { overflow: hidden; }
+.smooth-accordion-content { padding-block: 4px 16px; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) {
+  .smooth-accordion-region,
+  .smooth-accordion-chevron { transition: none; }
+  /* These state targets also apply when the preference changes while open. */
+  /* biome-ignore lint/complexity/noImportantStyles: Reduced motion must override Motion's inline animation targets. */
+  .smooth-accordion-region[aria-hidden='true'] { height: 0 !important; opacity: 0 !important; }
+  /* biome-ignore lint/complexity/noImportantStyles: Reduced motion must override Motion's inline animation targets. */
+  .smooth-accordion-region[aria-hidden='false'] { height: auto !important; opacity: 1 !important; }
+  /* biome-ignore lint/complexity/noImportantStyles: Reduced motion must override Motion's inline rotation. */
+  .smooth-accordion-chevron { transform: none !important; }
+  /* biome-ignore lint/complexity/noImportantStyles: Reduced motion must override Motion's inline rotation. */
+  .smooth-accordion-trigger[aria-expanded='true'] .smooth-accordion-chevron { transform: rotate(180deg) !important; }
+}

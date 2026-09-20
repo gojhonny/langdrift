@@ -11,6 +11,7 @@ import { notFound } from 'next/navigation'
 import { HeroChart } from '../../components/hero-chart'
 import { HeroSinapsiGraph } from '../../components/hero-sinapsi-graph'
 import { SelectedMovement } from '../../components/selected-movement'
+import { VisionLoopEvidenceSection } from '../../components/vision-loop-evidence-section'
 import { WebsiteHeader } from '../../components/website-header'
 import { routing } from '../../i18n/routing'
 import { getHeroPoints } from '../../lib/hero-demo-data'
@@ -89,7 +90,9 @@ export default async function WebsitePage({
           </div>
         </section>
 
-        <section className="why-section" id="why">
+        <VisionLoopEvidenceSection locale={locale} />
+
+        <section className="why-section" id="movement-details">
           <div className="why-title">
             <span className="section-kicker">{t('why.kicker')}</span>
             <h2>{t('why.title')}</h2>
