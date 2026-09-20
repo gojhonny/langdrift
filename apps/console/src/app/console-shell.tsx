@@ -17,6 +17,7 @@ import { aiAvatars } from '@repo/react/ui/ai-avatars'
 import { Brand } from '@repo/react/ui/brand'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { Tooltip } from '@repo/react/vendors/shadcn'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
@@ -103,15 +104,25 @@ function ConsoleNavigation({
         </button>
         {state.productMenuOpen ? (
           <div className="shell-dropdown product-dropdown">
-            {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map((product) => (
-              <button key={product} onClick={() => chooseProduct(product)} type="button">
-                {product}
-              </button>
-            ))}
+            {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map(
+              (product) => (
+                <button
+                  key={product}
+                  onClick={() => chooseProduct(product)}
+                  type="button"
+                >
+                  {product}
+                </button>
+              )
+            )}
           </div>
         ) : null}
       </div>
-      <nav aria-label={mobile ? 'Mobile product navigation' : 'Executive product navigation'}>
+      <nav
+        aria-label={
+          mobile ? 'Mobile product navigation' : 'Executive product navigation'
+        }
+      >
         {navigation.map((item) => {
           const Icon = item.icon
           return (
@@ -128,7 +139,11 @@ function ConsoleNavigation({
         })}
       </nav>
       <a
-        className={pathname === '/settings' ? 'console-nav-active console-settings' : 'console-settings'}
+        className={
+          pathname === '/settings'
+            ? 'console-nav-active console-settings'
+            : 'console-settings'
+        }
         href="/settings"
         onClick={() => onNavigate?.()}
       >
@@ -142,6 +157,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const state = useConsoleStore()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [mobileNavPathname, setMobileNavPathname] = useState(pathname)
   const [voiceQuestion, setVoiceQuestion] = useState('')
   const [voiceAnswer, setVoiceAnswer] = useState('')
   const [voiceOrbState, setVoiceOrbState] = useState<AgentOrbState>('idle')
@@ -149,14 +165,15 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
   const mobileMenuCloseRef = useRef<HTMLButtonElement>(null)
   const currentSection = sectionLabels[pathname] ?? 'Overview'
 
+  if (mobileNavPathname !== pathname) {
+    setMobileNavPathname(pathname)
+    setMobileNavOpen(false)
+  }
+
   useEffect(() => {
     document.documentElement.dataset.theme = state.theme
     document.documentElement.style.colorScheme = state.theme
   }, [state.theme])
-
-  useEffect(() => {
-    setMobileNavOpen(false)
-  }, [pathname])
 
   useEffect(() => {
     if (!mobileNavOpen) return
@@ -231,7 +248,10 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             >
               <X aria-hidden="true" size={17} />
             </button>
-            <ConsoleNavigation mobile onNavigate={() => setMobileNavOpen(false)} />
+            <ConsoleNavigation
+              mobile
+              onNavigate={() => setMobileNavOpen(false)}
+            />
           </aside>
         </div>
       ) : null}
@@ -269,7 +289,11 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 <AgentOrb size="28px" speed={0.72} state="idle" />
               </button>
             </Tooltip>
-            <button aria-label="Notifications" onClick={state.toggleNotifications} type="button">
+            <button
+              aria-label="Notifications"
+              onClick={state.toggleNotifications}
+              type="button"
+            >
               <Bell aria-hidden="true" />
             </button>
             <ThemeToggle onToggle={switchTheme} theme={state.theme} />
@@ -282,7 +306,14 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                   onClick={state.toggleAccountMenu}
                   type="button"
                 >
-                  <img alt="" aria-hidden="true" src={aiAvatars.jonny} />
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    height={28}
+                    src={aiAvatars.jonny}
+                    unoptimized
+                    width={28}
+                  />
                 </button>
               </Tooltip>
               {state.accountMenuOpen ? (
@@ -306,7 +337,10 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
         {state.notificationsOpen ? (
           <div className="topbar-panel notifications-panel">
             <strong>2 items need attention</strong>
-            <span>Authentication is unexplained. Export behavior remains under review.</span>
+            <span>
+              Authentication is unexplained. Export behavior remains under
+              review.
+            </span>
             <button onClick={state.toggleNotifications} type="button">
               Mark reviewed
             </button>
@@ -315,13 +349,25 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         {state.voiceOpen ? (
           <div className="voice-drawer">
-            <button aria-label="Close voice" onClick={state.toggleVoice} type="button">
+            <button
+              aria-label="Close voice"
+              onClick={state.toggleVoice}
+              type="button"
+            >
               <X aria-hidden="true" size={14} />
             </button>
             <div className="voice-drawer-orb-wrap">
               <button
-                aria-label={voiceOrbState === 'listening' ? 'Stop listening' : 'Start voice inquiry'}
-                onClick={() => setVoiceOrbState(voiceOrbState === 'listening' ? 'idle' : 'listening')}
+                aria-label={
+                  voiceOrbState === 'listening'
+                    ? 'Stop listening'
+                    : 'Start voice inquiry'
+                }
+                onClick={() =>
+                  setVoiceOrbState(
+                    voiceOrbState === 'listening' ? 'idle' : 'listening'
+                  )
+                }
                 type="button"
               >
                 <AgentOrb
@@ -331,12 +377,23 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 />
               </button>
             </div>
-            <span>{voiceOrbState === 'listening' ? 'Listening' : 'Executive inquiry'}</span>
+            <span>
+              {voiceOrbState === 'listening'
+                ? 'Listening'
+                : 'Executive inquiry'}
+            </span>
             <strong>Ask LangDrift</strong>
-            <p>Ask over the same structured events, decisions, people, and evidence shown visually.</p>
+            <p>
+              Ask over the same structured events, decisions, people, and
+              evidence shown visually.
+            </p>
             <div className="voice-drawer-prompts">
               {voicePrompts.map((prompt) => (
-                <button key={prompt} onClick={() => askVoice(prompt)} type="button">
+                <button
+                  key={prompt}
+                  onClick={() => askVoice(prompt)}
+                  type="button"
+                >
                   {prompt}
                 </button>
               ))}
@@ -347,15 +404,21 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
               </output>
             ) : null}
             <form className="voice-drawer-composer" onSubmit={submitVoice}>
-              <label htmlFor="console-voice-question">Ask about this product</label>
+              <label htmlFor="console-voice-question">
+                Ask about this product
+              </label>
               <div>
                 <input
                   id="console-voice-question"
-                  onChange={(event) => setVoiceQuestion(event.currentTarget.value)}
+                  onChange={(event) =>
+                    setVoiceQuestion(event.currentTarget.value)
+                  }
                   placeholder="What changed this week?"
                   value={voiceQuestion}
                 />
-                <button disabled={voiceOrbState === 'thinking'} type="submit">Ask</button>
+                <button disabled={voiceOrbState === 'thinking'} type="submit">
+                  Ask
+                </button>
               </div>
             </form>
           </div>

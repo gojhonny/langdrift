@@ -42,7 +42,7 @@ export function getHeroPoints(
       label: month.format(at(3)),
       value: 91,
       event: {
-        actionHref: '#why',
+        actionHref: '#movement-details',
         actionLabel: t('events.baseline.action'),
         actors: [
           {
@@ -67,7 +67,7 @@ export function getHeroPoints(
       label: month.format(at(5)),
       value: 84,
       event: {
-        actionHref: '#why',
+        actionHref: '#movement-details',
         actionLabel: t('events.pricing.action'),
         actors: [ana, carlos],
         classification: 'intentional',
@@ -84,7 +84,7 @@ export function getHeroPoints(
       label: month.format(at(6)),
       value: 79,
       event: {
-        actionHref: '#why',
+        actionHref: '#movement-details',
         actionLabel: t('events.authentication.action'),
         actors: [carlos],
         classification: 'unexplained',
@@ -101,7 +101,7 @@ export function getHeroPoints(
       label: month.format(at(7)),
       value: 73,
       event: {
-        actionHref: '#why',
+        actionHref: '#movement-details',
         actionLabel: t('events.exports.action'),
         actors: [ana],
         classification: 'review',
