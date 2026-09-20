@@ -1,6 +1,6 @@
 import type { WebsiteLocale } from '../i18n/routing'
 
-export type IntegrationId = 'github' | 'linear' | 'slack'
+export type IntegrationId = 'github' | 'obsidian' | 'linear'
 
 export interface IntegrationsMessages {
   eyebrow: string
@@ -37,7 +37,7 @@ export const integrationsMessages = {
     eyebrow: 'Integrations',
     title: 'Connected to the way your team works.',
     description:
-      'Bring your product context and evidence into LangDrift through the SDK connection. Connect GitHub for pull request automation, mirror specs and tickets in Linear, and send relevant updates to Slack. The platform connection is the foundation; additional tools extend the workflow your team chooses.',
+      'Bring your product context and evidence into LangDrift through the SDK connection. Connect GitHub for pull request automation, start PRDs and Research in Obsidian, and mirror specs and tickets in Linear. The platform connection is the foundation; additional tools extend the workflow your team chooses.',
     project: {
       title: 'Your project',
       label: 'LangDrift SDK',
@@ -63,6 +63,15 @@ export const integrationsMessages = {
         example:
           'Change summary, related spec, and verification notes, organized in the pull request template.'
       },
+      obsidian: {
+        title: 'Obsidian',
+        badge: 'Optional',
+        description:
+          'Start PRDs and Research in Obsidian, keeping early product thinking in the knowledge workspace your team already uses.',
+        exampleLabel: 'Product thinking at the source',
+        example:
+          'A PRD or Research note can begin in Obsidian and remain connected to the product context LangDrift uses for review.'
+      },
       linear: {
         title: 'Linear',
         badge: 'Optional',
@@ -71,15 +80,6 @@ export const integrationsMessages = {
         exampleLabel: 'Shared planning context',
         example:
           "A ticket carries the related spec context into the team's planning workflow."
-      },
-      slack: {
-        title: 'Slack',
-        badge: 'Optional',
-        description:
-          'Send relevant updates to Slack so the team knows when there is something worth reviewing.',
-        exampleLabel: 'Team notification',
-        example:
-          'An update highlights a product change and points the team to its context in LangDrift.'
       }
     },
     technical: {
@@ -87,7 +87,7 @@ export const integrationsMessages = {
       platform:
         'The SDK prepares and validates project data, then uses the LangDrift MCP connection to send that context to the platform. This connection supports the dashboard experience.',
       connectors:
-        'External integrations extend that workflow. GitHub is required for the pull request automation described here. Linear replication and Slack notifications are optional. Each connector follows its own integration path; choosing one does not require enabling the others.'
+        "External integrations extend that workflow. GitHub is required for the pull request automation described here. Obsidian and Linear are optional: Obsidian can be used to begin PRDs and Research in a familiar knowledge workspace, while Linear can carry specs and tickets into the team's planning workflow. Each connector follows its own integration path; choosing one does not require enabling the others."
     },
     closing: {
       description:
@@ -99,7 +99,7 @@ export const integrationsMessages = {
     eyebrow: 'Integrações',
     title: 'Conectado à forma como sua equipe trabalha.',
     description:
-      'Leve o contexto e as evidências do seu produto ao LangDrift pela conexão do SDK. Conecte o GitHub para automatizar a abertura de pull requests, replique specs e tickets no Linear e envie atualizações relevantes ao Slack. A conexão com a plataforma é a base; as ferramentas adicionais ampliam o fluxo que sua equipe escolhe.',
+      'Leve o contexto e as evidências do seu produto ao LangDrift pela conexão do SDK. Conecte o GitHub para automatizar a abertura de pull requests, comece PRDs e Research no Obsidian e replique specs e tickets no Linear. A conexão com a plataforma é a base; as ferramentas adicionais ampliam o fluxo que sua equipe escolhe.',
     project: {
       title: 'Seu projeto',
       label: 'LangDrift SDK',
@@ -125,6 +125,15 @@ export const integrationsMessages = {
         example:
           'Resumo da mudança, spec relacionada e notas de verificação, organizados no template do pull request.'
       },
+      obsidian: {
+        title: 'Obsidian',
+        badge: 'Opcional',
+        description:
+          'Comece PRDs e Research no Obsidian, mantendo o pensamento inicial de produto no espaço de conhecimento que sua equipe já utiliza.',
+        exampleLabel: 'Pensamento de produto na origem',
+        example:
+          'Um PRD ou uma nota de Research pode começar no Obsidian e continuar conectado ao contexto de produto que o LangDrift usa nas revisões.'
+      },
       linear: {
         title: 'Linear',
         badge: 'Opcional',
@@ -133,15 +142,6 @@ export const integrationsMessages = {
         exampleLabel: 'Contexto compartilhado de planejamento',
         example:
           'Um ticket leva o contexto da spec relacionada ao fluxo de planejamento da equipe.'
-      },
-      slack: {
-        title: 'Slack',
-        badge: 'Opcional',
-        description:
-          'Envie atualizações relevantes ao Slack para que a equipe saiba quando há algo que merece revisão.',
-        exampleLabel: 'Notificação para a equipe',
-        example:
-          'Uma atualização destaca uma mudança no produto e direciona a equipe ao seu contexto no LangDrift.'
       }
     },
     technical: {
@@ -149,7 +149,7 @@ export const integrationsMessages = {
       platform:
         'O SDK prepara e valida os dados do projeto e usa a conexão MCP do LangDrift para enviar esse contexto à plataforma. Essa conexão sustenta a experiência do dashboard.',
       connectors:
-        'As integrações externas ampliam esse fluxo. O GitHub é necessário para a automação de pull requests descrita aqui. A replicação no Linear e as notificações no Slack são opcionais. Cada conector segue seu próprio caminho de integração; escolher um não exige habilitar os demais.'
+        'As integrações externas ampliam esse fluxo. O GitHub é necessário para a automação de pull requests descrita aqui. Obsidian e Linear são opcionais: o Obsidian pode ser usado para começar PRDs e Research em um espaço de conhecimento familiar, enquanto o Linear pode levar specs e tickets ao fluxo de planejamento da equipe. Cada conector segue seu próprio caminho de integração; escolher um não exige habilitar os demais.'
     },
     closing: {
       description:
@@ -161,7 +161,7 @@ export const integrationsMessages = {
     eyebrow: '整合',
     title: '連結團隊熟悉的工作方式。',
     description:
-      '透過 SDK 連線，將產品背景與證據帶入 LangDrift。連接 GitHub 以自動建立 pull request，將規格與工作項目複製至 Linear，並將相關更新傳送到 Slack。平台連線是基礎；其他工具則延伸團隊選擇的工作流程。',
+      '透過 SDK 連線，將產品背景與證據帶入 LangDrift。連接 GitHub 以自動建立 pull request，在 Obsidian 開始撰寫 PRD 與 Research，並將規格與工作項目複製至 Linear。平台連線是基礎；其他工具則延伸團隊選擇的工作流程。',
     project: {
       title: '你的專案',
       label: 'LangDrift SDK',
@@ -183,6 +183,15 @@ export const integrationsMessages = {
         exampleLabel: 'Pull request 背景',
         example: '變更摘要、相關規格及驗證筆記，整理於 pull request 範本中。'
       },
+      obsidian: {
+        title: 'Obsidian',
+        badge: '可選',
+        description:
+          '在 Obsidian 開始撰寫 PRD 與 Research，把早期的產品思考留在團隊熟悉的知識工作空間。',
+        exampleLabel: '源頭的產品思考',
+        example:
+          'PRD 或 Research 筆記可以在 Obsidian 起草，並持續連結到 LangDrift 審閱時所使用的產品背景。'
+      },
       linear: {
         title: 'Linear',
         badge: '可選',
@@ -190,13 +199,6 @@ export const integrationsMessages = {
           '將規格與工作項目複製至 Linear，讓團隊能在既有的規劃工具中追蹤工作。',
         exampleLabel: '共享的規劃背景',
         example: '工作項目將相關規格的背景帶入團隊的規劃流程。'
-      },
-      slack: {
-        title: 'Slack',
-        badge: '可選',
-        description: '將相關更新傳送到 Slack，讓團隊知道何時有值得檢視的事項。',
-        exampleLabel: '團隊通知',
-        example: '更新突顯一項產品變更，並引導團隊前往 LangDrift 了解其背景。'
       }
     },
     technical: {
@@ -204,7 +206,7 @@ export const integrationsMessages = {
       platform:
         'SDK 會準備並驗證專案資料，再透過 LangDrift MCP 連線將這些背景傳送至平台。這條連線支援儀表板體驗。',
       connectors:
-        '外部整合會延伸這個流程。此處說明的 pull request 自動化需要 GitHub。在 Linear 複製資料與透過 Slack 傳送通知則為可選。每個連接器都有各自的整合途徑；選擇其中一個並不需要啟用其他連接器。'
+        '外部整合會延伸這個流程。此處說明的 pull request 自動化需要 GitHub。Obsidian 與 Linear 皆為可選：Obsidian 可用來在熟悉的知識工作空間開始撰寫 PRD 與 Research，Linear 則可將規格與工作項目帶入團隊的規劃流程。每個連接器都有各自的整合途徑；選擇其中一個並不需要啟用其他連接器。'
     },
     closing: {
       description: '先建立平台連線，再加入支援團隊工作流程的工具。',
@@ -215,7 +217,7 @@ export const integrationsMessages = {
     eyebrow: '連携',
     title: 'チームの働き方につながる。',
     description:
-      'SDK 接続を通じて、製品の背景と証拠を LangDrift に取り込みます。GitHub を接続してプルリクエストの作成を自動化し、仕様やチケットを Linear に複製し、関連する更新を Slack に送信します。プラットフォームとの接続を基盤に、追加のツールがチームの選ぶワークフローを広げます。',
+      'SDK 接続を通じて、製品の背景と証拠を LangDrift に取り込みます。GitHub を接続してプルリクエストの作成を自動化し、PRD や Research は Obsidian で書き始め、仕様やチケットを Linear に複製できます。プラットフォームとの接続を基盤に、追加のツールがチームの選ぶワークフローを広げます。',
     project: {
       title: 'あなたのプロジェクト',
       label: 'LangDrift SDK',
@@ -241,6 +243,15 @@ export const integrationsMessages = {
         example:
           '変更の概要、関連する仕様、検証メモをプルリクエストのテンプレートにまとめます。'
       },
+      obsidian: {
+        title: 'Obsidian',
+        badge: '任意',
+        description:
+          'PRD や Research を Obsidian で書き始め、初期の製品思考をチームが普段使う知識のワークスペースに残します。',
+        exampleLabel: '起点にある製品思考',
+        example:
+          'PRD や Research のノートは Obsidian で書き始め、LangDrift がレビューに使う製品の背景とつながったまま進められます。'
+      },
       linear: {
         title: 'Linear',
         badge: '任意',
@@ -249,15 +260,6 @@ export const integrationsMessages = {
         exampleLabel: '共有する計画の背景',
         example:
           'チケットが、関連する仕様の背景をチームの計画ワークフローに伝えます。'
-      },
-      slack: {
-        title: 'Slack',
-        badge: '任意',
-        description:
-          '関連する更新を Slack に送り、確認する価値のある出来事をチームに知らせます。',
-        exampleLabel: 'チームへの通知',
-        example:
-          '更新は製品の変更を取り上げ、その背景を確認できる LangDrift へチームを案内します。'
       }
     },
     technical: {
@@ -265,7 +267,7 @@ export const integrationsMessages = {
       platform:
         'SDK がプロジェクトのデータを準備・検証し、LangDrift MCP 接続を使ってその背景をプラットフォームに送信します。この接続がダッシュボードの体験を支えます。',
       connectors:
-        '外部連携はこのワークフローを広げます。ここで説明するプルリクエストの自動化には GitHub が必要です。Linear への複製と Slack への通知は任意です。各コネクターはそれぞれの方法で連携するため、一つを選んでも、ほかを有効にする必要はありません。'
+        '外部連携はこのワークフローを広げます。ここで説明するプルリクエストの自動化には GitHub が必要です。Obsidian と Linear はどちらも任意です。Obsidian は使い慣れた知識のワークスペースで PRD や Research を書き始めるために使え、Linear は仕様やチケットをチームの計画ワークフローに届けます。各コネクターはそれぞれの方法で連携するため、一つを選んでも、ほかを有効にする必要はありません。'
     },
     closing: {
       description:
