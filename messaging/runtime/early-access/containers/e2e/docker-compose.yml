@@ -1,4 +1,4 @@
-# Isolated topology retained for future use. No test runner is included or run.
+# Isolated event-chain proof. The runner is one-shot and is not part of dev Compose.
 # Secrets must be supplied in this directory's ignored .env before startup.
 name: langdrift-early-access-e2e
 services:
@@ -30,7 +30,35 @@ services:
       service: email-sender
     env_file: !override
       - ../../microservices/email-sender/.env.development
+      - .env.development
       - .env
+    ports: !override []
+    entrypoint: ['/bin/sh', '/e2e/guard-sender.sh']
+    volumes:
+      - ./guard-sender.sh:/e2e/guard-sender.sh:ro
+    depends_on:
+      email-store:
+        condition: service_healthy
+      resend-mock:
+        condition: service_healthy
+    restart: 'no'
+  resend-mock:
+    build:
+      context: ./resend-mock
+    healthcheck:
+      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: 'no'
+  runner:
+    build:
+      context: ./runner
+    env_file:
+      - .env
+    volumes:
+      - contacts:/data:ro
+    profiles: ['proof']
     restart: 'no'
 volumes:
   jetstream:

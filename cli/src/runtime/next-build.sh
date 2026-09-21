@@ -4,16 +4,6 @@
 # Vercel) is left untouched.
 set -eu
 
-if [ -f .env.development ]; then
-  while IFS= read -r line || [ -n "$line" ]; do
-    case "$line" in
-      '' | \#*) continue ;;
-    esac
-    key=${line%%=*}
-    eval "is_set=\${$key+x}"
-    [ -n "$is_set" ] && continue
-    export "$line"
-  done < .env.development
-fi
+. "$(dirname "$0")/load-next-env.sh"
 
 exec next "$@"

@@ -43,6 +43,7 @@ case "$drift_command" in
   run) exec "$CLI_DIR/commands/run.sh" "$@" ;;
   dev) exec "$CLI_DIR/commands/dev.sh" "$@" ;;
   showcase) exec "$CLI_DIR/commands/showcase.sh" "$@" ;;
+  smoke) exec "$CLI_DIR/commands/smoke.sh" "$@" ;;
   env)
     drift_subcommand=${1:-}; [ "$#" -eq 0 ] || shift
     case "$drift_subcommand" in

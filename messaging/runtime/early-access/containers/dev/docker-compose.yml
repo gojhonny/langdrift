@@ -58,9 +58,16 @@ services:
     env_file:
       - ../../microservices/email-sender/.env.development
       - ../../microservices/email-sender/.env
+    ports:
+      - '127.0.0.1:8081:8081'
     depends_on:
       email-store:
         condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://localhost:8081/healthz]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
     stop_grace_period: 12s
 volumes:
