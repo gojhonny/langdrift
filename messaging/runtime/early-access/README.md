@@ -15,6 +15,7 @@ in `.env.development`. Put these private values in ignored sibling `.env` files:
 | MinIO | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` |
 | email-sender | `RESEND_API_KEY`, `RESEND_FROM` (verified sender) |
 
+`RESEND_API_URL` is required and tracked for development as `https://api.resend.com/emails`.
 Use the same shared API key in Website and store. For local development, store's
 MinIO keys match the local MinIO root credentials. Production must supply scoped
 application credentials. No NATS authentication is configured in this local
@@ -25,23 +26,36 @@ docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.y
 pnpm website
 ```
 
-Only `127.0.0.1:8080` is published. Named volumes retain JetStream and contacts.
-`GET /healthz` returns `{"status":"ok"}`. `POST /v1/emails` returns 202 only after
-JetStream confirms `email.received`. Neither MinIO nor Resend is in that HTTP path.
+`127.0.0.1:8080` and `127.0.0.1:8081` are published. Named volumes retain JetStream
+and contacts. Both actors answer `GET /healthz` with `{"status":"ok"}`.
+`POST /v1/emails` returns 202 only after JetStream confirms `email.received`.
+Neither MinIO nor Resend is in that HTTP path.
 
-The separate composition in `containers/e2e/` has isolated named volumes, no host
-ports and no test runner. Before raising it locally, provide that directory's
-ignored `.env` with the private keys listed above. Use only a sandbox sender; no
-production Resend credential belongs in CI.
+```sh
+./cli/drift smoke early-access
+```
 
-CI now validates both Compose models and raises both topologies. The development
-runtime smoke check waits for healthy services, verifies `/healthz`, confirms the
-`EARLY_ACCESS` stream and both durable consumers, then stops the sender and posts
-a synthetic Early Access registration. CI verifies the request is accepted, a
-contact is persisted in MinIO, and the stream contains the received/stored
-lifecycle messages. The isolated E2E composition is also raised to prove its
-container/env wiring. This is runtime smoke coverage, not an automated delivery
-E2E suite; CI does not call live Resend.
+That command curls the two dev health endpoints. It does not start Compose, run
+Go tests, or prove delivery. `email-store` and `email-sender` select one endpoint;
+the default is both.
+
+The separate composition in `containers/e2e/` has isolated named volumes and no
+host ports. Before raising it locally, provide that directory's ignored `.env`
+with the private keys listed above. Its tracked `.env.development` points
+`RESEND_API_URL` at `http://resend-mock:8080/emails`. The sender refuses to start
+in that composition when the effective URL is anything else. No production Resend
+credential belongs in CI.
+
+`go test` and `go test -race` cover envelopes, stream topology, ingress, storage,
+and the sender, including `email.sent`. CI keeps the development storage smoke:
+it checks both health endpoints, stops the sender, and proves acceptance, the
+MinIO contact, and the received/stored messages without calling Resend.
+
+CI then raises the e2e composition and runs its one-shot runner. That proof posts
+`e2e@example.com`, requires HTTP 202, and waits until the stream has at least
+three messages, both durable consumers exist, MinIO has the contact object, and
+the test provider recorded exactly one send. This is a complete event-chain proof
+against a test provider. It is not live Resend delivery.
 
 ## Contracts and limits
 
@@ -90,5 +104,6 @@ is invented here. The edge must provide TLS, volumetric protection, connection
 limits and request filtering. Local application limits are only defense in depth.
 
 Set `MINIO_USE_SSL=true`, real NATS/MinIO endpoints and scoped credentials on the
-runtime host. Set `RESEND_API_KEY` and the verified `RESEND_FROM` only on the sender.
+runtime host. Set `RESEND_API_URL=https://api.resend.com/emails`, `RESEND_API_KEY`,
+and the verified `RESEND_FROM` only on the sender.
 The Website receives only its service origin and shared API key.

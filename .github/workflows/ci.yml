@@ -41,6 +41,8 @@ jobs:
           go-version-file: go.mod
           cache: true
       - run: go build ./...
+      - run: go test ./...
+      - run: go test -race ./...
       - run: go vet ./...
       - name: Require gofmt
         run: |
@@ -122,6 +124,7 @@ jobs:
           trap "$compose down -v --remove-orphans" EXIT
           $compose up -d --build --wait
           curl --fail --silent --show-error http://127.0.0.1:8080/healthz | grep -Fq '"status":"ok"'
+          curl --fail --silent --show-error http://127.0.0.1:8081/healthz | grep -Fq '"status":"ok"'
           $compose exec -T nats sh -ec \
             "wget -q -O - 'http://127.0.0.1:8222/jsz?streams=true&consumers=true' | grep -q EARLY_ACCESS"
 
@@ -177,13 +180,13 @@ jobs:
 
           $compose down -v --remove-orphans
           trap - EXIT
-      - name: Raise isolated E2E topology
+      - name: Prove isolated E2E event chain
         shell: bash
         run: |
           set -euo pipefail
           compose='docker compose -f messaging/runtime/early-access/containers/e2e/docker-compose.yml'
-          trap "$compose down -v --remove-orphans" EXIT
+          trap "$compose --profile proof down -v --remove-orphans" EXIT
           $compose up -d --build --wait
-          $compose ps
-          $compose down -v --remove-orphans
+          $compose --profile proof run --rm --no-deps runner
+          $compose --profile proof down -v --remove-orphans
           trap - EXIT

@@ -46,6 +46,7 @@ func required(name string) string {
 }
 func main() {
 	natsURL, key, from := required("NATS_URL"), required("RESEND_API_KEY"), required("RESEND_FROM")
+	endpoint, addr := required("RESEND_API_URL"), required("HEALTH_ADDR")
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	nc, err := nats.Connect(natsURL, nats.Timeout(5*time.Second), nats.MaxReconnects(-1))
@@ -70,10 +71,31 @@ func main() {
 		slog.Error("consumer_failed")
 		os.Exit(1)
 	}
-	provider := resendClient{http: &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, endpoint: "https://api.resend.com/emails", apiKey: key, from: from}
+	provider := resendClient{http: &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, endpoint: endpoint, apiKey: key, from: from}
 	worker := sender{send: provider.send, publish: func(ctx context.Context, event events.Envelope) error { return stream.Publish(ctx, js, event) }}
+	server := &http.Server{Addr: addr, Handler: healthRoutes(), ReadHeaderTimeout: 2 * time.Second, ReadTimeout: 5 * time.Second, WriteTimeout: 5 * time.Second, IdleTimeout: 30 * time.Second}
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("http_server_failed")
+			stop()
+		}
+	}()
 	slog.Info("email_sender_ready")
 	worker.consume(ctx, consumer)
+	shutdown, finish := context.WithTimeout(context.Background(), 10*time.Second)
+	defer finish()
+	_ = server.Shutdown(shutdown)
+}
+func healthRoutes() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, `{"status":"ok"}`)
+	})
+	return mux
 }
 func acknowledgement(locale string) (string, string) {
 	switch locale {

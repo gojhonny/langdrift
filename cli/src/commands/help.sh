@@ -22,3 +22,4 @@ drift_print_command "$DRIFT_ICON_SHOWCASE" showcase
 drift_print_command '⚙️ ' env
 drift_print_command "$DRIFT_ICON_GIT" git
 drift_print_command "$DRIFT_ICON_VERIFY" 'verify packages'
+drift_print_command "$DRIFT_ICON_SMOKE" 'smoke early-access [email-store|email-sender|all]'
