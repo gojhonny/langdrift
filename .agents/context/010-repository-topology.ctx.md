@@ -1,7 +1,7 @@
 ---
 context: repository-topology
 status: current
-source_branch: staging
+source_branch: main
 reviewed_at: 2026-09-21
 sources:
   - package.json
@@ -41,4 +41,4 @@ Docs is a Vercel app. CI does not build `apps/docs/Dockerfile`; that file is not
 - `.cursor/` — Cursor hooks and a reviewer. It is an adapter, not a second policy.
 - `.github/workflows/` — `ci.yml`, `harness-score.yml`, and `main-source-guard.yml`.
 
-The isolated Early Access Compose file is `messaging/runtime/early-access/containers/e2e/docker-compose.yml`. This commit does not add that directory to `pnpm-workspace.yaml`.
+`pnpm-workspace.yaml` also includes `messaging/runtime/early-access/e2e`. That package holds Playwright fixtures. The isolated Compose file is `messaging/runtime/early-access/containers/e2e/docker-compose.yml`.

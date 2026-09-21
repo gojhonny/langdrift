@@ -1,9 +1,9 @@
 ---
 context: fragmented-context
 status: current
-source_branch: staging
+source_branch: main
 reviewed_at: 2026-09-21
-reviewed_sha: 039027341836ba9a98a2753f2bee8348e89bdbdd
+reviewed_sha: 176af22ba38b2b5167b1804d32e81d520c676eeb
 sources:
   - AGENTS.md
   - .agents/README.md
@@ -15,7 +15,7 @@ Load [AGENTS.md](../../AGENTS.md) first. Then load only the fragments that match
 
 When code and a fragment disagree, inspect the code and update the fragment. Do not copy secrets into context. Do not use `.drifts/` as a source for this set.
 
-Last full refresh: staging `039027341836ba9a98a2753f2bee8348e89bdbdd` on 2026-09-21.
+Last full refresh: main `176af22ba38b2b5167b1804d32e81d520c676eeb` on 2026-09-21.
 
 ## Catalog
 
