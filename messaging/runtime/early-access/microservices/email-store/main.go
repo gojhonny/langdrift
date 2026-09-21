@@ -136,9 +136,10 @@ func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) { respond(w, 200, `{"status":"ok"}`) })
 	mux.HandleFunc("POST /v1/emails", app.receive)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return recoverHTTP(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		r.Body = http.MaxBytesReader(w, r.Body, 4*1024)
 		if !app.limiter.Allow() {
+			w.Header().Set("Retry-After", "1")
 			respond(w, 429, `{"error":"rate_limited"}`)
 			return
 		}
@@ -146,6 +147,7 @@ func (app *application) routes() http.Handler {
 		case app.inFlight <- struct{}{}:
 			defer func() { <-app.inFlight }()
 		default:
+			w.Header().Set("Retry-After", "1")
 			respond(w, 503, `{"error":"unavailable"}`)
 			return
 		}
@@ -154,11 +156,23 @@ func (app *application) routes() http.Handler {
 			return
 		}
 		mux.ServeHTTP(w, r)
+	}))
+}
+func recoverHTTP(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if recovered := recover(); recovered != nil {
+				slog.Error("http_panic_recovered", "path", r.URL.Path)
+				respond(w, http.StatusInternalServerError, `{"error":"internal_server_error"}`)
+			}
+		}()
+		next.ServeHTTP(w, r)
 	})
 }
 func respond(w http.ResponseWriter, status int, body string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(status)
 	_, _ = io.WriteString(w, body)
 }
