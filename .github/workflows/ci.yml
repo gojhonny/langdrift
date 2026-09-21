@@ -56,7 +56,6 @@ jobs:
           - apps/website/Dockerfile
           - apps/dashboard/Dockerfile
           - apps/sso/Dockerfile
-          - apps/docs/Dockerfile
           - messaging/infrastructure/broker/nats/Dockerfile
           - messaging/infrastructure/storage/minio/Dockerfile
           - messaging/runtime/early-access/microservices/email-store/Dockerfile
