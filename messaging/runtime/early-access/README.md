@@ -35,10 +35,13 @@ ignored `.env` with the private keys listed above. Use only a sandbox sender; no
 production Resend credential belongs in CI.
 
 CI now validates both Compose models and raises both topologies. The development
-runtime smoke check waits for healthy services, verifies `/healthz`, and confirms
-that JetStream exposes the `EARLY_ACCESS` stream. The isolated E2E composition is
-also raised to prove its container/env wiring. This is runtime smoke coverage, not
-an automated delivery E2E suite; CI does not call live Resend.
+runtime smoke check waits for healthy services, verifies `/healthz`, confirms the
+`EARLY_ACCESS` stream and both durable consumers, then stops the sender and posts
+a synthetic Early Access registration. CI verifies the request is accepted, a
+contact is persisted in MinIO, and the stream contains the received/stored
+lifecycle messages. The isolated E2E composition is also raised to prove its
+container/env wiring. This is runtime smoke coverage, not an automated delivery
+E2E suite; CI does not call live Resend.
 
 ## Contracts and limits
 
