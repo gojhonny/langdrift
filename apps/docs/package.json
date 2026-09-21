@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build": "sh ../../cli/src/runtime/next-build.sh build --webpack",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
-    "start": "next start --hostname 0.0.0.0 --port 3004"
+    "start": "sh ../../cli/src/runtime/next-start.sh 3004"
   },
   "dependencies": {
     "@repo/design-tokens": "workspace:*",
