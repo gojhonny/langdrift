@@ -1,0 +1,128 @@
+{
+  "brand": {
+    "$type": "color",
+    "$value": "#f97316"
+  },
+  "brand-bright": {
+    "$type": "color",
+    "$value": "#ff9500"
+  },
+  "brand-soft": {
+    "$type": "color",
+    "$value": "color-mix(in oklab, var(--ld-brand) 12%, transparent)"
+  },
+  "dark-bg": {
+    "$type": "color",
+    "$value": "#0b0b0c"
+  },
+  "dark-surface": {
+    "$type": "color",
+    "$value": "#151517"
+  },
+  "dark-surface-elevated": {
+    "$type": "color",
+    "$value": "#1b1b1e"
+  },
+  "dark-text": {
+    "$type": "color",
+    "$value": "#f5f5f5"
+  },
+  "dark-muted": {
+    "$type": "color",
+    "$value": "#a1a1aa"
+  },
+  "dark-hairline": {
+    "$type": "color",
+    "$value": "rgb(255 255 255 / 9%)"
+  },
+  "light-bg": {
+    "$type": "color",
+    "$value": "#fafafa"
+  },
+  "light-surface": {
+    "$type": "color",
+    "$value": "#ffffff"
+  },
+  "light-ink": {
+    "$type": "color",
+    "$value": "#171717"
+  },
+  "light-muted": {
+    "$type": "color",
+    "$value": "#6b6b6b"
+  },
+  "light-hairline": {
+    "$type": "color",
+    "$value": "#ebebeb"
+  },
+  "intentional": {
+    "$type": "color",
+    "$value": "#3b82f6"
+  },
+  "aligned": {
+    "$type": "color",
+    "$value": "#16a34a"
+  },
+  "unexplained": {
+    "$type": "color",
+    "$value": "#dc2626"
+  },
+  "review": {
+    "$type": "color",
+    "$value": "#a855f7"
+  },
+  "themes": {
+    "dark": {
+      "bg": {
+        "$type": "color",
+        "$value": "{dark-bg}"
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "{dark-surface}"
+      },
+      "surface-elevated": {
+        "$type": "color",
+        "$value": "{dark-surface-elevated}"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{dark-text}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{dark-muted}"
+      },
+      "hairline": {
+        "$type": "color",
+        "$value": "{dark-hairline}"
+      }
+    },
+    "light": {
+      "bg": {
+        "$type": "color",
+        "$value": "{light-bg}"
+      },
+      "surface": {
+        "$type": "color",
+        "$value": "{light-surface}"
+      },
+      "surface-elevated": {
+        "$type": "color",
+        "$value": "{light-surface}"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{light-ink}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{light-muted}"
+      },
+      "hairline": {
+        "$type": "color",
+        "$value": "{light-hairline}"
+      }
+    }
+  }
+}

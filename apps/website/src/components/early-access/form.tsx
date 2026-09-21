@@ -1,5 +1,6 @@
 'use client'
 
+import type { WebsiteLocale } from '../../i18n/routing'
 import { produce } from 'immer'
 import { useId, useRef, useState } from 'react'
 import type { EarlyAccessMessages } from '../../messages/early-access'
@@ -13,13 +14,18 @@ import type { EarlyAccessFormState, StateUpdater } from './form.types'
 
 export function EarlyAccessForm({
   copy,
-  helperId
+  helperId,
+  locale,
+  source
 }: {
   copy: EarlyAccessMessages
   helperId: string
+  locale: WebsiteLocale
+  source: 'landing' | 'pricing'
 }) {
   const [formState, setFormState] = useState(createEarlyAccessFormState)
   const inputRef = useRef<HTMLInputElement>(null)
+  const submitting = useRef(false)
   const instanceId = useId()
   const emailId = `${instanceId}-email`
   const errorId = `${instanceId}-error`
@@ -33,10 +39,21 @@ export function EarlyAccessForm({
     <form
       className="early-access-form"
       noValidate
+      aria-busy={formState.status === 'submitting'}
       onSubmit={(event) => {
         event.preventDefault()
-        handleFormSubmit(inputRef.current?.value ?? '', update, () => {
-          inputRef.current?.focus()
+        if (submitting.current) return
+        submitting.current = true
+        void handleFormSubmit(
+          inputRef.current?.value ?? '',
+          update,
+          () => {
+            inputRef.current?.focus()
+          },
+          locale,
+          source
+        ).finally(() => {
+          submitting.current = false
         })
       }}
     >
@@ -50,6 +67,7 @@ export function EarlyAccessForm({
           autoComplete="email"
           inputMode="email"
           required
+          disabled={formState.status === 'submitting'}
           value={formState.email}
           placeholder={copy.placeholder}
           aria-describedby={`${helperId}${emailError ? ` ${errorId}` : ''}`}
@@ -65,8 +83,8 @@ export function EarlyAccessForm({
             handleEmailBlur(event.currentTarget.value, update)
           }}
         />
-        <button type="submit">
-          {copy.submit}
+        <button type="submit" disabled={formState.status === 'submitting'}>
+          {formState.status === 'submitting' ? copy.submitting : copy.submit}
           <span aria-hidden="true">↗</span>
         </button>
       </div>
@@ -81,7 +99,11 @@ export function EarlyAccessForm({
           </p>
         ) : null}
         <p id={statusId} className="early-access-valid-status">
-          {formState.status === 'valid' ? copy.addressValid : ''}
+          {formState.status === 'success'
+            ? copy.success
+            : formState.status === 'error' && !emailError
+              ? copy.unavailable
+              : ''}
         </p>
       </div>
     </form>

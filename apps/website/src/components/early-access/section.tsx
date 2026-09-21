@@ -32,7 +32,12 @@ export function EarlyAccessSection({
             {copy.helper}
           </p>
         </div>
-        <EarlyAccessForm copy={copy} helperId={helperId} />
+        <EarlyAccessForm
+          copy={copy}
+          helperId={helperId}
+          locale={locale}
+          source={source}
+        />
       </div>
     </section>
   )

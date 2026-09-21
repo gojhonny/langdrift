@@ -1,0 +1,44 @@
+---
+title: Messaging runtimes are use cases
+date: 2026-09-20
+type: decision
+status: canonical
+searchable: false
+scope:
+  - architecture
+  - messaging
+---
+
+# Messaging runtimes are use cases
+
+`apps/` owns product surfaces; `packages/` owns reusable contracts and shared
+language. `messaging/infrastructure/` contains the NATS and MinIO foundations.
+`messaging/runtime/<use-case>/` contains an independently raisable executable
+topology. Runtime use cases should be independently raisable and E2E-testable;
+this describes the boundary, not a requirement to add tests in this recovery.
+
+The `early-access` runtime contains two tiny Go actors under `microservices/`:
+`email-store` owns HTTP ingress and contact persistence, and `email-sender` owns
+the Resend acknowledgement. Prefer one `main.go` per actor; additional Go files
+may live beside it when necessary. Do not introduce layered service folders.
+
+`event-streaming/` defines subjects, durable consumers and idempotent topology
+bootstrap. `containers/dev/` and `containers/e2e/` own separate compositions.
+Shared envelope and typed payload contracts live in `packages/events/envelopes/`.
+One root Go module covers these packages.
+
+The Website uses client Zod validation, a Next.js Server Function, the same Zod
+schema again, and server-only Axios. It calls `email-store` with a shared bearer
+key. The browser receives only validation, success or unavailable results.
+There is no Next.js API Route and no browser connection to the Go service.
+
+The lifecycle is `email.received` → MinIO contact → `email.stored` → Resend →
+`email.sent`. JetStream provides at-least-once delivery. Each consumer acknowledges
+only after its side effect and next event publication succeed. Transition IDs
+remain stable when the same input is retried. Resend receives
+`early-access-ack/<email-stored-event-id>` as its idempotency key.
+
+Application limits reject overload, but production ingress still requires an
+upstream TLS/edge service with volumetric protection and connection limits.
+This narrow runtime does not create a general backend platform, CRM, account,
+subscription or activated trial.

@@ -1,0 +1,37 @@
+# Isolated topology retained for future use. No test runner is included or run.
+# Secrets must be supplied in this directory's ignored .env before startup.
+name: langdrift-early-access-e2e
+services:
+  nats:
+    extends:
+      file: ../dev/docker-compose.yml
+      service: nats
+    restart: 'no'
+  minio:
+    extends:
+      file: ../dev/docker-compose.yml
+      service: minio
+    env_file: !override
+      - ../../../../infrastructure/storage/minio/.env.development
+      - .env
+    restart: 'no'
+  email-store:
+    extends:
+      file: ../dev/docker-compose.yml
+      service: email-store
+    env_file: !override
+      - ../../microservices/email-store/.env.development
+      - .env
+    ports: !override []
+    restart: 'no'
+  email-sender:
+    extends:
+      file: ../dev/docker-compose.yml
+      service: email-sender
+    env_file: !override
+      - ../../microservices/email-sender/.env.development
+      - .env
+    restart: 'no'
+volumes:
+  jetstream:
+  contacts:

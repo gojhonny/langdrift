@@ -115,7 +115,8 @@ export default withNextra({
       }
     ]
   },
+  output: 'standalone',
   poweredByHeader: false,
   reactStrictMode: true,
-  transpilePackages: ['@repo/design-system', '@repo/react']
+  transpilePackages: ['@repo/design-tokens', '@repo/react']
 })
