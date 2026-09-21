@@ -10,7 +10,15 @@ Visual product intelligence for founders and teams building with humans and AI.
 
 <img alt="Vision → Loop → Evidence" src="./assets/readme/vision-loop-evidence.svg" width="560" />
 
-[Explore LangDrift](https://langdrift.md/) · [Docs](https://docs.langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
+<p align="center">
+  <a href="https://langdrift.md/">Explore LangDrift</a>
+  ·
+  <a href="https://docs.langdrift.md/">Docs</a>
+  ·
+  <a href="https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md">SDK</a>
+  ·
+  <a href="https://github.com/gojhonny/langdrift/issues">Contribute</a>
+</p>
 
 </div>
 
