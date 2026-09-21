@@ -124,6 +124,42 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:8080/healthz | grep -Fq '"status":"ok"'
           $compose exec -T nats sh -ec \
             "wget -q -O - 'http://127.0.0.1:8222/jsz?streams=true&consumers=true' | grep -q EARLY_ACCESS"
+
+          # Prove the ingress -> JetStream -> storage half of the vertical slice
+          # without allowing CI to call the external email provider.
+          $compose stop email-sender
+          status=$(curl --silent --show-error --output /tmp/early-access-response.json --write-out '%{http_code}' \
+            --request POST http://127.0.0.1:8080/v1/emails \
+            --header 'Authorization: Bearer ci-email-service-key' \
+            --header 'Content-Type: application/json' \
+            --data '{"email":"smoke@example.com","locale":"en","source":"landing"}')
+          [ "$status" = '202' ]
+          grep -Fq '"status":"accepted"' /tmp/early-access-response.json
+
+          stored=0
+          for _ in $(seq 1 20); do
+            if $compose exec -T minio sh -ec '[ -n "$(ls -A /data/langdrift-emails/contacts 2>/dev/null)" ]'; then
+              stored=1
+              break
+            fi
+            sleep 0.5
+          done
+          [ "$stored" = '1' ]
+
+          $compose exec -T nats wget -q -O - \
+            'http://127.0.0.1:8222/jsz?streams=true&consumers=true' \
+            > /tmp/early-access-jsz.json
+          python3 - <<'PY'
+          import json
+
+          with open('/tmp/early-access-jsz.json', encoding='utf-8') as handle:
+              state = json.load(handle)
+
+          stream = next(item for item in state.get('streams', []) if item.get('name') == 'EARLY_ACCESS')
+          assert stream.get('state', {}).get('messages', 0) >= 2, stream
+          assert stream.get('consumer_count', 0) == 2, stream
+          PY
+
           $compose down -v --remove-orphans
           trap - EXIT
       - name: Raise isolated E2E topology
