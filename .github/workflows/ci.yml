@@ -155,9 +155,24 @@ jobs:
           with open('/tmp/early-access-jsz.json', encoding='utf-8') as handle:
               state = json.load(handle)
 
-          stream = next(item for item in state.get('streams', []) if item.get('name') == 'EARLY_ACCESS')
+          stream = next(
+              stream
+              for account in state.get('account_details', [])
+              for stream in account.get('stream_detail', [])
+              if stream.get('name') == 'EARLY_ACCESS'
+          )
           assert stream.get('state', {}).get('messages', 0) >= 2, stream
-          assert stream.get('consumer_count', 0) == 2, stream
+
+          consumers = stream.get('consumer_detail', [])
+          assert len(consumers) == 2, consumers
+          names = {
+              consumer.get('name') or consumer.get('config', {}).get('durable_name')
+              for consumer in consumers
+          }
+          assert {
+              'early-access-email-store-v1',
+              'early-access-email-sender-v1',
+          } <= names, names
           PY
 
           $compose down -v --remove-orphans
