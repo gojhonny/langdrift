@@ -78,3 +78,61 @@ jobs:
           ENV
       - name: Build image
         run: docker build --secret id=build_env,src=/tmp/langdrift-build.env --file '${{ matrix.dockerfile }}' .
+
+  early-access-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Supply disposable runtime secrets
+        shell: bash
+        run: |
+          set -eu
+          : > messaging/infrastructure/broker/nats/.env
+          cat > messaging/infrastructure/storage/minio/.env <<'ENV'
+          MINIO_ROOT_USER=ci-minio
+          MINIO_ROOT_PASSWORD=ci-minio-secret
+          ENV
+          cat > messaging/runtime/early-access/microservices/email-store/.env <<'ENV'
+          EMAIL_SERVICE_API_KEY=ci-email-service-key
+          MINIO_ACCESS_KEY=ci-minio
+          MINIO_SECRET_KEY=ci-minio-secret
+          ENV
+          cat > messaging/runtime/early-access/microservices/email-sender/.env <<'ENV'
+          RESEND_API_KEY=re_ci_placeholder
+          RESEND_FROM=ci@example.invalid
+          ENV
+          cat > messaging/runtime/early-access/containers/e2e/.env <<'ENV'
+          MINIO_ROOT_USER=ci-minio
+          MINIO_ROOT_PASSWORD=ci-minio-secret
+          EMAIL_SERVICE_API_KEY=ci-email-service-key
+          MINIO_ACCESS_KEY=ci-minio
+          MINIO_SECRET_KEY=ci-minio-secret
+          RESEND_API_KEY=re_ci_placeholder
+          RESEND_FROM=ci@example.invalid
+          ENV
+      - name: Validate Compose models
+        run: |
+          docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml config --quiet
+          docker compose -f messaging/runtime/early-access/containers/e2e/docker-compose.yml config --quiet
+      - name: Raise development runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose='docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml'
+          trap "$compose down -v --remove-orphans" EXIT
+          $compose up -d --build --wait
+          curl --fail --silent --show-error http://127.0.0.1:8080/healthz | grep -Fq '"status":"ok"'
+          $compose exec -T nats sh -ec \
+            "wget -q -O - 'http://127.0.0.1:8222/jsz?streams=true&consumers=true' | grep -q EARLY_ACCESS"
+          $compose down -v --remove-orphans
+          trap - EXIT
+      - name: Raise isolated E2E topology
+        shell: bash
+        run: |
+          set -euo pipefail
+          compose='docker compose -f messaging/runtime/early-access/containers/e2e/docker-compose.yml'
+          trap "$compose down -v --remove-orphans" EXIT
+          $compose up -d --build --wait
+          $compose ps
+          $compose down -v --remove-orphans
+          trap - EXIT
