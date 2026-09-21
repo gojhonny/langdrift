@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# LangDrift
+<img alt="LangDrift" src="./assets/readme/wordmark.svg" width="420" />
 
 ### Your product moves fast. Know where it’s going.
 
