@@ -1,5 +1,17 @@
 # LangDrift — Repository Agent Context
 
+## Source of truth and precedence
+
+1. Current repository code, config, and schema are the implementation source of truth.
+2. An explicit owner decision overrides an inferred convention.
+3. This file owns repository-wide operating invariants.
+4. `.agents/context/*.ctx.md` describes scoped repository context. Start at [.agents/context/000-fragmented-context.ctx.md](.agents/context/000-fragmented-context.ctx.md).
+5. `.agents/rules/*.rule.md` applies only when its scope matches current LangDrift code and it does not contradict a higher invariant.
+6. `.agents/skills/` are procedures. A foreign or stale path in a skill does not create LangDrift architecture.
+7. `.cursor/` adapts this harness to Cursor. It is not a second policy.
+
+`.drifts/` is restricted. Do not create, edit, move, delete, normalize, format, or populate files under `.drifts/` unless the owner explicitly authorizes that scope.
+
 ## Product
 
 LangDrift is a multi-tenant visual product-intelligence platform for founders, CEOs, and leadership. It explains how a product changes over time relative to the vision and recorded decisions that shaped it.
@@ -167,31 +179,72 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - Repository automation scripts are POSIX `.sh` files.
 - No `.codex` directory.
 - No `ai` workspace.
-- No backend/API workspace until architecture explicitly introduces one.
+- No general backend/API workspace. The only current backend-style runtime is `messaging/runtime/early-access`. Do not invent a second one, and do not remove that runtime because an older note says the repository has no backend.
 - Do not silently turn design references into copied branding.
 - Preserve light/dark support and accessibility across surfaces.
 - Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website environment and local form state](apps/website/readme.md); this does not require migrating other surfaces.
 - Important shared state changes remain inspectable through the existing state loggers. Keep email and other entered form data out of atoms, logs, URLs, analytics and browser persistence.
 
-## Harness bootstrap
+## Repository topology
 
-The harness is being rebuilt from selected Amarelo reference files. Code-design rules live under `.agents/rules/code-design/`; template prompts live under `.agents/prompts/`; local skills live under `.agents/skills/`.
+```text
+apps/       product surfaces
+packages/   shared packages and contracts
+messaging/  Early Access runtime and its infrastructure
+cli/        repository-local POSIX control plane
+.agents/    context, rules, and skills
+.cursor/    Cursor adapter
+```
 
-Copied rules, templates, and skills retain their source content for deliberate iteration. Their Amarelo-specific references and pending workflow dependencies still need adaptation. They do not establish new LangDrift product decisions or trigger a repository-wide code-conformance migration.
+Ports, workspace globs, and toolchain versions are in [.agents/context/010-repository-topology.ctx.md](.agents/context/010-repository-topology.ctx.md). Surface rules stay in this file.
 
-Planning now lives in `.agents/workflow/`; see [.agents/README.md](.agents/README.md) for artifact ownership and [.agents/workflow/README.md](.agents/workflow/README.md) for the draft lifecycle. Status belongs inside documents, not status-named folders. Retained templates are centralized in `.agents/templates/`.
+## Package identity
 
-`.drifts/` holds the draft portable JSON integration contract and future Obsidian/MCP placeholders. It references factory documents but does not own their approval status. No integration is running.
+Do not infer a package name from its folder. Read `package.json` or `go.mod` before changing a boundary.
 
-Website implementation and Sinapsi publication are outside this scaffold.
+```text
+packages/core          → @langdrift/setup
+packages/sdk           → @langdrift/sdk
+packages/react         → @repo/react
+packages/design-tokens → @repo/design-tokens
+packages/events        → Go envelopes in the root module
+```
+
+Detail is in [.agents/context/030-packages-and-contracts.ctx.md](.agents/context/030-packages-and-contracts.ctx.md). The setup and SDK READMEs are the product docs for those two packages.
+
+## Environment
+
+```text
+tracked safe local config → .env.development
+private local values      → .env
+required env              → fail fast
+no hardcoded fallback
+```
+
+The Early Access path and the exact required names are in [.agents/context/040-messaging-runtime-and-environment.ctx.md](.agents/context/040-messaging-runtime-and-environment.ctx.md).
+
+## Harness
+
+`AGENTS.md` and `.agents/` are canonical. The directories that exist are `.agents/context/`, `.agents/rules/`, and `.agents/skills/`. `.cursor/` is Cursor-native enforcement and feedback. The map is [.agents/README.md](.agents/README.md).
+
+Copied rules and skills can still name Amarelo, NestJS, or paths that are not in this repository. Those references are unadapted scaffolding. They do not authorize new architecture and they do not require a repository-wide conformance migration.
+
+```sh
+./cli/drift harness --min-level 4
+```
+
+That gate measures harness maturity. It does not prove correctness. See [.agents/context/050-harness-and-agent-runtime.ctx.md](.agents/context/050-harness-and-agent-runtime.ctx.md).
 
 ## Verification
 
-A frontend change is not repository-ready until it passes:
+The minimum check depends on the surface you changed. Read [.agents/context/060-verification.ctx.md](.agents/context/060-verification.ctx.md) before calling a change repository-ready. Harness maturity is a separate gate from build and runtime verification.
+
+The usual baseline is:
 
 ```text
-drift doctor --ci
-Biome lint
-typecheck
-build
+./cli/drift doctor --ci
+pnpm lint
+pnpm typecheck
+pnpm build
+./cli/drift harness --min-level 4
 ```
