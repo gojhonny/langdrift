@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "typecheck": "tsc --noEmit",
-    "build": "next build",
+    "build": "sh ../../cli/src/runtime/next-build.sh build",
     "start": "next start --hostname 0.0.0.0 --port 3000"
   },
   "dependencies": {
