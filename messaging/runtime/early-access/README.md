@@ -30,10 +30,15 @@ Only `127.0.0.1:8080` is published. Named volumes retain JetStream and contacts.
 JetStream confirms `email.received`. Neither MinIO nor Resend is in that HTTP path.
 
 The separate composition in `containers/e2e/` has isolated named volumes, no host
-ports and no test runner. Before raising it, provide that directory's ignored
-`.env` with the private keys listed above. Use only a sandbox sender; no production
-Resend credential belongs in CI. No tests are included or run in this recovery,
-per the owner's instruction.
+ports and no test runner. Before raising it locally, provide that directory's
+ignored `.env` with the private keys listed above. Use only a sandbox sender; no
+production Resend credential belongs in CI.
+
+CI now validates both Compose models and raises both topologies. The development
+runtime smoke check waits for healthy services, verifies `/healthz`, and confirms
+that JetStream exposes the `EARLY_ACCESS` stream. The isolated E2E composition is
+also raised to prove its container/env wiring. This is runtime smoke coverage, not
+an automated delivery E2E suite; CI does not call live Resend.
 
 ## Contracts and limits
 
