@@ -1,11 +1,8 @@
 
 
-# LangDrift
+<div align="center">
 
-<p align="center">
-  <a href="https://paladini.io/harness-score/guide/maturity-model.html"><img alt="Harness Score L4" src="https://paladini.github.io/harness-score/maturity/badge-l4.svg" height="20"></a>
-  <a href="https://github.com/gojhonny/langdrift/actions/workflows/ci.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/gojhonny/langdrift/ci.yml?branch=main&amp;label=tests&amp;logo=github" height="20"></a>
-</p>
+# LangDrift
 
 ### Your product moves fast. Know where it’s going.
 
@@ -15,9 +12,14 @@ Visual product intelligence for founders and teams building with humans and AI.
 
 [Explore LangDrift](https://langdrift.md/) · [Docs](https://docs.langdrift.md/) · [SDK](https://github.com/gojhonny/langdrift/blob/staging/packages/sdk/README.md) · [Contribute](https://github.com/gojhonny/langdrift/issues)
 
+</div>
+
 ![LangDrift product preview: a Product Vision curve connects illustrative changes to people, decisions, and a graph of supporting context.](./assets/readme/banner.png)
 
-Product preview · Illustrative data
+<p align="center">
+  <a href="https://paladini.io/harness-score/guide/maturity-model.html"><img alt="Harness Score L4" src="https://paladini.github.io/harness-score/maturity/badge-l4.svg" height="20"></a>
+  <a href="https://github.com/gojhonny/langdrift/actions/workflows/ci.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/gojhonny/langdrift/ci.yml?branch=main&amp;label=tests&amp;logo=github" height="20"></a>
+</p>
 
 ## Every release changes your product. Keep the why.
 
