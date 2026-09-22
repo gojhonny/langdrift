@@ -1,7 +1,5 @@
 import 'server-only'
 
-import { requireTurnstileVerifyUrl } from './turnstile-verify-url'
-
 function required(name: string, value: string | undefined): string {
   if (!value?.trim())
     throw new Error(`Missing required environment variable: ${name}`)
@@ -30,9 +28,9 @@ if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/.test(turnstileHostname)) {
     'TURNSTILE_EXPECTED_HOSTNAME must be a hostname without a scheme, port or path'
   )
 }
-const turnstileVerifyUrl = requireTurnstileVerifyUrl(
-  process.env.TURNSTILE_VERIFY_URL,
-  mode
+const turnstileVerifyUrl = required(
+  'TURNSTILE_VERIFY_URL',
+  process.env.TURNSTILE_VERIFY_URL
 )
 if (
   mode === 'production' &&
