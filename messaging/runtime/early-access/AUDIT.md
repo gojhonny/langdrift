@@ -30,8 +30,7 @@ The dev server is not bound to `127.0.0.1`. Next.js 16.3 rewrites the next-intl 
 
 ## Known failures and remaining implementation
 
-- The combined 80/95 coverage gate has not been applied to the copied integration profiles.
-- CI still contains its older Python/count-only development smoke and duplicated orchestration. Finish moving it to the common POSIX runners and publish unit/integration/combined coverage artifacts and gates.
+- The combined 80/95 coverage gate has not been applied to the copied integration profiles. CI now runs `./cli/drift test early-access all` and publishes the unit, integration, and Website coverage artifacts.
 - Complete the browser abuse/recovery matrix, provider deterministic failure tests, scoped production NATS/MinIO configuration, image vulnerability scans, and private operational visibility/runbooks.
 - Finish the consolidated audit and repository gates. Keep implementation commits scoped to one completed task and push each to the same PR.
 
