@@ -4,6 +4,6 @@
 
 The executable surface is setup/doctor/harness/cleanup/runtime/run/dev/showcase/smoke, environment helpers, Git helpers, and package verification.
 
-Lang Drift currently has no backend. `runtime` is reserved for the compose stack. `dev` watches one frontend app. `run` starts one built app in production. `showcase` builds and starts all four.
+LangDrift has a narrow Early Access Go runtime. `drift early-access setup` creates disposable local credentials; `drift runtime early-access up|down|reset|logs|status` manages the mock-backed stack. `drift test early-access` and `drift audit early-access` run its checks. `dev` watches one frontend app; `run` starts one built app.
 
 All repository command scripts are `.sh` files.

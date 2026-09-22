@@ -8,6 +8,8 @@ out/
 dist/
 .turbo/
 coverage/
+test-results/
+playwright-report/
 **/public/_pagefind/
 
 # local environment
