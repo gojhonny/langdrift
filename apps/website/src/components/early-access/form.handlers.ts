@@ -35,7 +35,8 @@ export async function handleFormSubmit(
   update: StateUpdater<EarlyAccessFormState>,
   focusEmail: () => void,
   locale: WebsiteLocale,
-  source: 'landing' | 'pricing'
+  source: 'landing' | 'pricing',
+  turnstileToken: string
 ): Promise<void> {
   const result = earlyAccessFormSchema.safeParse({ email })
   if (!result.success) {
@@ -52,9 +53,9 @@ export async function handleFormSubmit(
   })
 
   try {
-    const response = await submitEarlyAccess({ ...result.data, locale, source })
+    const response = await submitEarlyAccess({ ...result.data, locale, source, turnstileToken })
     update((draft) => {
-      draft.status = response.ok ? 'success' : 'error'
+      draft.status = response.ok ? 'success' : response.code === 'CHALLENGE_FAILED' ? 'challenge-error' : 'error'
       if (response.ok) draft.email = ''
       if (!response.ok && response.code === 'VALIDATION_ERROR') {
         const error = response.fieldErrors?.email

@@ -5,6 +5,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  allowedDevOrigins: ['127.0.0.1'],
+  experimental: { serverActions: { bodySizeLimit: '4kb' } },
   output: 'standalone',
   transpilePackages: ['@repo/design-tokens', '@repo/react']
 }
