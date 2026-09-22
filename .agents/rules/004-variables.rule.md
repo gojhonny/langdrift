@@ -1,6 +1,8 @@
 ---
 id: RULE-004
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Variables conventions for matching LangDrift code
 title: Variables
 status: implemented
 priority: high

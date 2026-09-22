@@ -1,6 +1,8 @@
 ---
 id: RULE-010
-always-apply: false
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Nest.js conventions for matching LangDrift code
 title: Nest.js
 status: implemented
 priority: high

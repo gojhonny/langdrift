@@ -1,6 +1,8 @@
 ---
 id: RULE-014
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Forms conventions for matching LangDrift code
 title: Forms
 status: implemented
 priority: high

@@ -1,6 +1,8 @@
 ---
 id: RULE-006
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Loops conventions for matching LangDrift code
 title: Loops
 status: implemented
 priority: high

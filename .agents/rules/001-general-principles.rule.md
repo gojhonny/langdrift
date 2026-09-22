@@ -1,8 +1,9 @@
 ---
 id: RULE-001
-always-apply: true
+alwaysApply: true
 status: implemented
 priority: critical
+description: General principles conventions for matching LangDrift code
 title: General principles
 date: 2026-09-11
 deciders:

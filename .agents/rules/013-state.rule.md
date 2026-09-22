@@ -1,6 +1,8 @@
 ---
 id: RULE-013
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: State conventions for matching LangDrift code
 title: State
 status: implemented
 priority: high

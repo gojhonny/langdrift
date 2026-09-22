@@ -36,9 +36,9 @@ Zod validation
 
 Production actors are `email-store` and `email-sender`. Infrastructure lives at `messaging/infrastructure/broker/nats` and `messaging/infrastructure/storage/minio`. Shared envelopes live in `packages/events/envelopes`.
 
-`email-store` requires `EMAIL_SERVICE_API_KEY`, `API_ADDR`, `NATS_URL`, `MINIO_ENDPOINT`, `MINIO_BUCKET`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, and `MINIO_USE_SSL`. `email-sender` requires `NATS_URL`, `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_API_URL`, and `HEALTH_ADDR`. The tracked sender development file sets `NATS_URL=nats://nats:4222`, `HEALTH_ADDR=:8081`, and `RESEND_API_URL=https://api.resend.com/emails`.
+`email-store` requires `EMAIL_SERVICE_API_KEY`, `API_ADDR`, `NATS_URL`, `MINIO_ENDPOINT`, `MINIO_BUCKET`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `MINIO_USE_SSL`, and `EARLY_ACCESS_MODE`. `email-sender` requires `NATS_URL`, `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_API_URL`, `HEALTH_ADDR`, and `EARLY_ACCESS_MODE`. Development points to an in-compose Resend mock. The Website also validates Turnstile server-side before forwarding to Go.
 
-Store health is `GET /healthz` on `127.0.0.1:8080`. Sender health is `GET /healthz` on `127.0.0.1:8081`. `POST /v1/emails` returns 202 only after JetStream accepts `email.received`.
+Both actors expose `GET /healthz` and `GET /readyz`. `POST /v1/emails` returns 202 only after JetStream accepts `email.received`. MinIO conditional create preserves the first contact and event identity across repeat submissions.
 
 ## Environment files
 

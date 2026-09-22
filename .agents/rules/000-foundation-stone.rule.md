@@ -1,8 +1,10 @@
 ---
 id: RULE-000
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
 status: implemented
 priority: critical
+description: Foundation stone conventions for matching LangDrift code
 title: Foundation stone
 date: 2026-09-20
 deciders:

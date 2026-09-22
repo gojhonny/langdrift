@@ -28,6 +28,6 @@ These paths are not in the tree: `.agents/workflow/`, `.agents/prompts/`, `.agen
 
 `cli/readme.md` still says the repository has no backend and that `runtime` is only reserved. The Early Access runtime in [040-messaging-runtime-and-environment.ctx.md](040-messaging-runtime-and-environment.ctx.md) is the current exception. Do not delete that runtime because the CLI readme is older.
 
-`.agents/skills/tdd/SKILL.md` still speaks about Amarelo behavior. `.agents/rules/010-nestjs.rule.md` describes Nest.js and is `always-apply: false`. Other rules mention package layouts this repository does not use. Treat those passages as unadapted scaffolding. Do not create NestJS modules, kernel packages, or ticket workflows from them.
+`.agents/skills/tdd/SKILL.md` still speaks about Amarelo behavior. `.agents/rules/010-nestjs.rule.md` describes Nest.js and is `alwaysApply: false`. Other rules mention package layouts this repository does not use. Treat those passages as unadapted scaffolding. Do not create NestJS modules, kernel packages, or ticket workflows from them.
 
 The directories that do exist under `.agents/` are `context/`, `rules/`, and `skills/`.
