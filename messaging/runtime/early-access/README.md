@@ -5,24 +5,24 @@ uses a Next.js Server Function with server-only Axios; there is no API Route.
 
 ## Development
 
-Run `./cli/drift env setup` from the repository root. Development URLs are tracked
-in `.env.development`. Put these private values in ignored sibling `.env` files:
+Run `./cli/drift early-access setup` from the repository root to create disposable local credentials without overwriting existing values. Development URLs are tracked in `.env.development`. Private values live in ignored sibling `.env` files:
 
 | Component | Required private values |
 | --- | --- |
-| Website | `EMAIL_SERVICE_API_KEY` |
+| Website | `EMAIL_SERVICE_API_KEY`, `TURNSTILE_SECRET_KEY` |
 | email-store | `EMAIL_SERVICE_API_KEY`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` |
 | MinIO | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` |
-| email-sender | `RESEND_API_KEY`, `RESEND_FROM` (verified sender) |
+| email-sender | `RESEND_API_KEY`, `RESEND_FROM` (mock values locally) |
 
-`RESEND_API_URL` is required and tracked for development as `https://api.resend.com/emails`.
+`RESEND_API_URL` points to the in-compose Go mock by default. Set `EARLY_ACCESS_MODE=production` and the real Resend endpoint only on a production sender.
 Use the same shared API key in Website and store. For local development, store's
 MinIO keys match the local MinIO root credentials. Production must supply scoped
 application credentials. No NATS authentication is configured in this local
 single-node topology, and its ports are not published to the host.
 
 ```sh
-docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml up -d --build
+./cli/drift doctor early-access
+./cli/drift runtime early-access up
 pnpm website
 ```
 
@@ -30,6 +30,9 @@ pnpm website
 and contacts. Both actors answer `GET /healthz` with `{"status":"ok"}`.
 `POST /v1/emails` returns 202 only after JetStream confirms `email.received`.
 Neither MinIO nor Resend is in that HTTP path.
+Both actors expose `GET /readyz` for dependency-aware readiness. Normal `down` retains volumes; `reset` deletes them.
+
+Run `./cli/drift test early-access unit`, `integration`, `e2e`, or `all` for progressively broader checks. `./cli/drift audit early-access` measures Go coverage and dependency findings. Browser tests need Playwright Chromium installed.
 
 ```sh
 ./cli/drift smoke early-access
@@ -39,9 +42,7 @@ That command curls the two dev health endpoints. It does not start Compose, run
 Go tests, or prove delivery. `email-store` and `email-sender` select one endpoint;
 the default is both.
 
-The separate composition in `containers/e2e/` has isolated named volumes and no
-host ports. Before raising it locally, provide that directory's ignored `.env`
-with the private keys listed above. Its tracked `.env.development` points
+The separate composition in `containers/e2e/` has isolated named volumes and loopback-only test ports. `drift early-access setup` prepares its ignored `.env`. Its tracked `.env.development` points
 `RESEND_API_URL` at `http://resend-mock:8080/emails`. The sender refuses to start
 in that composition when the effective URL is anything else. No production Resend
 credential belongs in CI.
@@ -51,11 +52,7 @@ and the sender, including `email.sent`. CI keeps the development storage smoke:
 it checks both health endpoints, stops the sender, and proves acceptance, the
 MinIO contact, and the received/stored messages without calling Resend.
 
-CI then raises the e2e composition and runs its one-shot runner. That proof posts
-`e2e@example.com`, requires HTTP 202, and waits until the stream has at least
-three messages, both durable consumers exist, MinIO has the contact object, and
-the test provider recorded exactly one send. This is a complete event-chain proof
-against a test provider. It is not live Resend delivery.
+CI then runs the Go runner against the isolated composition. It proves the stored contact through MinIO, correlated `received → stored → sent` events, the provider idempotency key, and repeat registration. Playwright exercises the Website form through the Server Function with a local challenge verifier and provider mock. No CI job sends live email.
 
 ## Contracts and limits
 
@@ -86,7 +83,7 @@ Contacts are stored without object versioning in `langdrift-emails` at
 `contacts/<sha256(trimmed-email)>.json`. Records contain `eventId`, `email`,
 `locale`, `source`, `receivedAt`, and `storedAt`. Trimming outer whitespace is the
 only normalization; aliases, dots and case are preserved. Repeat storage of the
-same event reuses its contact record. A later submission may replace the contact.
+same event reuses its contact record. A later submission with the same normalized email retains the first record and its event identity. The API still returns neutral 202 acceptance.
 
 Ingress requires bearer authentication, JSON, one typed object, no unknown fields,
 email syntax with a 254-character ceiling, locale `en|pt-BR|zh-Hant|ja`, and source
@@ -98,7 +95,7 @@ submitted addresses, credentials or provider error bodies.
 
 ## Production
 
-Web apps run on Vercel. Go actors, NATS and MinIO require a separate runtime host.
+Hosting is undecided. Go actors, NATS and MinIO require a protected runtime host.
 The Website needs that host's real HTTPS origin in `EMAIL_SERVICE_URL`; no domain
 is invented here. The edge must provide TLS, volumetric protection, connection
 limits and request filtering. Local application limits are only defense in depth.
@@ -106,4 +103,6 @@ limits and request filtering. Local application limits are only defense in depth
 Set `MINIO_USE_SSL=true`, real NATS/MinIO endpoints and scoped credentials on the
 runtime host. Set `RESEND_API_URL=https://api.resend.com/emails`, `RESEND_API_KEY`,
 and the verified `RESEND_FROM` only on the sender.
-The Website receives only its service origin and shared API key.
+The Website receives its service origin, shared API key, Turnstile site key, secret and expected hostname. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`; the mock verifier is allowed only in test mode on loopback.
+
+Before public signup, confirm TLS, private NATS and MinIO, scoped credentials, edge limits, backup/restore, credential rotation, operator handling of expired/exhausted deliveries, contact retention/deletion policy, and one controlled live-provider smoke. Track these in [the audit](AUDIT.md).

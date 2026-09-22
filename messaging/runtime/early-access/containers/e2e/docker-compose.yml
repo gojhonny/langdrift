@@ -19,15 +19,29 @@ services:
     extends:
       file: ../dev/docker-compose.yml
       service: email-store
+    build:
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
     env_file: !override
       - ../../microservices/email-store/.env.development
+      - .env.development
       - .env
-    ports: !override []
+    ports: !override
+      - '127.0.0.1:18080:8080'
     restart: 'no'
   email-sender:
     extends:
       file: ../dev/docker-compose.yml
       service: email-sender
+    build:
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
     env_file: !override
       - ../../microservices/email-sender/.env.development
       - .env.development
@@ -35,6 +49,7 @@ services:
     ports: !override []
     entrypoint: ['/bin/sh', '/e2e/guard-sender.sh']
     volumes:
+      - coverage:/coverage
       - ./guard-sender.sh:/e2e/guard-sender.sh:ro
     depends_on:
       email-store:
@@ -44,22 +59,37 @@ services:
     restart: 'no'
   resend-mock:
     build:
-      context: ./resend-mock
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/containers/e2e/resend-mock/Dockerfile
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
     healthcheck:
-      test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz')"]
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz']
       interval: 5s
       timeout: 3s
       retries: 10
+    ports:
+      - '127.0.0.1:18082:8080'
     restart: 'no'
   runner:
     build:
-      context: ./runner
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/containers/e2e/runner/Dockerfile
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
     env_file:
       - .env
-    volumes:
-      - contacts:/data:ro
     profiles: ['proof']
     restart: 'no'
 volumes:
   jetstream:
   contacts:
+  coverage:
