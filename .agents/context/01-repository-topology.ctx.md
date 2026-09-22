@@ -34,8 +34,8 @@ Docs is a Vercel app. CI does not build `apps/docs/Dockerfile`; that file is not
 
 ## Other roots
 
-- `packages/` — shared JavaScript packages and the Go event envelopes. Identities are in [030-packages-and-contracts.ctx.md](030-packages-and-contracts.ctx.md).
-- `messaging/` — the Early Access runtime and its NATS and MinIO infrastructure. See [040-messaging-runtime-and-environment.ctx.md](040-messaging-runtime-and-environment.ctx.md).
+- `packages/` — shared JavaScript packages and the Go event envelopes. Identities are in [03-packages-and-contracts.ctx.md](03-packages-and-contracts.ctx.md).
+- `messaging/` — the Early Access runtime and its NATS and MinIO infrastructure. See [04-messaging-runtime-and-environment.ctx.md](04-messaging-runtime-and-environment.ctx.md).
 - `cli/` — the POSIX `drift` control plane.
 - `.agents/` — context, rules, and skills.
 - `.cursor/` — Cursor hooks and a reviewer. It is an adapter, not a second policy.
