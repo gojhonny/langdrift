@@ -9,6 +9,9 @@ sources:
   - .agents/rules/010-nestjs.rule.md
   - .agents/skills/tdd/SKILL.md
   - .cursor/readme.md
+  - .cursor/commands/doctor.md
+  - .cursor/commands/harness.md
+  - .cursor/commands/verify-packages.md
   - .cursor/hooks.json
   - cli/src/commands/harness.sh
   - .github/workflows/harness-score.yml
@@ -16,7 +19,7 @@ sources:
 
 # Harness and agent runtime
 
-[AGENTS.md](../../AGENTS.md) and `.agents/` are the canonical guidance. `.cursor/` registers a shell guard and a Biome edit hook, and it contains the `langdrift-reviewer` subagent. That folder adapts the harness to Cursor. It is not a second policy.
+[AGENTS.md](../../AGENTS.md) and `.agents/` are the canonical guidance. `.cursor/` registers a shell guard and a Biome edit hook, and it contains the `langdrift-reviewer` subagent. `.cursor/commands/` points at `./cli/drift doctor`, `./cli/drift harness --min-level 4`, and `./cli/drift verify packages`. That folder adapts the harness to Cursor. It is not a second policy.
 
 `./cli/drift harness` runs `npx --yes harness-score@1.5.2` with `--gate maturity`. Optional flags are `--json` and `--min-level 1|2|3|4`. The command's own help says the score measures recognized harness infrastructure, not test coverage, correctness, or live product readiness.
 
