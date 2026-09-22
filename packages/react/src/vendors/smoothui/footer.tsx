@@ -8,8 +8,8 @@ export function SmoothFooter() {
       <div className="smooth-footer-main">
         <Brand compact />
         <p>From vision to reality, and everything in between.</p>
-        <a href="mailto:hello@langdrift.com">
-          hello@langdrift.com <ArrowUpRight aria-hidden="true" size={14} />
+        <a href="mailto:dev.neongate@gmail.com">
+          dev.neongate@gmail.com <ArrowUpRight aria-hidden="true" size={14} />
         </a>
       </div>
       <div className="smooth-footer-bottom">
