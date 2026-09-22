@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /messaging/runtime/early-access/microservices/email-store
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /messaging/runtime/early-access/microservices/email-sender
+    schedule:
+      interval: weekly
