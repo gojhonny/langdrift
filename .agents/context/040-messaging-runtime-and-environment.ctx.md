@@ -11,7 +11,7 @@ sources:
   - packages/events/envelopes/envelope.go
   - apps/website/src/env.ts
   - apps/website/src/env.server.ts
-  - apps/website/readme.md
+  - apps/website/README.md
   - .gitignore
   - .github/workflows/ci.yml
 ---

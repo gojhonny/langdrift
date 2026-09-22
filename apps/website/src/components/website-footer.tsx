@@ -65,7 +65,7 @@ export function WebsiteFooter({
           <Link href="/#faq" locale={locale}>
             {copy.faq}
           </Link>
-          <a href="mailto:hello@langdrift.com">hello@langdrift.com</a>
+          <a href="mailto:dev.neongate@gmail.com">dev.neongate@gmail.com</a>
         </nav>
       </div>
       <div className="website-footer-bottom">
