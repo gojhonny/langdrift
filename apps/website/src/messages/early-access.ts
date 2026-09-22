@@ -12,6 +12,8 @@ export interface EarlyAccessMessages {
   submitting: string
   success: string
   unavailable: string
+  challengeFailed: string
+  challengeLabel: string
   errors: Record<EmailErrorCode, string>
 }
 
@@ -30,6 +32,8 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     success:
       'You’re on the early-access list. We’ll email you when access is available.',
     unavailable: 'We couldn’t save your request. Please try again.',
+    challengeFailed: 'Please complete the security check and try again.',
+    challengeLabel: 'Security check',
     errors: {
       emailRequired: 'Enter your email address.',
       emailInvalid: 'Enter a valid email address.',
@@ -51,6 +55,8 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     success:
       'Você está na lista. Avisaremos por e-mail quando o acesso estiver disponível.',
     unavailable: 'Não foi possível salvar sua solicitação. Tente novamente.',
+    challengeFailed: 'Conclua a verificação de segurança e tente novamente.',
+    challengeLabel: 'Verificação de segurança',
     errors: {
       emailRequired: 'Informe seu e-mail.',
       emailInvalid: 'Informe um e-mail válido.',
@@ -69,6 +75,8 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     submitting: '正在提交…',
     success: '您已加入搶先體驗名單。存取權限開放時會以電子郵件通知您。',
     unavailable: '無法儲存您的登記，請再試一次。',
+    challengeFailed: '請完成安全驗證後再試一次。',
+    challengeLabel: '安全驗證',
     errors: {
       emailRequired: '請輸入您的電子郵件地址。',
       emailInvalid: '請輸入有效的電子郵件地址。',
@@ -89,6 +97,8 @@ export const earlyAccessMessages: Record<WebsiteLocale, EarlyAccessMessages> = {
     success:
       '先行アクセスに登録されました。利用可能になりましたらメールでお知らせします。',
     unavailable: '登録を保存できませんでした。もう一度お試しください。',
+    challengeFailed: 'セキュリティ確認を完了して、もう一度お試しください。',
+    challengeLabel: 'セキュリティ確認',
     errors: {
       emailRequired: 'メールアドレスを入力してください。',
       emailInvalid: '有効なメールアドレスを入力してください。',

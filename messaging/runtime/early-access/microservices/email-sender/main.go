@@ -1,15 +1,16 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"io"
 	"log/slog"
 	"net/http"
+	"net/mail"
+	"net/url"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -17,9 +18,12 @@ import (
 	events "github.com/gojhonny/langdrift/packages/events/envelopes"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
+	resend "github.com/resend/resend-go/v3"
 )
 
 var errExpired = errors.New("retry_window_expired")
+var errProviderPermanent = errors.New("provider_permanent_failure")
+var errInvalidPayload = errors.New("invalid_payload")
 
 type sender struct {
 	send    func(context.Context, string, events.EmailStoredPayload) (string, error)
@@ -29,11 +33,22 @@ type resendClient struct {
 	http                   *http.Client
 	endpoint, apiKey, from string
 }
-type resendRequest struct {
-	From    string   `json:"from"`
-	To      []string `json:"to"`
-	Subject string   `json:"subject"`
-	Text    string   `json:"text"`
+type limitedResponseBody struct {
+	io.Reader
+	io.Closer
+}
+type limitedTransport struct{ base http.RoundTripper }
+
+func (transport limitedTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	response, err := transport.base.RoundTrip(request)
+	if err == nil {
+		if response.StatusCode >= 400 && response.StatusCode < 500 && response.StatusCode != 408 && response.StatusCode != 425 && response.StatusCode != 429 {
+			_ = response.Body.Close()
+			return nil, errProviderPermanent
+		}
+		response.Body = limitedResponseBody{Reader: io.LimitReader(response.Body, 4096), Closer: response.Body}
+	}
+	return response, err
 }
 
 func required(name string) string {
@@ -46,6 +61,20 @@ func required(name string) string {
 }
 func main() {
 	natsURL, key, from := required("NATS_URL"), required("RESEND_API_KEY"), required("RESEND_FROM")
+	endpoint, addr := required("RESEND_API_URL"), required("HEALTH_ADDR")
+	mode := required("EARLY_ACCESS_MODE")
+	if err := stream.ValidateNATSURL(natsURL, mode); err != nil {
+		slog.Error("invalid_runtime_connection")
+		os.Exit(1)
+	}
+	if _, err := mail.ParseAddress(from); err != nil || (mode == "production" && (len(key) < 20 || !strings.HasPrefix(key, "re_") || strings.Contains(key, "mock") || strings.Contains(key, "placeholder"))) {
+		slog.Error("invalid_provider_credentials")
+		os.Exit(1)
+	}
+	if err := validateResendEndpoint(endpoint, mode); err != nil {
+		slog.Error("invalid_provider_endpoint")
+		os.Exit(1)
+	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	nc, err := nats.Connect(natsURL, nats.Timeout(5*time.Second), nats.MaxReconnects(-1))
@@ -70,10 +99,47 @@ func main() {
 		slog.Error("consumer_failed")
 		os.Exit(1)
 	}
-	provider := resendClient{http: &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, endpoint: "https://api.resend.com/emails", apiKey: key, from: from}
+	provider := resendClient{http: &http.Client{Timeout: 10 * time.Second, Transport: limitedTransport{base: http.DefaultTransport}, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, endpoint: endpoint, apiKey: key, from: from}
 	worker := sender{send: provider.send, publish: func(ctx context.Context, event events.Envelope) error { return stream.Publish(ctx, js, event) }}
+	server := &http.Server{Addr: addr, Handler: healthRoutesWithReady(nc.IsConnected), ReadHeaderTimeout: 2 * time.Second, ReadTimeout: 5 * time.Second, WriteTimeout: 5 * time.Second, IdleTimeout: 30 * time.Second}
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("http_server_failed")
+			stop()
+		}
+	}()
 	slog.Info("email_sender_ready")
 	worker.consume(ctx, consumer)
+	shutdown, finish := context.WithTimeout(context.Background(), 10*time.Second)
+	defer finish()
+	_ = server.Shutdown(shutdown)
+}
+func healthRoutes() http.Handler {
+	return healthRoutesWithReady(func() bool { return true })
+}
+func healthRoutesWithReady(ready func() bool) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, `{"status":"ok"}`)
+	})
+	mux.HandleFunc("GET /readyz", func(w http.ResponseWriter, r *http.Request) {
+		if !ready() {
+			w.Header().Set("Retry-After", "1")
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = io.WriteString(w, `{"status":"ok"}`)
+	})
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		mux.ServeHTTP(w, r)
+	})
 }
 func acknowledgement(locale string) (string, string) {
 	switch locale {
@@ -87,34 +153,42 @@ func acknowledgement(locale string) (string, string) {
 		return "You're on the LangDrift early-access list", "We've received your interest in LangDrift. We'll let you know when access is available. Your 15-day trial starts when your access is activated."
 	}
 }
+func validateResendEndpoint(raw, mode string) error {
+	endpoint, err := url.Parse(raw)
+	if err != nil || endpoint.User != nil || endpoint.RawQuery != "" || endpoint.Fragment != "" || endpoint.Path != "/emails" {
+		return errors.New("invalid_provider_endpoint")
+	}
+	if mode == "production" && raw == "https://api.resend.com/emails" {
+		return nil
+	}
+	if mode == "development" || mode == "test" {
+		if endpoint.Scheme == "http" && (endpoint.Hostname() == "resend-mock" || endpoint.Hostname() == "localhost" || endpoint.Hostname() == "127.0.0.1") {
+			return nil
+		}
+	}
+	return errors.New("invalid_provider_endpoint")
+}
 func (provider resendClient) send(ctx context.Context, id string, input events.EmailStoredPayload) (string, error) {
 	subject, text := acknowledgement(input.Locale)
-	data, err := json.Marshal(resendRequest{From: provider.from, To: []string{input.Email}, Subject: subject, Text: text})
-	if err != nil {
-		return "", err
-	}
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, provider.endpoint, bytes.NewReader(data))
+	base, err := url.Parse(strings.TrimSuffix(provider.endpoint, "/emails") + "/")
 	if err != nil {
 		return "", errors.New("provider_request_failed")
 	}
-	request.Header.Set("Authorization", "Bearer "+provider.apiKey)
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Idempotency-Key", "early-access-ack/"+id)
-	response, err := provider.http.Do(request)
+	client := resend.NewCustomClient(provider.http, provider.apiKey)
+	client.BaseURL = base
+	result, err := client.Emails.SendWithOptions(ctx,
+		&resend.SendEmailRequest{From: provider.from, To: []string{input.Email}, Subject: subject, Text: text},
+		&resend.SendEmailOptions{IdempotencyKey: "early-access-ack/" + id})
 	if err != nil {
-		return "", errors.New("provider_unavailable")
-	}
-	defer response.Body.Close()
-	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		if errors.Is(err, errProviderPermanent) {
+			return "", errProviderPermanent
+		}
 		return "", errors.New("provider_rejected")
 	}
-	var result struct {
-		ID string `json:"id"`
-	}
-	if json.NewDecoder(io.LimitReader(response.Body, 4096)).Decode(&result) != nil || result.ID == "" {
+	if result == nil || result.Id == "" {
 		return "", errors.New("provider_invalid_response")
 	}
-	return result.ID, nil
+	return result.Id, nil
 }
 func (worker sender) process(ctx context.Context, event events.Envelope) error {
 	if !time.Now().Before(event.OccurredAt.Add(stream.SenderWindow)) {
@@ -122,11 +196,11 @@ func (worker sender) process(ctx context.Context, event events.Envelope) error {
 	}
 	var input events.EmailStoredPayload
 	if events.DecodeJSON(event.Payload, &input) != nil || input.ObjectKey == "" {
-		return errors.New("invalid_payload")
+		return errInvalidPayload
 	}
 	validation := events.EmailReceivedPayload{Email: input.Email, Locale: input.Locale, Source: input.Source}
 	if validation.Validate() != nil {
-		return errors.New("invalid_payload")
+		return errInvalidPayload
 	}
 	deadline, cancel := context.WithDeadline(ctx, event.OccurredAt.Add(stream.SenderWindow))
 	defer cancel()
@@ -143,7 +217,12 @@ func (worker sender) process(ctx context.Context, event events.Envelope) error {
 	}
 	return nil
 }
-func (worker sender) consume(ctx context.Context, consumer jetstream.Consumer) {
+
+type messageConsumer interface {
+	Next(...jetstream.FetchOpt) (jetstream.Msg, error)
+}
+
+func (worker sender) consume(ctx context.Context, consumer messageConsumer) {
 	for ctx.Err() == nil {
 		message, err := consumer.Next(jetstream.FetchMaxWait(time.Second))
 		if err != nil {
@@ -171,6 +250,12 @@ func (worker sender) consume(ctx context.Context, consumer jetstream.Consumer) {
 		if errors.Is(err, errExpired) {
 			_ = message.Term()
 			slog.Warn("sender_retry_window_expired", "event_id", event.ID)
+		} else if errors.Is(err, errProviderPermanent) {
+			_ = message.Term()
+			slog.Warn("sender_permanent_failure", "event_id", event.ID)
+		} else if errors.Is(err, errInvalidPayload) {
+			_ = message.Term()
+			slog.Warn("sender_invalid_payload", "event_id", event.ID)
 		} else if err != nil {
 			slog.Warn("sender_attempt_failed", "event_id", event.ID, "event_type", event.Type)
 		}

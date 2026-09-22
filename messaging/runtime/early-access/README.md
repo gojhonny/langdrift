@@ -5,43 +5,54 @@ uses a Next.js Server Function with server-only Axios; there is no API Route.
 
 ## Development
 
-Run `./cli/drift env setup` from the repository root. Development URLs are tracked
-in `.env.development`. Put these private values in ignored sibling `.env` files:
+Run `./cli/drift early-access setup` from the repository root to create disposable local credentials without overwriting existing values. Development URLs are tracked in `.env.development`. Private values live in ignored sibling `.env` files:
 
 | Component | Required private values |
 | --- | --- |
-| Website | `EMAIL_SERVICE_API_KEY` |
+| Website | `EMAIL_SERVICE_API_KEY`, `TURNSTILE_SECRET_KEY` |
 | email-store | `EMAIL_SERVICE_API_KEY`, `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY` |
 | MinIO | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` |
-| email-sender | `RESEND_API_KEY`, `RESEND_FROM` (verified sender) |
+| email-sender | `RESEND_API_KEY`, `RESEND_FROM` (mock values locally) |
 
+`RESEND_API_URL` points to the in-compose Go mock by default. Set `EARLY_ACCESS_MODE=production` and the real Resend endpoint only on a production sender.
 Use the same shared API key in Website and store. For local development, store's
 MinIO keys match the local MinIO root credentials. Production must supply scoped
 application credentials. No NATS authentication is configured in this local
 single-node topology, and its ports are not published to the host.
 
 ```sh
-docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml up -d --build
+./cli/drift doctor early-access
+./cli/drift runtime early-access up
 pnpm website
 ```
 
-Only `127.0.0.1:8080` is published. Named volumes retain JetStream and contacts.
-`GET /healthz` returns `{"status":"ok"}`. `POST /v1/emails` returns 202 only after
-JetStream confirms `email.received`. Neither MinIO nor Resend is in that HTTP path.
+`127.0.0.1:8080` and `127.0.0.1:8081` are published. Named volumes retain JetStream
+and contacts. Both actors answer `GET /healthz` with `{"status":"ok"}`.
+`POST /v1/emails` returns 202 only after JetStream confirms `email.received`.
+Neither MinIO nor Resend is in that HTTP path.
+Both actors expose `GET /readyz` for dependency-aware readiness. Normal `down` retains volumes; `reset` deletes them.
 
-The separate composition in `containers/e2e/` has isolated named volumes, no host
-ports and no test runner. Before raising it locally, provide that directory's
-ignored `.env` with the private keys listed above. Use only a sandbox sender; no
-production Resend credential belongs in CI.
+Run `./cli/drift test early-access unit`, `integration`, `e2e`, or `all` for progressively broader checks. `./cli/drift audit early-access` measures Go coverage and dependency findings. Browser tests need Playwright Chromium installed.
 
-CI now validates both Compose models and raises both topologies. The development
-runtime smoke check waits for healthy services, verifies `/healthz`, confirms the
-`EARLY_ACCESS` stream and both durable consumers, then stops the sender and posts
-a synthetic Early Access registration. CI verifies the request is accepted, a
-contact is persisted in MinIO, and the stream contains the received/stored
-lifecycle messages. The isolated E2E composition is also raised to prove its
-container/env wiring. This is runtime smoke coverage, not an automated delivery
-E2E suite; CI does not call live Resend.
+```sh
+./cli/drift smoke early-access
+```
+
+That command curls the two dev health endpoints. It does not start Compose, run
+Go tests, or prove delivery. `email-store` and `email-sender` select one endpoint;
+the default is both.
+
+The separate composition in `containers/e2e/` has isolated named volumes and loopback-only test ports. `drift early-access setup` prepares its ignored `.env`. Its tracked `.env.development` points
+`RESEND_API_URL` at `http://resend-mock:8080/emails`. The sender refuses to start
+in that composition when the effective URL is anything else. No production Resend
+credential belongs in CI.
+
+`go test` and `go test -race` cover envelopes, stream topology, ingress, storage,
+and the sender, including `email.sent`. CI keeps the development storage smoke:
+it checks both health endpoints, stops the sender, and proves acceptance, the
+MinIO contact, and the received/stored messages without calling Resend.
+
+CI then runs the Go runner against the isolated composition. It proves the stored contact through MinIO, correlated `received → stored → sent` events, the provider idempotency key, and repeat registration. Playwright exercises the Website form through the Server Function with a local challenge verifier and provider mock. No CI job sends live email.
 
 ## Contracts and limits
 
@@ -72,7 +83,7 @@ Contacts are stored without object versioning in `langdrift-emails` at
 `contacts/<sha256(trimmed-email)>.json`. Records contain `eventId`, `email`,
 `locale`, `source`, `receivedAt`, and `storedAt`. Trimming outer whitespace is the
 only normalization; aliases, dots and case are preserved. Repeat storage of the
-same event reuses its contact record. A later submission may replace the contact.
+same event reuses its contact record. A later submission with the same normalized email retains the first record and its event identity. The API still returns neutral 202 acceptance.
 
 Ingress requires bearer authentication, JSON, one typed object, no unknown fields,
 email syntax with a 254-character ceiling, locale `en|pt-BR|zh-Hant|ja`, and source
@@ -84,11 +95,14 @@ submitted addresses, credentials or provider error bodies.
 
 ## Production
 
-Web apps run on Vercel. Go actors, NATS and MinIO require a separate runtime host.
+Hosting is undecided. Go actors, NATS and MinIO require a protected runtime host.
 The Website needs that host's real HTTPS origin in `EMAIL_SERVICE_URL`; no domain
 is invented here. The edge must provide TLS, volumetric protection, connection
 limits and request filtering. Local application limits are only defense in depth.
 
 Set `MINIO_USE_SSL=true`, real NATS/MinIO endpoints and scoped credentials on the
-runtime host. Set `RESEND_API_KEY` and the verified `RESEND_FROM` only on the sender.
-The Website receives only its service origin and shared API key.
+runtime host. Set `RESEND_API_URL=https://api.resend.com/emails`, `RESEND_API_KEY`,
+and the verified `RESEND_FROM` only on the sender.
+The Website receives its service origin, shared API key, Turnstile site key, secret and expected hostname. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`; the mock verifier is allowed only in test mode on loopback.
+
+Before public signup, confirm TLS, private NATS and MinIO, scoped credentials, edge limits, backup/restore, credential rotation, operator handling of expired/exhausted deliveries, contact retention/deletion policy, and one controlled live-provider smoke. Track these in [the audit](AUDIT.md).

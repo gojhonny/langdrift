@@ -5,7 +5,7 @@
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "typecheck": "tsc --noEmit",
     "build": "sh ../../cli/src/runtime/next-build.sh build",
-    "start": "next start --hostname 0.0.0.0 --port 3000"
+    "start": "sh ../../cli/src/runtime/next-start.sh 3000"
   },
   "dependencies": {
     "@repo/design-tokens": "workspace:*",
@@ -13,7 +13,7 @@
     "axios": "^1.20.0",
     "immer": "^11.1.18",
     "jotai": "^2.15.1",
-    "next": "16.2.11",
+    "next": "16.3.5",
     "next-intl": "4.14.5",
     "react": "19.2.4",
     "react-dom": "19.2.4",

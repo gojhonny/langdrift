@@ -40,6 +40,7 @@ DRIFT_ICON_SHOWCASE='🎬'
 DRIFT_ICON_ENV='⚙️'
 DRIFT_ICON_GIT='🐙'
 DRIFT_ICON_VERIFY='👀'
+DRIFT_ICON_SMOKE='💨'
 DRIFT_ICON_BOLT='⚡️'
 DRIFT_DOCTOR_PHRASE='let me check your spells...'
 DRIFT_SETUP_PHRASE='drifiting...'
@@ -50,6 +51,7 @@ DRIFT_DEV_PHRASE='watching...'
 DRIFT_SHOWCASE_PHRASE='showtime...'
 DRIFT_ENV_PHRASE='organizing your vars...'
 DRIFT_VERIFY_PHRASE='mind checking your stuff real quick?'
+DRIFT_SMOKE_PHRASE='checking the pulse...'
 
 drift_result_file=
 drift_results_flushed=false

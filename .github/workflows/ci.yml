@@ -18,6 +18,10 @@ jobs:
       NEXT_PUBLIC_WORKOS_REDIRECT_URI: http://localhost:3002/callback
       EMAIL_SERVICE_URL: http://localhost:8080
       EMAIL_SERVICE_API_KEY: ci-placeholder
+      TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+      TURNSTILE_EXPECTED_HOSTNAME: localhost
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      EARLY_ACCESS_MODE: test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -31,6 +35,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build
+      - run: pnpm audit --prod --audit-level high
 
   go:
     runs-on: ubuntu-latest
@@ -41,7 +46,11 @@ jobs:
           go-version-file: go.mod
           cache: true
       - run: go build ./...
+      - run: go test ./...
+      - run: go test -race ./...
       - run: go vet ./...
+      - run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+      - run: go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...
       - name: Require gofmt
         run: |
           files=$(gofmt -l packages/events messaging/runtime/early-access)
@@ -74,6 +83,10 @@ jobs:
           NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3002/callback
           EMAIL_SERVICE_URL=http://localhost:8080
           EMAIL_SERVICE_API_KEY=ci-placeholder
+          TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+          TURNSTILE_EXPECTED_HOSTNAME=localhost
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+          EARLY_ACCESS_MODE=test
           ENV
       - name: Build image
         run: docker build --secret id=build_env,src=/tmp/langdrift-build.env --file '${{ matrix.dockerfile }}' .
@@ -82,107 +95,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Supply disposable runtime secrets
-        shell: bash
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm --dir messaging/runtime/early-access/e2e exec playwright install --with-deps chromium
+      - name: Prove Early Access with the shared runners
         run: |
-          set -eu
-          : > messaging/infrastructure/broker/nats/.env
-          cat > messaging/infrastructure/storage/minio/.env <<'ENV'
-          MINIO_ROOT_USER=ci-minio
-          MINIO_ROOT_PASSWORD=ci-minio-secret
-          ENV
-          cat > messaging/runtime/early-access/microservices/email-store/.env <<'ENV'
-          EMAIL_SERVICE_API_KEY=ci-email-service-key
-          MINIO_ACCESS_KEY=ci-minio
-          MINIO_SECRET_KEY=ci-minio-secret
-          ENV
-          cat > messaging/runtime/early-access/microservices/email-sender/.env <<'ENV'
-          RESEND_API_KEY=re_ci_placeholder
-          RESEND_FROM=ci@example.invalid
-          ENV
-          cat > messaging/runtime/early-access/containers/e2e/.env <<'ENV'
-          MINIO_ROOT_USER=ci-minio
-          MINIO_ROOT_PASSWORD=ci-minio-secret
-          EMAIL_SERVICE_API_KEY=ci-email-service-key
-          MINIO_ACCESS_KEY=ci-minio
-          MINIO_SECRET_KEY=ci-minio-secret
-          RESEND_API_KEY=re_ci_placeholder
-          RESEND_FROM=ci@example.invalid
-          ENV
-      - name: Validate Compose models
-        run: |
-          docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml config --quiet
-          docker compose -f messaging/runtime/early-access/containers/e2e/docker-compose.yml config --quiet
-      - name: Raise development runtime
-        shell: bash
-        run: |
-          set -euo pipefail
-          compose='docker compose -f messaging/runtime/early-access/containers/dev/docker-compose.yml'
-          trap "$compose down -v --remove-orphans" EXIT
-          $compose up -d --build --wait
-          curl --fail --silent --show-error http://127.0.0.1:8080/healthz | grep -Fq '"status":"ok"'
-          $compose exec -T nats sh -ec \
-            "wget -q -O - 'http://127.0.0.1:8222/jsz?streams=true&consumers=true' | grep -q EARLY_ACCESS"
-
-          # Prove the ingress -> JetStream -> storage half of the vertical slice
-          # without allowing CI to call the external email provider.
-          $compose stop email-sender
-          status=$(curl --silent --show-error --output /tmp/early-access-response.json --write-out '%{http_code}' \
-            --request POST http://127.0.0.1:8080/v1/emails \
-            --header 'Authorization: Bearer ci-email-service-key' \
-            --header 'Content-Type: application/json' \
-            --data '{"email":"smoke@example.com","locale":"en","source":"landing"}')
-          [ "$status" = '202' ]
-          grep -Fq '"status":"accepted"' /tmp/early-access-response.json
-
-          stored=0
-          for _ in $(seq 1 20); do
-            if $compose exec -T minio sh -ec '[ -n "$(ls -A /data/langdrift-emails/contacts 2>/dev/null)" ]'; then
-              stored=1
-              break
-            fi
-            sleep 0.5
-          done
-          [ "$stored" = '1' ]
-
-          $compose exec -T nats wget -q -O - \
-            'http://127.0.0.1:8222/jsz?streams=true&consumers=true' \
-            > /tmp/early-access-jsz.json
-          python3 - <<'PY'
-          import json
-
-          with open('/tmp/early-access-jsz.json', encoding='utf-8') as handle:
-              state = json.load(handle)
-
-          stream = next(
-              stream
-              for account in state.get('account_details', [])
-              for stream in account.get('stream_detail', [])
-              if stream.get('name') == 'EARLY_ACCESS'
-          )
-          assert stream.get('state', {}).get('messages', 0) >= 2, stream
-
-          consumers = stream.get('consumer_detail', [])
-          assert len(consumers) == 2, consumers
-          names = {
-              consumer.get('name') or consumer.get('config', {}).get('durable_name')
-              for consumer in consumers
-          }
-          assert {
-              'early-access-email-store-v1',
-              'early-access-email-sender-v1',
-          } <= names, names
-          PY
-
-          $compose down -v --remove-orphans
-          trap - EXIT
-      - name: Raise isolated E2E topology
-        shell: bash
-        run: |
-          set -euo pipefail
-          compose='docker compose -f messaging/runtime/early-access/containers/e2e/docker-compose.yml'
-          trap "$compose down -v --remove-orphans" EXIT
-          $compose up -d --build --wait
-          $compose ps
-          $compose down -v --remove-orphans
-          trap - EXIT
+          ./cli/drift early-access setup
+          ./cli/drift doctor early-access
+          mkdir -p .audits/runs/ci
+          EARLY_ACCESS_AUDIT_DIR="$GITHUB_WORKSPACE/.audits/runs/ci" ./cli/drift test early-access all
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: early-access-coverage
+          if-no-files-found: ignore
+          path: |
+            .audits/runs/ci
+            coverage

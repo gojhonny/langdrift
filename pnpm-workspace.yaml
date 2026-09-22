@@ -2,3 +2,4 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'messaging/*'
+  - 'messaging/runtime/early-access/e2e'

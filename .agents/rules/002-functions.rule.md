@@ -1,6 +1,8 @@
 ---
 id: RULE-002
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Functions conventions for matching LangDrift code
 title: Functions
 status: implemented
 priority: critical

@@ -1,6 +1,8 @@
 ---
 id: RULE-012
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: File suffixes conventions for matching LangDrift code
 title: File suffixes
 status: implemented
 priority: high
