@@ -9,7 +9,7 @@ sources:
   - packages/sdk/package.json
   - packages/sdk/README.md
   - packages/react/package.json
-  - packages/react/readme.md
+  - packages/react/README.md
   - packages/design-tokens/package.json
   - packages/design-tokens/README.md
   - packages/events/envelopes/envelope.go
