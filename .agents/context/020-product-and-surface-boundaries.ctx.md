@@ -6,7 +6,7 @@ reviewed_at: 2026-09-21
 sources:
   - AGENTS.md
   - README.md
-  - apps/website/readme.md
+  - apps/website/README.md
 ---
 
 # Product and surface boundaries
