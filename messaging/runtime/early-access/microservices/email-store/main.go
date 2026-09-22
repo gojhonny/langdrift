@@ -278,7 +278,7 @@ func persistContact(ctx context.Context, storage *minio.Client, bucket, key stri
 		return contact{}, err
 	}
 	options := minio.PutObjectOptions{ContentType: "application/json"}
-	options.SetMatchETagExcept("")
+	options.SetMatchETagExcept("*")
 	_, err = storage.PutObject(ctx, bucket, key, bytes.NewReader(data), int64(len(data)), options)
 	if err == nil {
 		return value, nil

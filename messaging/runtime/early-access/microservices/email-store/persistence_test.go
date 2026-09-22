@@ -3,14 +3,15 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 func TestConditionalPersistence(t *testing.T) {
@@ -27,6 +28,7 @@ func TestConditionalPersistence(t *testing.T) {
 			puts := 0
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Type", "application/json")
+				w.Header().Set("Last-Modified", first.StoredAt.Format(http.TimeFormat))
 				if r.Method == http.MethodGet {
 					if scenario == "read failure" {
 						w.WriteHeader(403)

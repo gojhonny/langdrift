@@ -1,6 +1,6 @@
 # Early Access evidence and release gate
 
-Status: **implementation checkpoint; draft PR, not merge-ready**. The owner requested a stop and PR on 2026-09-22. The measurements below are the last completed checks during implementation, not a final audit of the entire diff.
+Status: **implementation in progress on PR #54; not merge-ready**. The measurements below are the last completed checks during implementation, not a final audit of the entire diff.
 
 Baseline: `main` commit `c164eac38da3331a6435e3b06b19b01895b76db5`, audited 2026-09-21 with Go 1.27.1, pnpm 10.32.1, Node 24, and harness-score 1.5.2.
 
@@ -17,7 +17,7 @@ Run `./cli/drift audit early-access`, `pnpm coverage:early-access`, `./cli/drift
 
 ## Known failures and remaining implementation
 
-- The latest `go test -race -timeout 45s ./...` passes the sender, streaming, envelope and provider-mock packages but fails the new store persistence tests. The conditional write currently calls `SetMatchETagExcept("")`; the pinned MinIO client requires `SetMatchETagExcept("*")` for create-if-absent. Fix this before claiming concurrency safety. The S3 HTTP fixture also needs a valid `Last-Modified` header.
+- Conditional persistence now uses `SetMatchETagExcept("*")` to send the required `If-None-Match: *` header. Its S3 fixture includes `Last-Modified`; unit tests cover first creation, canonical reuse, a competing writer's 412 response, corruption and storage failures. The real concurrent-replica proof remains a separate integration gate.
 - Browser runs failed before the local-origin, process-working-directory and readiness-selector corrections. Those corrections have not yet passed an end-to-end rerun.
 - Instrumented integration coverage, concurrent replicas, dependency outages, restart checks and full-stream rejection have been added to the local runner and need execution and correction as necessary.
 - CI still contains its older Python/count-only development smoke and duplicated orchestration. Finish moving it to the common POSIX runners and publish unit/integration/combined coverage artifacts and gates.
