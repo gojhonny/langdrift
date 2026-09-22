@@ -182,7 +182,7 @@ Orange is LangDrift identity/focus. It is not generic warning/error/drift severi
 - No general backend/API workspace. The only current backend-style runtime is `messaging/runtime/early-access`. Do not invent a second one, and do not remove that runtime because an older note says the repository has no backend.
 - Do not silently turn design references into copied branding.
 - Preserve light/dark support and accessibility across surfaces.
-- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website environment and local form state](apps/website/readme.md); this does not require migrating other surfaces.
+- Jotai owns shared application state on Website/SSO/Mobile; Zustand owns Dashboard state. Website feature-local forms use React `useState` with Immer `produce` and Zod validation. See [Website environment and local form state](apps/website/README.md); this does not require migrating other surfaces.
 - Important shared state changes remain inspectable through the existing state loggers. Keep email and other entered form data out of atoms, logs, URLs, analytics and browser persistence.
 
 ## Repository topology
