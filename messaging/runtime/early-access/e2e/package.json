@@ -1,0 +1,8 @@
+{
+  "name": "@langdrift/early-access-e2e",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@playwright/test": "^1.55.1"
+  }
+}

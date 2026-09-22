@@ -1,6 +1,8 @@
 ---
 id: RULE-003
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: If statements conventions for matching LangDrift code
 title: If statements
 status: implemented
 priority: high

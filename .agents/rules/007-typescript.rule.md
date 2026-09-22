@@ -1,6 +1,8 @@
 ---
 id: RULE-007
-always-apply: false
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: TypeScript conventions for matching LangDrift code
 title: TypeScript
 status: implemented
 priority: high

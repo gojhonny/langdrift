@@ -13,6 +13,11 @@ printf '%s\n' --version
 printf '%s\n' --loader
 drift_print_command "$DRIFT_ICON_SETUP" setup
 drift_print_command "$DRIFT_ICON_DOCTOR" doctor
+drift_print_command "$DRIFT_ICON_DOCTOR" 'doctor early-access'
+drift_print_command "$DRIFT_ICON_SETUP" 'early-access setup'
+drift_print_command "$DRIFT_ICON_RUNTIME" 'runtime early-access <up|down|reset|logs|status>'
+drift_print_command "$DRIFT_ICON_VERIFY" 'test early-access <unit|integration|e2e|all>'
+drift_print_command "$DRIFT_ICON_VERIFY" 'audit early-access'
 drift_print_command "$DRIFT_ICON_HARNESS" harness
 drift_print_command "$DRIFT_ICON_CLEANUP" cleanup
 drift_print_command "$DRIFT_ICON_RUNTIME" runtime
@@ -22,3 +27,4 @@ drift_print_command "$DRIFT_ICON_SHOWCASE" showcase
 drift_print_command '⚙️ ' env
 drift_print_command "$DRIFT_ICON_GIT" git
 drift_print_command "$DRIFT_ICON_VERIFY" 'verify packages'
+drift_print_command "$DRIFT_ICON_SMOKE" 'smoke early-access [email-store|email-sender|all]'

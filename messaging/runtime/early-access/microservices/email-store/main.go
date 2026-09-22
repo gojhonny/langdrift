@@ -35,12 +35,16 @@ type contact struct {
 	ReceivedAt time.Time `json:"receivedAt"`
 	StoredAt   time.Time `json:"storedAt"`
 }
+
+var errInvalidPayload = errors.New("invalid_payload")
+
 type application struct {
 	apiKey   string
 	publish  func(context.Context, events.Envelope) error
 	persist  func(context.Context, string, contact) (contact, error)
 	limiter  *rate.Limiter
 	inFlight chan struct{}
+	ready    func(context.Context) bool
 }
 
 func required(name string) string {
@@ -58,6 +62,15 @@ func main() {
 	ssl, err := strconv.ParseBool(required("MINIO_USE_SSL"))
 	if err != nil {
 		slog.Error("invalid_environment", "name", "MINIO_USE_SSL")
+		os.Exit(1)
+	}
+	mode := required("EARLY_ACCESS_MODE")
+	if err := stream.ValidateNATSURL(natsURL, mode); err != nil {
+		slog.Error("invalid_runtime_connection")
+		os.Exit(1)
+	}
+	if mode == "production" && (!ssl || len(apiKey) < 32 || len(secret) < 16 || access == "local-minio") {
+		slog.Error("insecure_production_transport")
 		os.Exit(1)
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
@@ -100,6 +113,13 @@ func main() {
 		}
 	}
 	app := &application{apiKey: apiKey, limiter: rate.NewLimiter(50, 100), inFlight: make(chan struct{}, 64),
+		ready: func(ctx context.Context) bool {
+			if !nc.IsConnected() {
+				return false
+			}
+			exists, err := storage.BucketExists(ctx, bucket)
+			return err == nil && exists
+		},
 		publish: func(ctx context.Context, event events.Envelope) error { return stream.Publish(ctx, js, event) },
 		persist: func(ctx context.Context, key string, value contact) (contact, error) {
 			return persistContact(ctx, storage, bucket, key, value)
@@ -135,8 +155,23 @@ func newServer(addr string, handler http.Handler) *http.Server {
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) { respond(w, 200, `{"status":"ok"}`) })
+	mux.HandleFunc("GET /readyz", func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second)
+		defer cancel()
+		if app.ready == nil || !app.ready(ctx) {
+			respond(w, http.StatusServiceUnavailable, `{"status":"unavailable"}`)
+			return
+		}
+		respond(w, http.StatusOK, `{"status":"ok"}`)
+	})
 	mux.HandleFunc("POST /v1/emails", app.receive)
 	return recoverHTTP(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		if r.Method == http.MethodGet && (r.URL.Path == "/healthz" || r.URL.Path == "/readyz") {
+			mux.ServeHTTP(w, r)
+			return
+		}
 		r.Body = http.MaxBytesReader(w, r.Body, 4*1024)
 		if !app.limiter.Allow() {
 			w.Header().Set("Retry-After", "1")
@@ -173,6 +208,9 @@ func respond(w http.ResponseWriter, status int, body string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
+	if status == http.StatusServiceUnavailable || status == http.StatusTooManyRequests {
+		w.Header().Set("Retry-After", "1")
+	}
 	w.WriteHeader(status)
 	_, _ = io.WriteString(w, body)
 }
@@ -221,6 +259,8 @@ func objectKey(email string) string {
 	return "contacts/" + hex.EncodeToString(sum[:]) + ".json"
 }
 func persistContact(ctx context.Context, storage *minio.Client, bucket, key string, value contact) (contact, error) {
+	// The first successful write owns the registration identity. Conditional PUT
+	// makes this true even when multiple store replicas process the same address.
 	object, err := storage.GetObject(ctx, bucket, key, minio.GetObjectOptions{})
 	if err != nil {
 		return contact{}, err
@@ -228,27 +268,46 @@ func persistContact(ctx context.Context, storage *minio.Client, bucket, key stri
 	data, readErr := io.ReadAll(io.LimitReader(object, 4096))
 	_ = object.Close()
 	if readErr == nil {
-		var prior contact
-		if err = json.Unmarshal(data, &prior); err != nil {
-			return contact{}, errors.New("invalid_contact")
-		}
-		if prior.EventID == value.EventID {
-			return prior, nil
-		}
-	} else if minio.ToErrorResponse(readErr).Code != "NoSuchKey" {
+		return decodeContact(data)
+	}
+	if minio.ToErrorResponse(readErr).Code != "NoSuchKey" {
 		return contact{}, readErr
 	}
 	data, err = json.Marshal(value)
 	if err != nil {
 		return contact{}, err
 	}
-	_, err = storage.PutObject(ctx, bucket, key, bytes.NewReader(data), int64(len(data)), minio.PutObjectOptions{ContentType: "application/json"})
-	return value, err
+	options := minio.PutObjectOptions{ContentType: "application/json"}
+	options.SetMatchETagExcept("*")
+	_, err = storage.PutObject(ctx, bucket, key, bytes.NewReader(data), int64(len(data)), options)
+	if err == nil {
+		return value, nil
+	}
+	if minio.ToErrorResponse(err).StatusCode != http.StatusPreconditionFailed {
+		return contact{}, err
+	}
+	object, err = storage.GetObject(ctx, bucket, key, minio.GetObjectOptions{})
+	if err != nil {
+		return contact{}, err
+	}
+	defer object.Close()
+	data, err = io.ReadAll(io.LimitReader(object, 4096))
+	if err != nil {
+		return contact{}, err
+	}
+	return decodeContact(data)
+}
+func decodeContact(data []byte) (contact, error) {
+	var saved contact
+	if json.Unmarshal(data, &saved) != nil || saved.EventID == "" || saved.Email == "" || saved.ReceivedAt.IsZero() {
+		return contact{}, errors.New("invalid_contact")
+	}
+	return saved, nil
 }
 func (app *application) store(ctx context.Context, event events.Envelope) error {
 	var input events.EmailReceivedPayload
 	if events.DecodeJSON(event.Payload, &input) != nil || input.Validate() != nil {
-		return errors.New("invalid_payload")
+		return errInvalidPayload
 	}
 	key := objectKey(input.Email)
 	saved, err := app.persist(ctx, key, contact{EventID: event.ID, Email: input.Email, Locale: input.Locale, Source: input.Source, ReceivedAt: event.OccurredAt, StoredAt: time.Now().UTC()})
@@ -256,7 +315,8 @@ func (app *application) store(ctx context.Context, event events.Envelope) error 
 		return errors.New("persistence_failed")
 	}
 	// Anchor the retry deadline to ingress; a replay cannot create a fresh send window.
-	next, err := events.Next(event, events.TypeEmailStored, event.OccurredAt, events.EmailStoredPayload{Email: saved.Email, Locale: saved.Locale, Source: saved.Source, ObjectKey: key})
+	canonical := events.Envelope{ID: saved.EventID, OccurredAt: saved.ReceivedAt}
+	next, err := events.Next(canonical, events.TypeEmailStored, saved.ReceivedAt, events.EmailStoredPayload{Email: saved.Email, Locale: saved.Locale, Source: saved.Source, ObjectKey: key})
 	if err != nil {
 		return err
 	}
@@ -265,7 +325,12 @@ func (app *application) store(ctx context.Context, event events.Envelope) error 
 	}
 	return nil
 }
-func (app *application) consume(ctx context.Context, consumer jetstream.Consumer) {
+
+type messageConsumer interface {
+	Next(...jetstream.FetchOpt) (jetstream.Msg, error)
+}
+
+func (app *application) consume(ctx context.Context, consumer messageConsumer) {
 	for ctx.Err() == nil {
 		message, err := consumer.Next(jetstream.FetchMaxWait(time.Second))
 		if err != nil {
@@ -290,7 +355,10 @@ func (app *application) consume(ctx context.Context, consumer jetstream.Consumer
 			err = message.DoubleAck(attempt)
 		}
 		cancel()
-		if err != nil {
+		if errors.Is(err, errInvalidPayload) {
+			_ = message.Term()
+			slog.Warn("store_invalid_payload", "event_id", event.ID)
+		} else if err != nil {
 			slog.Warn("storage_attempt_failed", "event_id", event.ID, "event_type", event.Type)
 		}
 		// Failure deliberately leaves the input unacknowledged for configured backoff.

@@ -1,6 +1,8 @@
 ---
 id: RULE-011
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Folders and aliases conventions for matching LangDrift code
 title: Folders and aliases
 status: implemented
 priority: high

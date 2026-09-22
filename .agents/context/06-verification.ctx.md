@@ -1,7 +1,7 @@
 ---
 context: verification
 status: current
-source_branch: staging
+source_branch: main
 reviewed_at: 2026-09-21
 sources:
   - .github/workflows/ci.yml
@@ -30,17 +30,23 @@ pnpm build
 
 ```sh
 go build ./...
+go test ./...
+go test -race ./...
 go vet ./...
+go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...
 gofmt -l packages/events messaging/runtime/early-access
 ```
 
-This workflow does not run `go test`. A clean Go job means the module builds, `go vet` is quiet, and those two trees are gofmt-clean.
+A clean Go job means the module builds, tests pass with the race detector, `go vet` is quiet, and those two trees are gofmt-clean.
+
+`./cli/drift audit early-access` reports Go coverage and dependency findings. `pnpm coverage:early-access` reports Website form/action coverage. See [the Early Access audit](../../messaging/runtime/early-access/AUDIT.md) for measured baseline and release gates.
 
 ## Container and Early Access jobs
 
 CI builds the Dockerfiles for website, dashboard, SSO, NATS, MinIO, email-store, and email-sender. It does not build a docs image.
 
-The Early Access job checks Compose config, store health, the `EARLY_ACCESS` stream, a synthetic HTTP 202 after the sender is stopped, MinIO contact persistence, and the two durable consumers. It also raises the isolated e2e Compose project and removes it. That is runtime smoke. It is not a live Resend delivery test.
+The Early Access job checks Compose config, store health, the `EARLY_ACCESS` stream, a synthetic HTTP 202 after the sender is stopped, MinIO contact persistence, and the two durable consumers. The proof profile then runs the isolated chain against the test provider and requires exactly one send. That is runtime smoke. It is not a live Resend delivery test.
 
 ## Separate gates
 

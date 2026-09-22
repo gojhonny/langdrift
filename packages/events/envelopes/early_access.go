@@ -2,10 +2,13 @@ package envelopes
 
 import (
 	"errors"
-	"net/mail"
+	"regexp"
 	"strings"
-	"unicode/utf8"
 )
+
+// Match the Website's practical ASCII email grammar. Identity normalization is
+// deliberately limited to trimming; shared fixtures protect both boundaries.
+var emailPattern = regexp.MustCompile(`^(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$`)
 
 const (
 	TypeEmailReceived Type = "email.received"
@@ -32,8 +35,7 @@ type EmailSentPayload struct {
 
 func (p *EmailReceivedPayload) Validate() error {
 	p.Email = strings.TrimSpace(p.Email)
-	address, err := mail.ParseAddress(p.Email)
-	if err != nil || p.Email == "" || utf8.RuneCountInString(p.Email) > 254 || address.Address != p.Email || address.Name != "" || strings.ContainsAny(p.Email, "\r\n") {
+	if len(p.Email) > 254 || !emailPattern.MatchString(p.Email) {
 		return errors.New("invalid_email")
 	}
 	switch p.Locale {

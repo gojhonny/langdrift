@@ -1,6 +1,8 @@
 ---
 id: RULE-008
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: React conventions for matching LangDrift code
 title: React
 status: implemented
 priority: high

@@ -1,4 +1,4 @@
-# Isolated topology retained for future use. No test runner is included or run.
+# Isolated event-chain proof. The runner is one-shot and is not part of dev Compose.
 # Secrets must be supplied in this directory's ignored .env before startup.
 name: langdrift-early-access-e2e
 services:
@@ -19,19 +19,77 @@ services:
     extends:
       file: ../dev/docker-compose.yml
       service: email-store
+    build:
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
     env_file: !override
       - ../../microservices/email-store/.env.development
+      - .env.development
       - .env
-    ports: !override []
+    ports: !override
+      - '127.0.0.1:18080:8080'
     restart: 'no'
   email-sender:
     extends:
       file: ../dev/docker-compose.yml
       service: email-sender
+    build:
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
     env_file: !override
       - ../../microservices/email-sender/.env.development
+      - .env.development
       - .env
+    ports: !override []
+    entrypoint: ['/bin/sh', '/e2e/guard-sender.sh']
+    volumes:
+      - coverage:/coverage
+      - ./guard-sender.sh:/e2e/guard-sender.sh:ro
+    depends_on:
+      email-store:
+        condition: service_healthy
+      resend-mock:
+        condition: service_healthy
+    restart: 'no'
+  resend-mock:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/containers/e2e/resend-mock/Dockerfile
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    ports:
+      - '127.0.0.1:18082:8080'
+    restart: 'no'
+  runner:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/containers/e2e/runner/Dockerfile
+      args:
+        GO_COVER_FLAGS: -cover -covermode=atomic -coverpkg=github.com/gojhonny/langdrift/...
+    environment:
+      GOCOVERDIR: /coverage
+    volumes:
+      - coverage:/coverage
+    env_file:
+      - .env
+    profiles: ['proof']
     restart: 'no'
 volumes:
   jetstream:
   contacts:
+  coverage:

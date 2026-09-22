@@ -34,6 +34,7 @@ export function getEmailError(email: unknown): EmailErrorCode | null {
 export const earlyAccessSubmissionSchema = earlyAccessFormSchema
   .extend({
     locale: z.enum(['en', 'pt-BR', 'zh-Hant', 'ja']),
-    source: z.enum(['landing', 'pricing'])
+    source: z.enum(['landing', 'pricing']),
+    turnstileToken: z.string().min(1).max(2048)
   })
   .strict()

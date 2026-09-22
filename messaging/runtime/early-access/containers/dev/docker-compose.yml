@@ -31,6 +31,10 @@ services:
       retries: 10
     restart: unless-stopped
   email-store:
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
     build:
       context: ../../../../..
       dockerfile: messaging/runtime/early-access/microservices/email-store/Dockerfile
@@ -52,17 +56,40 @@ services:
     restart: unless-stopped
     stop_grace_period: 12s
   email-sender:
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
     build:
       context: ../../../../..
       dockerfile: messaging/runtime/early-access/microservices/email-sender/Dockerfile
     env_file:
       - ../../microservices/email-sender/.env.development
       - ../../microservices/email-sender/.env
+    ports:
+      - '127.0.0.1:8081:8081'
     depends_on:
       email-store:
         condition: service_healthy
+      resend-mock:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, http://localhost:8081/healthz]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
     stop_grace_period: 12s
+  resend-mock:
+    build:
+      context: ../../../../..
+      dockerfile: messaging/runtime/early-access/containers/e2e/resend-mock/Dockerfile
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
 volumes:
   jetstream:
   contacts:

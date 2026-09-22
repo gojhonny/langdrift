@@ -6,7 +6,7 @@ export interface EarlyAccessFormState {
   email: string
   hasInteractedWithEmail: boolean
   fieldErrors: { email: EmailErrorCode | null }
-  status: 'idle' | 'submitting' | 'success' | 'error'
+  status: 'idle' | 'submitting' | 'success' | 'error' | 'challenge-error'
 }
 
 export type StateUpdater<State> = (
@@ -16,4 +16,5 @@ export type StateUpdater<State> = (
 export type EarlyAccessActionResult =
   | { ok: true }
   | { ok: false; code: 'VALIDATION_ERROR'; fieldErrors?: { email?: string } }
+  | { ok: false; code: 'CHALLENGE_FAILED' }
   | { ok: false; code: 'UNAVAILABLE' }
