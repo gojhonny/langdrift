@@ -5,7 +5,7 @@
 1. Current repository code, config, and schema are the implementation source of truth.
 2. An explicit owner decision overrides an inferred convention.
 3. This file owns repository-wide operating invariants.
-4. `.agents/context/*.ctx.md` describes scoped repository context. Start at [.agents/context/000-fragmented-context.ctx.md](.agents/context/000-fragmented-context.ctx.md).
+4. `.agents/context/*.ctx.md` describes scoped repository context. Start at [.agents/context/00-fragmented-context.ctx.md](.agents/context/00-fragmented-context.ctx.md).
 5. `.agents/rules/*.rule.md` applies only when its scope matches current LangDrift code and it does not contradict a higher invariant.
 6. `.agents/skills/` are procedures. A foreign or stale path in a skill does not create LangDrift architecture.
 7. `.cursor/` adapts this harness to Cursor. It is not a second policy.
@@ -196,7 +196,7 @@ cli/        repository-local POSIX control plane
 .cursor/    Cursor adapter
 ```
 
-Ports, workspace globs, and toolchain versions are in [.agents/context/010-repository-topology.ctx.md](.agents/context/010-repository-topology.ctx.md). Surface rules stay in this file.
+Ports, workspace globs, and toolchain versions are in [.agents/context/01-repository-topology.ctx.md](.agents/context/01-repository-topology.ctx.md). Surface rules stay in this file.
 
 ## Package identity
 
@@ -210,7 +210,7 @@ packages/design-tokens → @repo/design-tokens
 packages/events        → Go envelopes in the root module
 ```
 
-Detail is in [.agents/context/030-packages-and-contracts.ctx.md](.agents/context/030-packages-and-contracts.ctx.md). The setup and SDK READMEs are the product docs for those two packages.
+Detail is in [.agents/context/03-packages-and-contracts.ctx.md](.agents/context/03-packages-and-contracts.ctx.md). The setup and SDK READMEs are the product docs for those two packages.
 
 ## Environment
 
@@ -221,7 +221,7 @@ required env              → fail fast
 no hardcoded fallback
 ```
 
-The Early Access path and the exact required names are in [.agents/context/040-messaging-runtime-and-environment.ctx.md](.agents/context/040-messaging-runtime-and-environment.ctx.md).
+The Early Access path and the exact required names are in [.agents/context/04-messaging-runtime-and-environment.ctx.md](.agents/context/04-messaging-runtime-and-environment.ctx.md).
 
 ## Harness
 
@@ -233,11 +233,11 @@ Copied rules and skills can still name Amarelo, NestJS, or paths that are not in
 ./cli/drift harness --min-level 4
 ```
 
-That gate measures harness maturity. It does not prove correctness. See [.agents/context/050-harness-and-agent-runtime.ctx.md](.agents/context/050-harness-and-agent-runtime.ctx.md).
+That gate measures harness maturity. It does not prove correctness. See [.agents/context/05-harness-and-agent-runtime.ctx.md](.agents/context/05-harness-and-agent-runtime.ctx.md).
 
 ## Verification
 
-The minimum check depends on the surface you changed. Read [.agents/context/060-verification.ctx.md](.agents/context/060-verification.ctx.md) before calling a change repository-ready. Harness maturity is a separate gate from build and runtime verification.
+The minimum check depends on the surface you changed. Read [.agents/context/06-verification.ctx.md](.agents/context/06-verification.ctx.md) before calling a change repository-ready. Harness maturity is a separate gate from build and runtime verification.
 
 The usual baseline is:
 

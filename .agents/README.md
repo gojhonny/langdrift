@@ -17,7 +17,7 @@
 5. Applicable `.agents/rules/*.rule.md` files.
 6. A skill, only for the procedure it describes.
 
-`.cursor/` is the Cursor adapter: hooks and a reviewer. It does not replace this harness. See [050-harness-and-agent-runtime.ctx.md](context/050-harness-and-agent-runtime.ctx.md).
+`.cursor/` is the Cursor adapter: hooks and a reviewer. It does not replace this harness. See [05-harness-and-agent-runtime.ctx.md](context/05-harness-and-agent-runtime.ctx.md).
 
 ## Boundaries
 

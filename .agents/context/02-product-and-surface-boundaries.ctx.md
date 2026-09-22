@@ -28,4 +28,4 @@ Illustrative scores such as `73%` stay labeled as demo data. They do not define 
 - Docs (`apps/docs`, port 3004) — documentation site, deployed on Vercel rather than as a local runtime image.
 - Shared UI — first-party concepts live under `packages/react/src/ui`. SmoothUI, shadcn, and Orbz are implementation foundations.
 
-Open choices that must stay open are listed in [070-open-decisions.ctx.md](070-open-decisions.ctx.md).
+Open choices that must stay open are listed in [07-open-decisions.ctx.md](07-open-decisions.ctx.md).
