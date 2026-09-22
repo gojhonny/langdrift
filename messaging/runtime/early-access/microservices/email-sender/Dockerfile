@@ -7,7 +7,7 @@ COPY messaging/runtime/early-access ./messaging/runtime/early-access
 ARG GO_COVER_FLAGS
 RUN CGO_ENABLED=0 go build ${GO_COVER_FLAGS} -trimpath -ldflags="-s -w" -o /out/email-sender ./messaging/runtime/early-access/microservices/email-sender
 
-FROM alpine:3.23
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates
 RUN mkdir -m 0777 /coverage
 COPY --from=build /out/email-sender /usr/local/bin/email-sender
