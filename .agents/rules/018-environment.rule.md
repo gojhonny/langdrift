@@ -27,6 +27,6 @@ if value == "" {
 }
 ```
 
-A runner that cannot load the owning `.env*` file may set the value itself. Record that assignment in `env-hardcoding-report.md`. That assignment is not an application fallback.
+A runner that cannot load the owning `.env*` file may set the value itself. That assignment is not an application fallback.
 
-Test fixtures, protocol constants, validation allowlists, and documentation examples are not runtime configuration. The same report distinguishes them from executable configuration.
+Test fixtures, protocol constants, validation allowlists, and documentation examples are not runtime configuration.
