@@ -107,12 +107,12 @@ run_browser() {
   export TURNSTILE_VERIFY_URL=http://127.0.0.1:18082/siteverify
   export NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
   export EARLY_ACCESS_MODE=test
-  (cd "$root/apps/website" && exec node node_modules/next/dist/bin/next dev --hostname 127.0.0.1 --port 13000) > "${TMPDIR:-/tmp}/langdrift-early-access-website.log" 2>&1 &
+  (cd "$root/apps/website" && exec node node_modules/next/dist/bin/next dev --port 13000) > "${TMPDIR:-/tmp}/langdrift-early-access-website.log" 2>&1 &
   website_pid=$!
   ready=false
   attempt=0
   while [ "$attempt" -lt 40 ]; do
-    if curl --silent --fail http://127.0.0.1:13000/en >/dev/null; then ready=true; break; fi
+    if curl --silent --fail --location http://127.0.0.1:13000/en >/dev/null; then ready=true; break; fi
     kill -0 "$website_pid" 2>/dev/null || break
     attempt=$((attempt + 1))
     sleep 1

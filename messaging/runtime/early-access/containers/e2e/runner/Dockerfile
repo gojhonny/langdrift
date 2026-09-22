@@ -11,4 +11,4 @@ RUN apk add --no-cache ca-certificates
 RUN mkdir -m 0777 /coverage
 COPY --from=build /out/runner /usr/local/bin/runner
 USER 65532:65532
-CMD ["/usr/local/bin/runner"]
+ENTRYPOINT ["/usr/local/bin/runner"]
