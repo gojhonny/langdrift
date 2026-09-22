@@ -1,6 +1,8 @@
 ---
 id: RULE-016
-always-apply: false
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Packages conventions for matching LangDrift code
 title: Packages
 status: implemented
 priority: high

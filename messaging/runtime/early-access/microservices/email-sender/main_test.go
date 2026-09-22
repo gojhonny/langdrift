@@ -7,10 +7,12 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
 	events "github.com/gojhonny/langdrift/packages/events/envelopes"
+	resend "github.com/resend/resend-go/v3"
 )
 
 func TestHealthz(t *testing.T) {
@@ -121,7 +123,7 @@ func TestProcessInvalidPayload(t *testing.T) {
 }
 
 func TestResendClient(t *testing.T) {
-	var body resendRequest
+	var body resend.SendEmailRequest
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Authorization") != "Bearer test-key" || r.Header.Get("Content-Type") != "application/json" || r.Header.Get("Idempotency-Key") != "early-access-ack/event-id" {
 			t.Errorf("headers = %v", r.Header)
@@ -144,21 +146,124 @@ func TestResendClient(t *testing.T) {
 }
 
 func TestResendClientRejectsBadResponses(t *testing.T) {
+	fail := true
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Query().Get("mode") == "status" {
+		if fail {
 			w.WriteHeader(http.StatusBadGateway)
 			return
 		}
 		_, _ = io.WriteString(w, `{}`)
 	}))
 	defer server.Close()
-	client := resendClient{http: server.Client(), endpoint: server.URL + "?mode=status", apiKey: "test-key", from: "from@example.com"}
+	client := resendClient{http: server.Client(), endpoint: server.URL + "/emails", apiKey: "test-key", from: "from@example.com"}
 	if _, err := client.send(context.Background(), "event-id", events.EmailStoredPayload{Email: "a@example.com", Locale: "en", Source: "landing", ObjectKey: "contacts/a.json"}); err == nil || err.Error() != "provider_rejected" {
 		t.Fatalf("status error = %v", err)
 	}
-	client.endpoint = server.URL
+	fail = false
 	if _, err := client.send(context.Background(), "event-id", events.EmailStoredPayload{Email: "a@example.com", Locale: "en", Source: "landing", ObjectKey: "contacts/a.json"}); err == nil || err.Error() != "provider_invalid_response" {
 		t.Fatalf("body error = %v", err)
+	}
+}
+
+func TestValidateResendEndpoint(t *testing.T) {
+	for _, input := range []struct {
+		endpoint, mode string
+		valid          bool
+	}{
+		{"https://api.resend.com/emails", "production", true},
+		{"http://resend-mock:8080/emails", "test", true},
+		{"http://127.0.0.1:8080/emails", "development", true},
+		{"http://evil.example/emails", "production", false},
+		{"https://evil.example/emails", "production", false},
+		{"http://resend-mock:8080/emails", "production", false},
+	} {
+		if got := validateResendEndpoint(input.endpoint, input.mode); (got == nil) != input.valid {
+			t.Errorf("endpoint %q mode %q: %v", input.endpoint, input.mode, got)
+		}
+	}
+}
+
+func TestProviderStatusClassification(t *testing.T) {
+	status := http.StatusBadRequest
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(status)
+		_, _ = io.WriteString(w, `{"message":"provider detail"}`)
+	}))
+	defer server.Close()
+	client := server.Client()
+	client.Transport = limitedTransport{base: client.Transport}
+	provider := resendClient{http: client, endpoint: server.URL + "/emails", apiKey: "test-key", from: "from@example.com"}
+	_, err := provider.send(context.Background(), "event-id", events.EmailStoredPayload{Email: "a@example.com", Locale: "en"})
+	if !errors.Is(err, errProviderPermanent) {
+		t.Fatalf("permanent error = %v", err)
+	}
+	status = http.StatusTooManyRequests
+	_, err = provider.send(context.Background(), "event-id", events.EmailStoredPayload{Email: "a@example.com", Locale: "en"})
+	if err == nil || errors.Is(err, errProviderPermanent) {
+		t.Fatalf("transient error = %v", err)
+	}
+}
+
+func TestSendAfterPublicationFailureReusesProviderIdentity(t *testing.T) {
+	keys := map[string]string{}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		key := r.Header.Get("Idempotency-Key")
+		keys[key] = "provider-id"
+		_, _ = io.WriteString(w, `{"id":"provider-id"}`)
+	}))
+	defer server.Close()
+	client := server.Client()
+	client.Timeout = time.Second
+	client.Transport = limitedTransport{base: client.Transport}
+	provider := resendClient{http: client, endpoint: server.URL + "/emails", apiKey: "test", from: "test@example.com"}
+	event := storedEvent(t, time.Now().UTC())
+	attempts := 0
+	worker := sender{send: provider.send, publish: func(context.Context, events.Envelope) error {
+		attempts++
+		if attempts == 1 {
+			return errors.New("lost publication")
+		}
+		return nil
+	}}
+	if err := worker.process(context.Background(), event); err == nil {
+		t.Fatal("lost publication accepted")
+	}
+	if err := worker.process(context.Background(), event); err != nil {
+		t.Fatal(err)
+	}
+	if len(keys) != 1 || keys["early-access-ack/"+event.ID] != "provider-id" {
+		t.Fatal("retry changed idempotency key")
+	}
+}
+
+func TestProviderBoundsAndCancellation(t *testing.T) {
+	for _, scenario := range []string{"timeout", "redirect", "oversized", "malformed"} {
+		t.Run(scenario, func(t *testing.T) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				switch scenario {
+				case "timeout":
+					select {
+					case <-r.Context().Done():
+					case <-time.After(200 * time.Millisecond):
+					}
+				case "redirect":
+					http.Redirect(w, r, "http://example.invalid", http.StatusTemporaryRedirect)
+				case "oversized":
+					_, _ = io.WriteString(w, `{"id":"`+strings.Repeat("x", 5000)+`"}`)
+				default:
+					_, _ = io.WriteString(w, "{")
+				}
+			}))
+			defer server.Close()
+			client := server.Client()
+			client.Timeout = 50 * time.Millisecond
+			client.Transport = limitedTransport{base: client.Transport}
+			client.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
+			provider := resendClient{http: client, endpoint: server.URL + "/emails", apiKey: "test", from: "test@example.com"}
+			if _, err := provider.send(context.Background(), "event", events.EmailStoredPayload{Email: "a@example.com", Locale: "en"}); err == nil || strings.Contains(err.Error(), "example.invalid") {
+				t.Fatalf("unsanitized error=%v", err)
+			}
+		})
 	}
 }
 

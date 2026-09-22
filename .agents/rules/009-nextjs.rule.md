@@ -1,6 +1,8 @@
 ---
 id: RULE-009
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Next.js conventions for matching LangDrift code
 title: Next.js
 status: implemented
 priority: high

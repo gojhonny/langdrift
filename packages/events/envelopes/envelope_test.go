@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestNewCreatesVersionOneEvent(t *testing.T) {
@@ -63,6 +64,30 @@ func TestDecodeRejectsWrongTypeAndVersion(t *testing.T) {
 	}
 }
 
+func TestDecodeAcceptsValidEnvelopeAndRejectsMalformedJSON(t *testing.T) {
+	event, err := New(TypeEmailReceived, EmailReceivedPayload{Email: "a@example.com", Locale: "en", Source: "landing"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := eventJSON(event)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded, err := Decode(data, TypeEmailReceived)
+	if err != nil || decoded.ID != event.ID {
+		t.Fatalf("decoded=%+v err=%v", decoded, err)
+	}
+	if _, err := Decode([]byte("{"), TypeEmailReceived); err == nil {
+		t.Fatal("malformed JSON accepted")
+	}
+}
+
+func TestEnvelopeRejectsUnmarshalablePayload(t *testing.T) {
+	if _, err := makeEnvelope("id", TypeEmailReceived, time.Now(), make(chan int)); err == nil {
+		t.Fatal("unmarshalable payload accepted")
+	}
+}
+
 func TestDecodeJSONRejectsUnknownFieldsAndExtraValues(t *testing.T) {
 	var payload EmailReceivedPayload
 	unknown := []byte(`{"email":"a@example.com","locale":"en","source":"landing","extra":true}`)
@@ -77,4 +102,28 @@ func TestDecodeJSONRejectsUnknownFieldsAndExtraValues(t *testing.T) {
 
 func eventJSON(event Envelope) ([]byte, error) {
 	return json.Marshal(event)
+}
+
+func FuzzDecodeJSON(f *testing.F) {
+	f.Add([]byte(`{"email":"a@example.com","locale":"en","source":"landing"}`))
+	f.Add([]byte(`{"email":"a@example.com"}{}`))
+	f.Fuzz(func(t *testing.T, input []byte) {
+		var payload EmailReceivedPayload
+		if DecodeJSON(input, &payload) == nil {
+			if json.Valid(input) == false {
+				t.Fatal("accepted invalid JSON")
+			}
+		}
+	})
+}
+
+func FuzzEnvelopeDecode(f *testing.F) {
+	f.Add([]byte(`{"id":"id","type":"email.received","version":1,"occurredAt":"2026-01-01T00:00:00Z","payload":{}}`))
+	f.Fuzz(func(t *testing.T, input []byte) {
+		if event, err := Decode(input, TypeEmailReceived); err == nil {
+			if event.ID == "" || event.Type != TypeEmailReceived || event.Version != Version {
+				t.Fatal("invalid envelope accepted")
+			}
+		}
+	})
 }

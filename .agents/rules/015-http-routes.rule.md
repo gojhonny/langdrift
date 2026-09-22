@@ -1,6 +1,8 @@
 ---
 id: RULE-015
-always-apply: false
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: HTTP routes conventions for matching LangDrift code
 title: HTTP routes
 status: implemented
 priority: high

@@ -1,6 +1,8 @@
 ---
 id: RULE-005
-always-apply: true
+alwaysApply: false
+globs: "**/*.{ts,tsx,js,jsx}"
+description: Comments conventions for matching LangDrift code
 title: Comments
 status: implemented
 priority: high

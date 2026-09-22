@@ -7,17 +7,17 @@ Context files describe the repository as it exists. They do not add requirements
 Files use a numeric prefix and the `.ctx.md` suffix:
 
 ```text
-000-fragmented-context.ctx.md
-010-repository-topology.ctx.md
-020-product-and-surface-boundaries.ctx.md
-030-packages-and-contracts.ctx.md
-040-messaging-runtime-and-environment.ctx.md
-050-harness-and-agent-runtime.ctx.md
-060-verification.ctx.md
-070-open-decisions.ctx.md
+00-fragmented-context.ctx.md
+01-repository-topology.ctx.md
+02-product-and-surface-boundaries.ctx.md
+03-packages-and-contracts.ctx.md
+04-messaging-runtime-and-environment.ctx.md
+05-harness-and-agent-runtime.ctx.md
+06-verification.ctx.md
+07-open-decisions.ctx.md
 ```
 
-`000` is the catalog and the loading rules. Later numbers are topics. Leave gaps so a new topic can sit beside its neighbors. Add a fragment when a topic is too specific for `AGENTS.md` and too stable to rediscover on every task. Do not add one for a single pull request or for an open product choice that already lives in `070`.
+`00` is the catalog and the loading rules. Later numbers are topics, in order from `01` through `07`. Add a fragment when a topic is too specific for `AGENTS.md` and too stable to rediscover on every task. Do not add one for a single pull request or for an open product choice that already lives in `07`.
 
 ## How to write one
 
@@ -30,4 +30,4 @@ Files use a numeric prefix and the `.ctx.md` suffix:
 - Do not copy secrets, whole source files, or the text of `AGENTS.md`.
 - Do not read or write `.drifts/` to maintain this set.
 
-Start at [000-fragmented-context.ctx.md](000-fragmented-context.ctx.md).
+Start at [00-fragmented-context.ctx.md](00-fragmented-context.ctx.md).

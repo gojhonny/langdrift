@@ -12,14 +12,20 @@ Shared application state uses Jotai. The footer contact is `dev.neongate@gmail.c
 
 ## Environment
 
-From the repository root, run `./cli/drift env setup`. Tracked `.env.development` provides local URLs. Ignored `apps/website/.env` supplies `EMAIL_SERVICE_API_KEY`. Required values fail when missing. There is no hardcoded fallback. Public URLs use static `process.env.NEXT_PUBLIC_*` references so Next.js inlines them.
+From the repository root, run `./cli/drift early-access setup`. Tracked `.env.development` provides local URLs and Cloudflare's public test site key. Ignored `apps/website/.env` supplies the shared API key and a local test secret. The Server Function verifies each challenge before calling Go. Required values fail when missing. Public URLs and the site key use static `process.env.NEXT_PUBLIC_*` references so Next.js inlines them.
 
-| Variable | Development | Vercel production |
+| Variable | Development | Production |
 | --- | --- | --- |
 | `NEXT_PUBLIC_DOCS_URL` | `http://localhost:3004` | `https://docs.langdrift.md` |
 | `NEXT_PUBLIC_SSO_URL` | `http://localhost:3002` | `https://sso.langdrift.md` |
 | `NEXT_PUBLIC_DASHBOARD_URL` | `http://localhost:3001` | `https://dashboard.langdrift.md` |
 | `EMAIL_SERVICE_URL` | `http://localhost:8080` | Deployed HTTPS email-store origin |
 | `EMAIL_SERVICE_API_KEY` | Private shared key | Runtime's private shared key |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Cloudflare public test key | Real site key for the deployed hostname |
+| `TURNSTILE_SECRET_KEY` | Cloudflare test secret | Real server-only secret |
+| `TURNSTILE_EXPECTED_HOSTNAME` | `localhost` | Deployed Website hostname |
+| `EARLY_ACCESS_MODE` | `development` | `production` |
 
-Docs links use `websiteLinks.docs`, derived from `NEXT_PUBLIC_DOCS_URL`, without locale prefixes. Rebuild after changing a public URL. Production values live in Vercel. There is no committed production environment file.
+Docs links use `websiteLinks.docs`, derived from `NEXT_PUBLIC_DOCS_URL`, without locale prefixes. Rebuild after changing a public URL. Hosting is undecided; configure secrets in the selected deployment environment. There is no committed production environment file. Production rejects Cloudflare test keys, local verifier overrides and plaintext runtime connections.
+
+The form requires JavaScript and a completed security check. Its submit button stays disabled until hydration, and entered email has no native form field name so it cannot enter a fallback navigation URL. Turnstile tokens remain in component-local memory and are replaced after each submission.

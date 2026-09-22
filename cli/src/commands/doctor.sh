@@ -3,6 +3,7 @@ set -eu
 . "$DRIFT_CLI_DIR/core/common.sh"
 
 ci=false
+[ "${1:-}" != early-access ] || { shift; exec "$DRIFT_CLI_DIR/commands/early-access.sh" doctor "$@"; }
 [ "${1:-}" != --ci ] || { ci=true; shift; }
 [ "$#" -eq 0 ] || drift_die "Usage: drift doctor [--ci]" 2
 [ "$ci" = true ] || drift_loader_start "Checking environment"

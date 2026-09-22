@@ -4,6 +4,7 @@ import axios from 'axios'
 import { earlyAccessServerEnv } from '../../env.server'
 import type { EarlyAccessActionResult } from './form.types'
 import { earlyAccessSubmissionSchema, getEmailError } from './form.validation'
+import { verifyEarlyAccessChallenge } from './turnstile.validation'
 
 export async function submitEarlyAccess(
   input: unknown
@@ -15,16 +16,20 @@ export async function submitEarlyAccess(
         ? input.email
         : undefined
     const error = getEmailError(email)
-    return {
-      ok: false,
-      code: 'VALIDATION_ERROR',
-      ...(error ? { fieldErrors: { email: error } } : {})
+    if (error) return { ok: false, code: 'VALIDATION_ERROR', fieldErrors: { email: error } }
+    if (typeof input !== 'object' || input === null || !('turnstileToken' in input) ||
+        typeof input.turnstileToken !== 'string' || input.turnstileToken.length < 1 || input.turnstileToken.length > 2048) {
+      return { ok: false, code: 'CHALLENGE_FAILED' }
     }
+    return { ok: false, code: 'VALIDATION_ERROR' }
+  }
+  if (!(await verifyEarlyAccessChallenge(parsed.data.turnstileToken))) {
+    return { ok: false, code: 'CHALLENGE_FAILED' }
   }
   try {
     const response = await axios.post(
       `${earlyAccessServerEnv.serviceUrl}/v1/emails`,
-      parsed.data,
+      { email: parsed.data.email, locale: parsed.data.locale, source: parsed.data.source },
       {
         headers: {
           Authorization: `Bearer ${earlyAccessServerEnv.apiKey}`,

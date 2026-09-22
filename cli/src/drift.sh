@@ -37,9 +37,23 @@ case "$drift_command" in
   --loader) exec "$CLI_DIR/commands/loader.sh" "$@" ;;
   setup) exec "$CLI_DIR/commands/setup.sh" "$@" ;;
   doctor) exec "$CLI_DIR/commands/doctor.sh" "$@" ;;
+  early-access)
+    [ "${1:-}" = setup ] || drift_usage_error 'Usage: drift early-access setup'
+    shift
+    exec "$CLI_DIR/commands/early-access.sh" setup "$@" ;;
+  test)
+    [ "${1:-}" = early-access ] || drift_usage_error 'Usage: drift test early-access <unit|integration|e2e|all>'
+    shift
+    exec "$CLI_DIR/commands/early-access.sh" test "$@" ;;
+  audit)
+    [ "${1:-}" = early-access ] || drift_usage_error 'Usage: drift audit early-access'
+    shift
+    exec "$CLI_DIR/commands/early-access.sh" audit "$@" ;;
   harness) exec "$CLI_DIR/commands/harness.sh" "$@" ;;
   cleanup) exec "$CLI_DIR/commands/cleanup.sh" "$@" ;;
-  runtime) exec "$CLI_DIR/commands/runtime.sh" "$@" ;;
+  runtime)
+    if [ "${1:-}" = early-access ]; then shift; exec "$CLI_DIR/commands/early-access.sh" runtime "$@"; fi
+    exec "$CLI_DIR/commands/runtime.sh" "$@" ;;
   run) exec "$CLI_DIR/commands/run.sh" "$@" ;;
   dev) exec "$CLI_DIR/commands/dev.sh" "$@" ;;
   showcase) exec "$CLI_DIR/commands/showcase.sh" "$@" ;;
