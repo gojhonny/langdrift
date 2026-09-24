@@ -98,16 +98,18 @@ run_browser() {
   drift_need pnpm
   drift_need curl
   pnpm --filter @repo/design-tokens build
-  export EMAIL_SERVICE_URL=http://127.0.0.1:18080
-  export EMAIL_SERVICE_API_KEY
-  EMAIL_SERVICE_API_KEY=$(env_value "$root/apps/website/.env" EMAIL_SERVICE_API_KEY)
-  export TURNSTILE_SECRET_KEY
-  TURNSTILE_SECRET_KEY=$(env_value "$root/apps/website/.env" TURNSTILE_SECRET_KEY)
-  export TURNSTILE_EXPECTED_HOSTNAME=127.0.0.1
-  export TURNSTILE_VERIFY_URL=http://127.0.0.1:18082/siteverify
-  export NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
-  export EARLY_ACCESS_MODE=test
-  (cd "$root/apps/website" && exec node node_modules/next/dist/bin/next dev --port 13000) > "${TMPDIR:-/tmp}/langdrift-early-access-website.log" 2>&1 &
+  (
+    for env_file in "$root/apps/website/.env.development" "$root/apps/website/.env" \
+      "$root/messaging/runtime/early-access/containers/e2e/.env.development" \
+      "$root/messaging/runtime/early-access/e2e/.env.development"; do
+      while IFS= read -r entry || [ -n "$entry" ]; do
+        case "$entry" in '' | \#*) continue ;; esac
+        export "$entry"
+      done < "$env_file"
+    done
+    cd "$root/apps/website"
+    exec node node_modules/next/dist/bin/next dev --port 13000
+  ) > "${TMPDIR:-/tmp}/langdrift-early-access-website.log" 2>&1 &
   website_pid=$!
   ready=false
   attempt=0

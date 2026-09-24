@@ -42,10 +42,21 @@ That command curls the two dev health endpoints. It does not start Compose, run
 Go tests, or prove delivery. `email-store` and `email-sender` select one endpoint;
 the default is both.
 
-The separate composition in `containers/e2e/` has isolated named volumes and loopback-only test ports. `drift early-access setup` prepares its ignored `.env`. Its tracked `.env.development` points
-`RESEND_API_URL` at `http://resend-mock:8080/emails`. The sender refuses to start
+The separate composition in `containers/e2e/` has isolated named volumes and loopback-only test ports. `drift early-access setup` prepares its ignored `.env`. Each actor keeps its own `.env.development` as its base, followed by the E2E `.env.development` (`EARLY_ACCESS_MODE=test`) and shared private `.env`. The sender inherits
+`RESEND_API_URL` from its own development contract. The sender refuses to start
 in that composition when the effective URL is anything else. No production Resend
 credential belongs in CI.
+
+The browser proof loads Website `.env.development`, Website `.env`,
+`containers/e2e/.env.development`, then `e2e/.env.development`. The last file owns
+the browser's loopback service URL, verifier URL and expected hostname; the site
+key remains inherited from Website. Development requires an explicit
+`TURNSTILE_VERIFY_URL`. The browser proof supplies its own verifier URL.
+
+Run `sh cli/tests/early-access-env.sh` from the repository root to verify generated
+private keys, shared credential relationships, repeatable setup and resolved
+Compose environment contracts without starting containers. See the
+[environment reconciliation](ENVIRONMENT.md) for component ownership and the audit.
 
 `go test` and `go test -race` cover envelopes, stream topology, ingress, storage,
 and the sender, including `email.sent`. CI keeps the development storage smoke:
@@ -103,6 +114,6 @@ limits and request filtering. Local application limits are only defense in depth
 Set `MINIO_USE_SSL=true`, real NATS/MinIO endpoints and scoped credentials on the
 runtime host. Set `RESEND_API_URL=https://api.resend.com/emails`, `RESEND_API_KEY`,
 and the verified `RESEND_FROM` only on the sender.
-The Website receives its service origin, shared API key, Turnstile site key, secret and expected hostname. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`; the mock verifier is allowed only in test mode on loopback.
+The Website receives its service origin, shared API key, Turnstile site key, secret, expected hostname and verifier URL. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`.
 
 Before public signup, confirm TLS, private NATS and MinIO, scoped credentials, edge limits, backup/restore, credential rotation, operator handling of expired/exhausted deliveries, contact retention/deletion policy, and one controlled live-provider smoke. Track these in [the audit](AUDIT.md).

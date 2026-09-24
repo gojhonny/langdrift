@@ -111,6 +111,7 @@ jobs:
       - run: pnpm --dir messaging/runtime/early-access/e2e exec playwright install --with-deps chromium
       - name: Prove Early Access with the shared runners
         run: |
+          sh cli/tests/early-access-env.sh
           ./cli/drift early-access setup
           ./cli/drift doctor early-access
           mkdir -p .audits/runs/ci
