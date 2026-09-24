@@ -86,6 +86,7 @@ jobs:
           TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
           TURNSTILE_EXPECTED_HOSTNAME=localhost
           NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
+          TURNSTILE_VERIFY_URL=https://challenges.cloudflare.com/turnstile/v0/siteverify
           EARLY_ACCESS_MODE=test
           ENV
       - name: Build image
@@ -109,6 +110,7 @@ jobs:
       - run: pnpm --dir messaging/runtime/early-access/e2e exec playwright install --with-deps chromium
       - name: Prove Early Access with the shared runners
         run: |
+          sh cli/tests/early-access-env.sh
           ./cli/drift early-access setup
           ./cli/drift doctor early-access
           mkdir -p .audits/runs/ci
