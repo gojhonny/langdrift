@@ -4,9 +4,9 @@ vi.mock('server-only', () => ({}))
 vi.mock('../../env.server', () => ({
   earlyAccessServerEnv: {
     turnstileSecret: '1x0000000000000000000000000000000AA',
+    turnstileHostname: 'localhost',
     turnstileVerifyUrl:
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-    turnstileHostname: 'localhost'
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify'
   }
 }))
 
@@ -16,16 +16,14 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe('Turnstile verification', () => {
   it('requires matching success, hostname and action', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          success: true,
-          hostname: 'localhost',
-          action: 'test'
-        })
+    const fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        hostname: 'localhost',
+        action: 'test'
       })
+    })
     vi.stubGlobal('fetch', fetch)
     expect(await verifyEarlyAccessChallenge('token')).toBe(true)
     expect(fetch.mock.calls[0][0]).toBe(
@@ -55,15 +53,13 @@ describe('Turnstile verification', () => {
   })
 
   it('rejects replay, oversized tokens and verification outages', async () => {
-    const fetch = vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          success: false,
-          'error-codes': ['timeout-or-duplicate']
-        })
+    const fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: false,
+        'error-codes': ['timeout-or-duplicate']
       })
+    })
     vi.stubGlobal('fetch', fetch)
     expect(await verifyEarlyAccessChallenge('token')).toBe(false)
     expect(await verifyEarlyAccessChallenge('x'.repeat(2049))).toBe(false)

@@ -1,5 +1,6 @@
 'use client'
 
+import { websiteEnv } from '../../env'
 import type { WebsiteLocale } from '../../i18n/routing'
 import { produce } from 'immer'
 import Script from 'next/script'
@@ -16,13 +17,16 @@ import type { EarlyAccessFormState, StateUpdater } from './form.types'
 declare global {
   interface Window {
     turnstile?: {
-      render: (element: HTMLElement, options: {
-        sitekey: string
-        action: string
-        callback: (token: string) => void
-        'expired-callback': () => void
-        'error-callback': () => void
-      }) => string
+      render: (
+        element: HTMLElement,
+        options: {
+          sitekey: string
+          action: string
+          callback: (token: string) => void
+          'expired-callback': () => void
+          'error-callback': () => void
+        }
+      ) => string
       reset: (id: string) => void
     }
   }
@@ -41,7 +45,9 @@ export function EarlyAccessForm({
 }) {
   const [formState, setFormState] = useState(createEarlyAccessFormState)
   const [hydrated, setHydrated] = useState(false)
-  useEffect(() => { setHydrated(true) }, [])
+  useEffect(() => {
+    setHydrated(true)
+  }, [])
   const inputRef = useRef<HTMLInputElement>(null)
   const submitting = useRef(false)
   const challenge = useRef('')
@@ -58,7 +64,8 @@ export function EarlyAccessForm({
 
   function resetChallenge() {
     challenge.current = ''
-    if (challengeWidget.current) window.turnstile?.reset(challengeWidget.current)
+    if (challengeWidget.current)
+      window.turnstile?.reset(challengeWidget.current)
   }
 
   return (
@@ -70,7 +77,9 @@ export function EarlyAccessForm({
         event.preventDefault()
         if (submitting.current) return
         if (!challenge.current) {
-          update((draft) => { draft.status = 'challenge-error' })
+          update((draft) => {
+            draft.status = 'challenge-error'
+          })
           return
         }
         submitting.current = true
@@ -114,7 +123,10 @@ export function EarlyAccessForm({
             handleEmailBlur(event.currentTarget.value, update)
           }}
         />
-        <button type="submit" disabled={!hydrated || formState.status === 'submitting'}>
+        <button
+          type="submit"
+          disabled={!hydrated || formState.status === 'submitting'}
+        >
           {formState.status === 'submitting' ? copy.submitting : copy.submit}
           <span aria-hidden="true">↗</span>
         </button>
@@ -127,14 +139,28 @@ export function EarlyAccessForm({
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
         onReady={() => {
-          if (!challengeElement.current || !window.turnstile || challengeWidget.current) return
-          challengeWidget.current = window.turnstile.render(challengeElement.current, {
-            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
-            action: 'early-access',
-            callback: (token) => { challenge.current = token },
-            'expired-callback': () => { challenge.current = '' },
-            'error-callback': () => { challenge.current = '' }
-          })
+          if (
+            !challengeElement.current ||
+            !window.turnstile ||
+            challengeWidget.current
+          )
+            return
+          challengeWidget.current = window.turnstile.render(
+            challengeElement.current,
+            {
+              sitekey: websiteEnv.turnstileSiteKey,
+              action: 'early-access',
+              callback: (token) => {
+                challenge.current = token
+              },
+              'expired-callback': () => {
+                challenge.current = ''
+              },
+              'error-callback': () => {
+                challenge.current = ''
+              }
+            }
+          )
         }}
       />
       <div
@@ -152,9 +178,9 @@ export function EarlyAccessForm({
             ? copy.success
             : formState.status === 'challenge-error'
               ? copy.challengeFailed
-            : formState.status === 'error' && !emailError
-              ? copy.unavailable
-              : ''}
+              : formState.status === 'error' && !emailError
+                ? copy.unavailable
+                : ''}
         </p>
       </div>
     </form>

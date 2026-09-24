@@ -15,5 +15,9 @@ function requireEnv(name: string, value: string | undefined): string {
 // Static `process.env.NEXT_PUBLIC_*` references so Next can inline them.
 export const websiteEnv = {
   docsUrl: requireEnv('NEXT_PUBLIC_DOCS_URL', process.env.NEXT_PUBLIC_DOCS_URL),
-  ssoUrl: requireEnv('NEXT_PUBLIC_SSO_URL', process.env.NEXT_PUBLIC_SSO_URL)
+  ssoUrl: requireEnv('NEXT_PUBLIC_SSO_URL', process.env.NEXT_PUBLIC_SSO_URL),
+  turnstileSiteKey: requireEnv(
+    'NEXT_PUBLIC_TURNSTILE_SITE_KEY',
+    process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  )
 }

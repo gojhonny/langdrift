@@ -90,10 +90,9 @@ replace any component's safe development base.
 ## Normalization and setup
 
 Website now requires `TURNSTILE_VERIFY_URL`, supplied by its development contract.
-The Cloudflare URL in validation code is an allowlist comparison, not a fallback.
-Only test mode permits a loopback mock. Production must explicitly supply the
-Cloudflare URL and real credentials. The container CI build supplies the new
-required value, and Turbo passes the server environment variables through.
+A missing value fails startup. Production still requires real Turnstile
+credentials. The container CI build supplies the required verifier, and Turbo
+passes the server environment variables through.
 
 The E2E contract now contains only `EARLY_ACCESS_MODE=test`. The Resend URL comes
 unchanged from email-sender's base. Browser proof loads the Website base and

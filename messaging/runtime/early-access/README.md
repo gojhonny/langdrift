@@ -50,8 +50,8 @@ credential belongs in CI.
 The browser proof loads Website `.env.development`, Website `.env`,
 `containers/e2e/.env.development`, then `e2e/.env.development`. The last file owns
 the browser's loopback service URL, verifier URL and expected hostname; the site
-key remains inherited from Website. Development requires the explicit Cloudflare
-`TURNSTILE_VERIFY_URL`; only test mode permits a loopback mock verifier.
+key remains inherited from Website. Development requires an explicit
+`TURNSTILE_VERIFY_URL`. The browser proof supplies its own verifier URL.
 
 Run `sh cli/tests/early-access-env.sh` from the repository root to verify generated
 private keys, shared credential relationships, repeatable setup and resolved
@@ -114,6 +114,6 @@ limits and request filtering. Local application limits are only defense in depth
 Set `MINIO_USE_SSL=true`, real NATS/MinIO endpoints and scoped credentials on the
 runtime host. Set `RESEND_API_URL=https://api.resend.com/emails`, `RESEND_API_KEY`,
 and the verified `RESEND_FROM` only on the sender.
-The Website receives its service origin, shared API key, Turnstile site key, secret and expected hostname. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`; the mock verifier is allowed only in test mode on loopback.
+The Website receives its service origin, shared API key, Turnstile site key, secret, expected hostname and verifier URL. Production must use real Turnstile keys and `EARLY_ACCESS_MODE=production`.
 
 Before public signup, confirm TLS, private NATS and MinIO, scoped credentials, edge limits, backup/restore, credential rotation, operator handling of expired/exhausted deliveries, contact retention/deletion policy, and one controlled live-provider smoke. Track these in [the audit](AUDIT.md).

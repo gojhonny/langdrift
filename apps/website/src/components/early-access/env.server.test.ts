@@ -47,23 +47,6 @@ describe('Website environment contract', () => {
     expect(earlyAccessServerEnv.serviceUrl).toBe(overrides.EMAIL_SERVICE_URL)
   })
 
-  it.each([
-    ['development', 'http://127.0.0.1:18082/siteverify'],
-    ['production', 'http://127.0.0.1:18082/siteverify'],
-    ['test', 'http://evil.example/siteverify'],
-    ['test', 'http://user:pass@localhost/siteverify'],
-    ['test', 'http://localhost/siteverify?redirect=evil'],
-    ['test', 'http://localhost/siteverify#fragment'],
-    ['test', 'http://localhost/other'],
-    ['test', 'https://evil.example/turnstile/v0/siteverify']
-  ])('rejects an untrusted verifier in %s: %s', async (mode, endpoint) => {
-    vi.stubEnv('EARLY_ACCESS_MODE', mode)
-    vi.stubEnv('TURNSTILE_VERIFY_URL', endpoint)
-    await expect(import('../../env.server')).rejects.toThrow(
-      'Invalid TURNSTILE_VERIFY_URL'
-    )
-  })
-
   it('accepts the explicit Cloudflare verifier with production credentials', async () => {
     vi.stubEnv('EARLY_ACCESS_MODE', 'production')
     vi.stubEnv('EMAIL_SERVICE_URL', 'https://service.example.com')

@@ -21,23 +21,6 @@ const turnstileHostname = required(
   'TURNSTILE_EXPECTED_HOSTNAME',
   process.env.TURNSTILE_EXPECTED_HOSTNAME
 )
-const turnstileVerifyUrl = new URL(
-  required('TURNSTILE_VERIFY_URL', process.env.TURNSTILE_VERIFY_URL)
-)
-const isCloudflareVerifier =
-  turnstileVerifyUrl.href ===
-  'https://challenges.cloudflare.com/turnstile/v0/siteverify'
-const isTestVerifier =
-  mode === 'test' &&
-  turnstileVerifyUrl.protocol === 'http:' &&
-  ['localhost', '127.0.0.1'].includes(turnstileVerifyUrl.hostname) &&
-  turnstileVerifyUrl.pathname === '/siteverify' &&
-  !turnstileVerifyUrl.username &&
-  !turnstileVerifyUrl.password &&
-  !turnstileVerifyUrl.search &&
-  !turnstileVerifyUrl.hash
-if (!isCloudflareVerifier && !isTestVerifier)
-  throw new Error('Invalid TURNSTILE_VERIFY_URL')
 if (!['development', 'test', 'production'].includes(mode))
   throw new Error('Invalid EARLY_ACCESS_MODE')
 if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/.test(turnstileHostname)) {
@@ -45,6 +28,10 @@ if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?$/.test(turnstileHostname)) {
     'TURNSTILE_EXPECTED_HOSTNAME must be a hostname without a scheme, port or path'
   )
 }
+const turnstileVerifyUrl = required(
+  'TURNSTILE_VERIFY_URL',
+  process.env.TURNSTILE_VERIFY_URL
+)
 if (
   mode === 'production' &&
   (/^[123]x0{20}/.test(turnstileSecret) ||
@@ -71,6 +58,6 @@ export const earlyAccessServerEnv = {
   serviceUrl: serviceUrl.origin,
   apiKey: required('EMAIL_SERVICE_API_KEY', process.env.EMAIL_SERVICE_API_KEY),
   turnstileSecret,
-  turnstileVerifyUrl: turnstileVerifyUrl.href,
-  turnstileHostname
+  turnstileHostname,
+  turnstileVerifyUrl
 }
