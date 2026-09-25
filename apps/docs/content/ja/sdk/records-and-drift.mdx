@@ -1,0 +1,61 @@
+---
+title: Record と Drift
+description: 事実のエンベロープ、解釈された Drift Event、および検証付きの作成 API です。
+---
+
+# Record と Drift
+
+**Record は、識別されたソースからの事実です。** **Drift Event は、明示的な Evidence に裏付けられた、Vision Target に対する解釈です。** Record を作成しても、Drift の解釈が自動的に作られることはありません。
+
+## Record
+
+```ts
+function createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+```
+
+呼び出し元が渡すものは、次のとおりです。
+
+- `id` と、拡張可能な `kind`
+- `date-time` としての `occurred_at`
+- `source.integration`、`source.external_id`、任意の `source.repository`
+- `human` または `agent` の `actors`
+- 明示的な `references`
+- ソースの事実を含む、JSON 互換の `data` オブジェクト
+
+`createRecord` が追加するのは `type: 'record'` と `schema_version: 1` だけで、そのあと完全なエンベロープを検証します。タイムスタンプの生成や、ソース詳細の取得は行いません。
+
+安定したプロバイダーイベントの識別子のために、SDK は次もエクスポートします。
+
+```ts
+recordId(integration: string, sourceId: string, eventId: string): string
+```
+
+順序のある 3 部構成の識別子をハッシュし、`REC-` で始まる ID を返します。呼び出し元は、タイトルではなく、不変のプロバイダー識別子を使ってください。
+
+## Drift Event
+
+```ts
+function createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+Drift Event には、次が必要です。
+
+- `id` と `vision_target_id`
+- `state: 'expected' | 'unexpected'`
+- `unit`、`before`、`delta`、`after` を持つ `impact`
+- `human` または `agent` の `actors`
+- 明示的な `references`
+- バージョン付きの `reasoning`
+- 任意の `created_at`
+
+影響の単位は、`percentage_points`、`ratio`、`score_points` です。`impact.after` は、浮動小数点の精度の範囲で `impact.before + impact.delta` と等しくなければなりません。
+
+推論の方法は、`human`、`deterministic`、`llm` です。`reasoning.evidence_refs` の各項目は、`references` 内の項目を識別しなければなりません。LLM の推論には、加えて空でない Evidence のリストと `model` が必要です。`model_version` がある場合も、`model` が必要です。推論エンベロープは `schema_version: 1` を使います。
+
+`createDrift` が追加するのはトップレベルの型とスキーマバージョンだけで、その結果を検証します。変化が `expected` かどうかを決めたり、影響を計算したり、単位を選んだり、Evidence を見つけたり、推論エンジンを実行したりはしません。
+
+SDK は、Product Vision の計算式を意図的に未定義のままにしています。永続化、識別の認可、解釈の方針は、別に設計されたランタイムに属します。

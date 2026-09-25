@@ -1,0 +1,79 @@
+---
+title: Records e Drift
+description: Envelopes de fatos, Drift Events interpretados e as APIs validadas de criação.
+---
+
+# Records e Drift
+
+Um **Record é um fato** de uma fonte identificada. Um **Drift Event é uma
+interpretação** em relação a um Vision Target, sustentada por Evidence
+explícita. Criar um Record nunca cria automaticamente uma interpretação de
+Drift.
+
+## Records
+
+```ts
+function createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+```
+
+O chamador fornece:
+
+- `id` e `kind` extensível
+- `occurred_at` no formato `date-time`
+- `source.integration`, `source.external_id` e `source.repository` opcional
+- `actors` do tipo `human` ou `agent`
+- `references` explícitas
+- um objeto `data` compatível com JSON, contendo fatos da origem
+
+`createRecord` adiciona somente `type: 'record'` e `schema_version: 1` e, em
+seguida, valida o envelope completo. Não gera um timestamp nem busca detalhe
+da origem.
+
+Para identidades estáveis de eventos de provedor, o SDK também exporta:
+
+```ts
+recordId(integration: string, sourceId: string, eventId: string): string
+```
+
+A função calcula o hash da identidade ordenada em três partes e retorna um ID
+com prefixo `REC-`. O chamador deve usar identificadores imutáveis do
+provedor, não títulos.
+
+## Drift Events
+
+```ts
+function createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+Um Drift Event exige:
+
+- `id` e `vision_target_id`
+- `state: 'expected' | 'unexpected'`
+- `impact` com `unit`, `before`, `delta` e `after`
+- `actors` do tipo `human` ou `agent`
+- `references` explícitas
+- `reasoning` versionado
+- `created_at` opcional
+
+As unidades de impacto são `percentage_points`, `ratio` e `score_points`.
+`impact.after` precisa ser igual a `impact.before + impact.delta` dentro da
+precisão de ponto flutuante.
+
+Os métodos de raciocínio são `human`, `deterministic` e `llm`. Cada entrada de
+`reasoning.evidence_refs` precisa identificar um item em `references`. O
+raciocínio LLM exige, além disso, uma lista de evidência não vazia e `model`;
+`model_version`, quando presente, também exige `model`. O envelope de
+raciocínio usa `schema_version: 1`.
+
+`createDrift` adiciona somente o tipo de nível superior e a versão do schema
+e valida o resultado. Não decide se a mudança é `expected`, não calcula o
+impacto, não escolhe unidades, não encontra Evidence e não executa um motor
+de raciocínio.
+
+O SDK deixa deliberadamente indefinida a fórmula de Product Vision.
+Persistência, autorização de identidade e política de interpretação pertencem
+a um runtime projetado separadamente.

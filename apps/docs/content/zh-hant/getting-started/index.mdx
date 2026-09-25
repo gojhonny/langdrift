@@ -1,0 +1,57 @@
+---
+title: 開始使用
+description: 在既有儲存庫中建立最小的本機 LangDrift 協定骨架。
+---
+
+# 開始使用
+
+LangDrift 設定需要 Node.js 24 或更新版本，以及一個已存在的專案目錄。在 Git 儲存庫內，此命令可以發現最近的儲存庫根目錄，因此不需要 `--root` 旗標。
+
+<Callout type="info">
+**尚未發布。** 下列 `npx` 命令是
+`@langdrift/setup` 發布之後的預定介面。目前請使用本機安裝的套件複本，並透過該專案的套件管理器叫用其 `langdrift` 執行檔。
+</Callout>
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+在 Git 儲存庫之外，請以 `--root /path/to/product` 傳入明確且已存在的目錄。專案與帳戶 ID 是路由中繼資料；設定不會建立帳戶，也不會驗證任一個 ID。
+
+## 產生的檔案
+
+新的設定只會建立下列協定檔案：
+
+```text
+.drifts/project.json
+.drifts/vision/schema.json
+.drifts/loop/schema.json
+.drifts/evidence/schema.json
+```
+
+產物目錄會在之後加入文件時才建立。設定不會產生佔位產物、整合程式碼或代理程式設定。
+
+## 安全的本機設定
+
+在寫入之前預覽完整的檔案計畫：
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run
+```
+
+設定把每個受管理目的地分類為 `create`、`preserve` 或
+`conflict`。它會建立缺少的檔案、逐位元組保留相符的檔案，且絕不覆寫衝突內容。預檢發現衝突時，會阻止所有寫入。此命令不會發出網路請求，也不會連接 GitHub、Linear、Obsidian、MCP 或 LangDrift 後端。
+
+## 繼續
+
+- [建立第一份 PRD 產物](/getting-started/first-artifact)
+- [了解協定支柱](/concepts/vision-loop-evidence)
+- [理解確定性工作與解讀工作](/concepts/deterministic-first)
+- [檢視設定行為與選項](/setup)

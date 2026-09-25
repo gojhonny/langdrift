@@ -1,0 +1,55 @@
+---
+title: Markdown
+description: "`langdrift` 前置資料封套，及其嚴格的解析行為。"
+---
+
+# Markdown
+
+九個文件家族使用 YAML 前置資料命名空間：
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Product Vision 儀表板
+  owners: [user_42]
+  research: [RES-002]
+  vision_targets: [VT-001]
+---
+
+# Product Vision 儀表板
+
+豐富的 Markdown 背景留在本文中。
+```
+
+已解析的承載資料是：
+
+```ts
+{
+  metadata: ArtifactMetadata
+  body: string
+}
+```
+
+`type`、`schema_version`、`id`、`title` 與 `owners` 是必填。ID 是不含空白的非空字串；擁有者是識別碼，而不是內嵌的使用者設定檔。
+
+選用的結構化中繼資料包括：
+
+- `description`、`summary`、`status`、`scope` 與 `tags`
+- `deciders`、`questions` 與時間戳
+- 有類型的關係陣列，例如 `research`、`prds`、`specs` 與
+  `vision_targets`
+- 一般的 `references`、`supersedes` 與 `superseded_by`
+- `external` 供應者身分
+
+`langdrift` 內的未知欄位會被拒絕。`langdrift` 命名空間之外的根層 YAML 不是協定中繼資料，`parseArtifact` 會忽略它。
+
+## 解析器規則
+
+前置資料分隔線必須從檔案開頭開始，唯一例外是選用的 UTF-8 位元組順序標記。解析器會拒絕格式錯誤的 YAML、自訂標籤、重複鍵、別名，以及不符合結構描述的中繼資料。
+
+本文緊接在結束分隔線之後開始。Unicode 與原始換行會被保留，本文文字不會被執行。標題、散文與檔名不會提供身分，也不會填補缺少的中繼資料。關係也只取自結構化中繼資料。
+
+Record 與 Drift Event 封套不使用這個 Markdown 包裝。它們直接從 JSON 驗證。

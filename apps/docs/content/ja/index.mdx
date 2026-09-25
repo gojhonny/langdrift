@@ -1,0 +1,42 @@
+---
+title: LangDrift ドキュメント
+description: 記録された意図に照らして製品の変化を記述するための、ローカルなプロトコル、SDK、およびセットアップツールです。
+---
+
+# LangDrift ドキュメント
+
+LangDrift は、意図した製品の方向性、それに続く作業、そして変化が残した Evidence を結びつける、決定論的なプロトコルを定義します。
+
+<Callout type="info">
+**未公開。** `@langdrift/sdk` と `@langdrift/setup` はバージョン `0.1.0` のリリース候補です。文書化されている `npx` とパッケージのインポートパスは、意図されたインターフェースであり、現時点で npm から入手できるパッケージではありません。
+</Callout>
+
+## ここから始める
+
+- [最小構成のローカルプロジェクトをセットアップする](/getting-started)
+- [最初のアーティファクトを作成する](/getting-started/first-artifact)
+- [Vision → Loop → Evidence を理解する](/concepts/vision-loop-evidence)
+- [Record から Drift Event までをたどる](/concepts/records-and-drift)
+- [決定論を優先するとは何かを確認する](/concepts/deterministic-first)
+
+## プロトコルの概要
+
+正規モデルは **Vision → Loop → Evidence** です。
+
+- **Vision** は、リサーチ、PRD、コンテキストを通じて、意図した方向性を記録します。
+- **Loop** は、その方向性をトリアージ、設計ドキュメント、仕様、チケットへ接続します。
+- **Evidence** は、ADR、監査、正規化された Record、Drift Event を保持します。
+
+**Record** は、正規化された観測事実です。**Drift Event** は、Vision Target に対する観測された動きの解釈であり、Evidence によって裏付けられます。Drift は Loop から導出されます。第 4 の柱ではありません。
+
+## 現在の境界
+
+<Callout type="info">
+**実装済み。** SDK は、バージョン管理されたスキーマ、厳格なローカル検証、アーティファクトの検出、明示的な参照解決、Record と Drift のコンストラクタ、ペイロードの構築、および注入されたトランスポートのインターフェースを提供します。
+
+**概念。** Product Vision は、説明可能で、分解可能で、監査可能であることを意図しています。その計算式は、現在の SDK では定義されていません。
+
+**まだ接続されていません。** 稼働中の LangDrift バックエンド、同梱された MCP サーバー、自動アップロード、稼働中の Linear または Obsidian のアダプターはありません。SDK は LLM を同梱しません。アプリケーションが、解釈のための仕組みとトランスポートを用意します。
+</Callout>
+
+セットアップはローカルで、明示的で、非破壊的であり、ネットワークリクエストを行いません。プロジェクト ID とアカウント ID はルーティング用のメタデータです。ローカルのスキャフォールドを作成しても、リモートアカウントの作成や認可は行われません。

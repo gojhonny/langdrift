@@ -1,0 +1,29 @@
+---
+title: Linear e Obsidian
+description: Configuração opcional de interface, sem conexões de provedor nem sincronização.
+---
+
+# Linear e Obsidian
+
+As duas integrações têm, no momento, a capacidade `interface-only`.
+
+O setup aceita `--linear` / `--no-linear` e `--obsidian` /
+`--no-obsidian`. Essas flags apenas gravam o booleano `enabled` correspondente
+na configuração local do projeto. Não solicitam credencial e não estabelecem
+conexão.
+
+A única extensão comum de provedor no SDK é `RecordSourceAdapter`, cujo método
+`readRecords()` retorna um fluxo assíncrono de Records. Nenhum adaptador
+específico de Linear ou de Obsidian está implementado.
+
+No momento, não há:
+
+- autenticação de provedor
+- cliente de API ou de vault
+- runtime de consulta periódica, de webhook ou de observação de arquivos
+- caminho de gravação no provedor
+- sincronização bidirecional
+- resolução de conflitos ou extração automática de links
+
+As aplicações podem implementar a interface de ingestão separadamente.
+Habilitar a configuração local não ativa essa implementação.

@@ -1,0 +1,41 @@
+---
+title: Integrations
+description: Current package capabilities and the boundary between configuration and connection.
+---
+
+import { CapabilityTable } from '../../../components/capability-table'
+
+# Integrations
+
+<CapabilityTable />
+
+These rows are rendered from the SDK's exported
+`integrationCapabilities` object. They describe code that exists in the
+current release candidate, not provider availability.
+
+<Callout type="info">
+  **Not connected yet.** Setup can store local integration configuration, but
+  it does not install an app, authenticate a provider, ingest events, or start
+  transport.
+</Callout>
+
+GitHub has a deterministic mapper for an explicitly supplied merged pull
+request fixture. The result is a Record of source facts. It is never an
+automatic Drift interpretation.
+
+LangDrift transport is an interface injected by the caller. The package does
+not include a production server or client topology.
+
+Linear and Obsidian currently have interface-only status. The common extension
+surface is ingestion-only:
+
+```ts
+interface RecordSourceAdapter {
+  integration: string
+  readRecords(): AsyncIterable<RecordEvent>
+}
+```
+
+The interface does not define provider authentication, writes, synchronization,
+conflict resolution, or bidirectional behavior. Each runtime integration must
+be designed and configured separately.

@@ -1,23 +1,31 @@
-function normalizeSiteUrl(value: string) {
+function requireOrigin(name: string, value: string | undefined) {
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
   const url = new URL(value)
 
   if (url.protocol !== 'https:' && url.hostname !== 'localhost') {
-    throw new Error('NEXT_PUBLIC_SITE_URL must use HTTPS outside localhost')
+    throw new Error(`${name} must use HTTPS outside localhost`)
   }
 
   if (url.pathname !== '/' || url.search || url.hash) {
     throw new Error(
-      'NEXT_PUBLIC_SITE_URL must be an origin without path, query, or fragment'
+      `${name} must be an origin without path, query, or fragment`
     )
   }
 
   return url.origin
 }
 
-const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
-if (!configuredSiteUrl)
-  throw new Error('Missing required environment variable: NEXT_PUBLIC_SITE_URL')
-const siteUrl = normalizeSiteUrl(configuredSiteUrl)
+const siteUrl = requireOrigin(
+  'NEXT_PUBLIC_SITE_URL',
+  process.env.NEXT_PUBLIC_SITE_URL
+)
+const websiteUrl = requireOrigin(
+  'NEXT_PUBLIC_WEBSITE_URL',
+  process.env.NEXT_PUBLIC_WEBSITE_URL
+)
 const isHttps = siteUrl.startsWith('https://')
 const searchIndexable =
   process.env.NODE_ENV === 'production' &&
@@ -31,7 +39,7 @@ export const siteConfig = Object.freeze({
   github: 'https://github.com/gojhonny/langdrift',
   homeTitle: 'LangDrift documentation',
   name: 'LangDrift Docs',
-  productUrl: 'https://langdrift.md/',
+  productUrl: websiteUrl,
   publisher: 'LangDrift / Neongate AI',
   searchIndexable,
   url: siteUrl

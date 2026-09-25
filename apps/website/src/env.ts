@@ -1,7 +1,7 @@
 // Required environment contract for the website. Missing values throw at
 // module load so `next dev` and `next build` stop immediately; there is no
 // hardcoded runtime fallback. Local values live in `.env.development`.
-// Policy: apps/docs/content/decisions/2026-09-20-environment-variables-fail-fast.mdx
+// Policy: apps/docs/content/en/decisions/2026-09-20-environment-variables-fail-fast.mdx
 
 function requireEnv(name: string, value: string | undefined): string {
   if (!value) {

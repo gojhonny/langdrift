@@ -1,0 +1,85 @@
+---
+title: Setup
+description: Estruturação local e explícita de um projeto do protocolo LangDrift.
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# Setup
+
+<PackageStatus package="setup" />
+
+<Callout type="warning">
+  **Não publicado.** A versão 0.1.0 é um candidato a lançamento. O comando abaixo
+  descreve o binário de uma compilação local do monorepositório ou de uma instalação local
+  do pacote, e não uma instalação pública disponível no momento.
+</Callout>
+
+`@langdrift/setup` expõe o binário `langdrift`. O setup é explícito:
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+`--root` precisa nomear um diretório existente. Se for omitido, o setup busca
+`.git` subindo a partir do diretório atual. Fora de um repositório Git, passe
+`--root`.
+
+Os IDs de projeto e de conta são metadados de roteamento e de contexto. O
+setup não cria uma conta, não autentica nenhum dos IDs e não autoriza acesso
+a um projeto.
+
+## Arquivos gerados
+
+O setup gerencia exatamente quatro arquivos JSON:
+
+```text
+.drifts/
+  project.json
+  vision/schema.json
+  loop/schema.json
+  evidence/schema.json
+```
+
+Um `project.json` novo registra a versão `1` do protocolo, a identidade do
+projeto, a proveniência do gerador do pacote de setup e a configuração de
+integração. O LangDrift fica habilitado localmente; GitHub, Linear e Obsidian
+começam desabilitados. Os três schemas de pilar são cópias autocontidas de
+`@langdrift/sdk`.
+
+O setup não gera árvores vazias de artefatos, documentos Markdown, estruturas
+de agente nem integrações provisórias.
+
+## Opções do comando
+
+- `--root <directory>`
+- `--project-id <id>`
+- `--account-id <id>`
+- `--name <name>`
+- `--github-installation-id <numeric-id>`
+- `--github-repository <owner/repository>`
+- `--linear` ou `--no-linear`
+- `--obsidian` ou `--no-obsidian`
+- `--dry-run`
+- `--json`
+- `--help` ou `-h`
+
+Os dois valores do GitHub precisam ser informados juntos para uma configuração
+nova. Eles armazenam somente referências que não são segredo. As flags de
+Linear e Obsidian armazenam somente configurações opcionais de interface.
+
+Se os valores de identidade estiverem ausentes, a CLI solicita entrada somente
+quando a entrada padrão e a saída de erro padrão são terminais interativos e
+`--json` está ausente. Execuções não interativas e em JSON falham informando
+os campos ausentes.
+
+## Operação local
+
+O setup não faz requisições de rede, não recebe credenciais e não conecta
+GitHub, Linear, Obsidian, um servidor MCP nem um backend. O pacote não tem
+hook de setup em `postinstall`. Compilar ou empacotar o monorepositório não executa
+o setup e não publica nenhum dos pacotes.

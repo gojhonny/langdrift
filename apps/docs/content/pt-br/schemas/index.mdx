@@ -1,0 +1,55 @@
+---
+title: Schemas
+description: Definições versionadas de JSON Schema para projetos, documentos, Records e Drift Events.
+---
+
+# Schemas
+
+A versão `1` do protocolo usa o JSON Schema Draft 2020-12:
+
+```text
+https://json-schema.org/draft/2020-12/schema
+```
+
+O modelo canônico tem exatamente três pilares:
+
+- **Vision** — `research`, `prd`, `context`
+- **Loop** — `triage`, `design-document`, `spec`, `ticket`
+- **Evidence** — `adr`, `audit`, `record`, `drift`
+
+Drift é um tipo de Evidence, não um pilar. Os nove primeiros tipos são
+famílias de documentos Markdown. Records e Drift Events são envelopes JSON.
+
+## Exportações
+
+`@langdrift/sdk/schema` exporta:
+
+- `SCHEMA_VERSION`, atualmente o literal `1`
+- `schemas`, um schema para cada tipo de artefato
+- `projectSchema`
+- `pillarSchemas.vision`, `.loop` e `.evidence`
+- `artifactPillars`, o mapeamento de tipo para pilar
+
+Cada schema de pilar incorpora as definições e as formas de artefato de que
+precisa, de modo que o arquivo de schema gerado seja autocontido.
+
+## Comportamento da validação
+
+Os schemas exigem `schema_version: 1` explícito. IDs de artefato são não
+vazios e não contêm espaço em branco. Os metadados Markdown exigem `type`,
+`schema_version`, `id`, `title` e pelo menos um `owner`. Campos de Record,
+Drift Event, referência, ator e projeto são definidos separadamente.
+
+Os objetos rejeitam propriedades desconhecidas quando o protocolo define um
+objeto fechado. O validador não coage tipos, não aplica valores padrão, não
+remove campos e não migra versões não suportadas. As verificações de formato
+cobrem `date`, `date-time` e outras strings específicas do protocolo.
+
+`x-langdrift` é orientação do protocolo ao lado das asserções padrão do JSON
+Schema. Registra informações como tipo de documento, versão, glob de origem
+pertencente ao pacote, namespace e campos obrigatórios do frontmatter, relações
+de referência, pilar e recurso de payload. Um validador geral de JSON Schema
+pode ignorar essa extensão; o LangDrift a usa para descrever a interpretação.
+
+Os schemas descrevem entradas portáteis. Não definem uma fórmula de Product
+Vision nem comprovam que exista um backend, uma integração ou um servidor MCP.

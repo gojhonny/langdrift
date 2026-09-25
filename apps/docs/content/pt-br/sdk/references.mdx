@@ -1,0 +1,61 @@
+---
+title: Referências
+description: Resolução explícita de identidades locais e externas, sem consulta remota.
+---
+
+# Referências
+
+Referências são dados explícitos do protocolo. O SDK não as infere a partir da
+prosa, de títulos, de nomes de branch ou de URLs de provedor.
+
+```ts
+interface ArtifactRef {
+  type: string
+  id: string
+  path?: string
+  integration?: string
+  external_id?: string
+}
+```
+
+`type` e `id` formam a identidade do protocolo. `path` pode restringir uma
+referência local a um caminho de artefato. `integration` e `external_id`
+formam um par indivisível de uma identidade externa.
+
+Os metadados do documento podem fornecer `references`, `supersedes`,
+`superseded_by` e arrays de relação tipados, como `research`, `specs` ou
+`vision_targets`. O campo `external: { integration, id }` registra a identidade
+de provedor do próprio documento como referência externa. Drift Events também
+referenciam seu `vision_target_id`.
+
+## Resolver um conjunto
+
+```ts
+const resolution = await resolveReferences(
+  root,
+  artifacts,
+  [{ type: 'vision-target', id: 'VT-001' }]
+)
+```
+
+A resolução indexa artefatos locais pelo par exato `(type, id)`.
+
+- Uma identidade local correspondente fica `resolved`. Se a referência inclui
+  `path`, esse caminho precisa ser igual ao caminho do artefato de destino.
+- Uma referência com `integration` e `external_id` fica `external`.
+- Uma referência sem caminho que corresponda ao terceiro argumento opcional
+  também fica `external`. Essa lista é um registro explícito de identidades
+  que o chamador já conhece.
+- Qualquer outro caso produz um problema `REFERENCE_NOT_FOUND`.
+- Ciclos entre referências locais resolvidas produzem problemas
+  `REFERENCE_CYCLE`.
+
+Os problemas são retornados em `resolution.issues`; referências ausentes e
+ciclos não lançam exceção. Identidades locais `(type, id)` duplicadas são
+ambíguas e lançam `LangDriftError` com o código `ARTIFACT_INVALID`.
+
+Os caminhos de referência passam pelas mesmas verificações de caminho seguro
+dos artefatos. Um caminho não dispara consulta remota, e a lista de referências
+conhecidas não consulta nem comprova a existência de dados de backend. A
+resolução é somente local e precisa ser tratada como uma verificação separada
+antes do transporte.

@@ -1,0 +1,43 @@
+---
+title: LangDrift 文件
+description: 用來對照已記錄意圖描述產品變更的本機協定、SDK 與設定工具。
+---
+
+# LangDrift 文件
+
+LangDrift 定義一套確定性協定，用來連結預期的產品方向、隨後進行的工作，以及變更留下的證據。
+
+<Callout type="info">
+**尚未發布。** `@langdrift/sdk` 與 `@langdrift/setup` 是版本 `0.1.0`
+的發行候選版本。文件中的 `npx` 與套件匯入路徑是預定介面，這些套件目前並未在 npm 上提供。
+</Callout>
+
+## 從這裡開始
+
+- [建立最小的本機專案](/getting-started)
+- [建立第一份產物](/getting-started/first-artifact)
+- [理解 Vision → Loop → Evidence](/concepts/vision-loop-evidence)
+- [從 Record 追到 Drift Event](/concepts/records-and-drift)
+- [了解確定性優先的意義](/concepts/deterministic-first)
+
+## 協定一覽
+
+標準模型是 **Vision → Loop → Evidence**。
+
+- **Vision** 透過研究、PRD 與背景記錄預期方向。
+- **Loop** 把該方向連到分診、設計文件、規格與工作單。
+- **Evidence** 保存 ADR、稽核、正規化的 Record，以及 Drift Event。
+
+**Record** 是一筆正規化的觀察事實。**Drift Event** 是對照 Vision 目標、並由 Evidence 支持的移動解讀。Drift 由 Loop 衍生而來，它不是第四根支柱。
+
+## 目前界線
+
+<Callout type="info">
+**已實作。** SDK 提供帶版本的結構描述、嚴格的本機驗證、產物發現、明確的參照解析、Record 與 Drift 建構函式、承載資料組裝，以及可注入的傳輸介面。
+
+**概念。** Product Vision 預期是可解釋、可分解、可稽核的。目前的 SDK 並未定義其公式。
+
+**尚未連接。** 沒有運作中的 LangDrift 後端、隨附的 MCP 伺服器、自動上傳，或即時的 Linear 或 Obsidian 配接器。SDK 不內建大型語言模型；應用程式自行提供任何解讀系統與傳輸。
+</Callout>
+
+設定在本機進行、必須明確指定、不會破壞既有內容，也不會發出網路請求。專案與帳戶 ID 是路由中繼資料；建立本機骨架並不會建立或授權遠端帳戶。

@@ -1,0 +1,144 @@
+---
+title: パッケージ API
+description: SDK とセットアップのリリース候補における、グループ化された TypeScript のエクスポートです。
+---
+
+# パッケージ API
+
+これは TypeScript パッケージのリファレンスです。HTTP API ではなく、バックエンドのルートも定義しません。
+
+## `@langdrift/sdk`
+
+ルートのエントリーポイントは、公開されているすべての SDK モジュールを再エクスポートします。専用の `/schema`、`/mcp`、`/integrations` エントリーポイントは、それぞれの領域について同じエクスポートを公開します。
+
+### プロトコルの型
+
+ランタイム定数:
+
+- `ARTIFACT_TYPES`
+- `SCHEMA_VERSION`
+
+公開型:
+
+- `ArtifactType`、`DocumentType`、`Pillar`
+- `JsonValue` と `JsonObject`
+- `ArtifactRef` と `ActorRef`
+- `Project`、`ArtifactMetadata`、`RecordEvent`、`DriftEvent`
+
+### スキーマと検証
+
+ランタイムのスキーマエクスポートは、`schemas`、`projectSchema`、`pillarSchemas`、`artifactPillars` です。
+
+```ts
+validateProject(input: unknown): Project
+validateArtifact(input: unknown): ArtifactMetadata
+validateRecord(input: unknown): RecordEvent
+validateDrift(input: unknown): DriftEvent
+```
+
+これらの関数は同期であり、検証済みの元のオブジェクトを返します。データを強制変換したりコピーしたりせず、`LangDriftError` を送出します。
+
+### 安全なパス、プロジェクト、アーティファクト
+
+```ts
+findRepositoryRoot(start?: string): Promise<string>
+resolveSafePath(root: string, relative: string): Promise<string>
+readProjectFile(
+  root: string,
+  relative: string,
+  maxBytes?: number
+): Promise<string>
+loadProject(root: string): Promise<Project>
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+discoverArtifacts(
+  root: string,
+  options?: DiscoveryOptions
+): Promise<ParsedArtifact[]>
+```
+
+`MAX_ARTIFACT_BYTES`、`artifactLocations`、`artifactReferences` もエクスポートされます。関連する型は `ParsedArtifact` と `DiscoveryOptions` です。
+
+### 参照とイベント
+
+```ts
+resolveReferences(
+  root: string,
+  artifacts: ParsedArtifact[],
+  knownReferences?: ArtifactRef[]
+): Promise<ReferenceResolution>
+
+recordId(
+  integration: string,
+  sourceId: string,
+  eventId: string
+): string
+
+createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+
+createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+`ReferenceResolution` はエクスポートされます。`recordId`、`createRecord`、`createDrift` は同期です。
+
+### ペイロードとトランスポート
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+
+resolveCredential(
+  reference: string,
+  environment?: Readonly<Record<string, string | undefined>>
+): string
+
+sendPayload(
+  project: Project,
+  artifact: ParsedArtifact | RecordEvent | DriftEvent,
+  transport: PayloadTransport,
+  options: {
+    credentialRef: string
+    environment?: Readonly<Record<string, string | undefined>>
+    source?: PayloadSource
+  }
+): Promise<TransportResult>
+```
+
+公開されているトランスポートの型は、`PayloadSource`、`PayloadEnvelope`、`PayloadTransport`、`TransportResult` です。`TransportError` は、注入されたアダプターが `sendPayload` による分類のために送出できる、ステータスのみのエラーです。
+
+### 連携と診断
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+
+reportError(error: unknown, logger: Logger): void
+```
+
+このパッケージは、`integrationCapabilities`、`RecordSourceAdapter`、`GitHubPullRequestEvent`、`GitHubPullRequestDetails`、`LangDriftError`、`Issue`、`Diagnostic`、`Logger` もエクスポートします。
+
+## `@langdrift/setup`
+
+```ts
+planSetup(options?: SetupOptions): Promise<SetupPlan>
+setupProject(options?: SetupOptions): Promise<SetupResult>
+```
+
+このパッケージは `SetupError` と、`SetupOptions`、`SetupFile`、`SetupPlan`、`SetupResult` の型をエクスポートします。`runCli`、テンプレート、ジェネレーターの内部実装は、パッケージのエクスポートではありません。
+
+`planSetup` は検証と読み取りを行い、書き込みはしません。`setupProject` は、競合のないプランのあとで安全な `create` エントリだけを書き込むか、ドライランの場合はプランを変更せずに返します。
+
+## エラー
+
+SDK の検証、パス、認証情報、トランスポートは、`code` と `issues: { path, message }[]` を持つ `LangDriftError` を使います。セットアップ固有の失敗は、`code`、`files`、`fields` を持つ `SetupError` を使います。プロジェクトまたはパスの検証が失敗すると、セットアップから SDK の `LangDriftError` が送出されることもあります。
+
+明示的に `Promise` を返す関数だけが非同期です。これらのパッケージの API は、暗黙のログ記録、リモート検索、アップロード、再試行を行いません。

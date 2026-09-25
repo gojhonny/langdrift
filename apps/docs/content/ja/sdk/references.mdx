@@ -1,0 +1,44 @@
+---
+title: 参照
+description: リモート検索を行わない、明示的なローカル識別子と外部識別子の解決です。
+---
+
+# 参照
+
+参照は、明示的なプロトコルデータです。SDK は、文章、見出し、ブランチ名、プロバイダーの URL から参照を推測しません。
+
+```ts
+interface ArtifactRef {
+  type: string
+  id: string
+  path?: string
+  integration?: string
+  external_id?: string
+}
+```
+
+`type` と `id` が、プロトコルの識別子を形作ります。`path` は、ローカル参照を 1 つのアーティファクトパスに制約できます。`integration` と `external_id` は、外部識別子のための、両方あるか両方ないかの組です。
+
+ドキュメントのメタデータは、`references`、`supersedes`、`superseded_by`、および `research`、`specs`、`vision_targets` のような型付きの関係配列を提供できます。`external: { integration, id }` フィールドは、そのドキュメント自身のプロバイダー識別子を外部参照として登録します。Drift Event は、`vision_target_id` も参照します。
+
+## 一式を解決する
+
+```ts
+const resolution = await resolveReferences(
+  root,
+  artifacts,
+  [{ type: 'vision-target', id: 'VT-001' }]
+)
+```
+
+解決は、ローカルアーティファクトを正確な `(type, id)` の組で索引します。
+
+- 一致するローカル識別子は `resolved` です。参照に `path` が含まれる場合、そのパスは対象アーティファクトのパスと等しくなければなりません。
+- `integration` と `external_id` を持つ参照は `external` です。
+- 任意の第 3 引数と一致する、パスのない参照も `external` です。このリストは、呼び出し元がすでに知っている識別子の明示的なレジストリです。
+- それ以外は、`REFERENCE_NOT_FOUND` の `issue` になります。
+- 解決済みのローカル参照の間の循環は、`REFERENCE_CYCLE` の `issue` になります。
+
+`issue` は `resolution.issues` に返されます。欠けている参照と循環は、例外を送出しません。ローカルの `(type, id)` 識別子の重複は曖昧であり、コード `ARTIFACT_INVALID` の `LangDriftError` を送出します。
+
+参照パスは、アーティファクトと同じ安全なパスの検査を通ります。パスがリモート検索を引き起こすことはなく、既知の参照リストがバックエンドデータの照会や存在の証明を行うこともありません。解決はローカルのみであり、トランスポートの前の別の関門として扱う必要があります。

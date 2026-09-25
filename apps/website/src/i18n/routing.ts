@@ -1,3 +1,4 @@
+import { WEBSITE_LOCALE_PATHS } from '@repo/react/ui/language-switcher'
 import { defineRouting } from 'next-intl/routing'
 
 export const routing = defineRouting({
@@ -5,7 +6,10 @@ export const routing = defineRouting({
   defaultLocale: 'en',
   localePrefix: {
     mode: 'as-needed',
-    prefixes: { 'pt-BR': '/pt-br', 'zh-Hant': '/zh-hant' }
+    prefixes: {
+      'pt-BR': WEBSITE_LOCALE_PATHS['pt-BR'],
+      'zh-Hant': WEBSITE_LOCALE_PATHS['zh-Hant']
+    }
   },
   localeDetection: false,
   localeCookie: false
@@ -13,9 +17,4 @@ export const routing = defineRouting({
 
 export type WebsiteLocale = (typeof routing.locales)[number]
 
-export const localePath: Record<WebsiteLocale, string> = {
-  en: '/',
-  'pt-BR': '/pt-br',
-  'zh-Hant': '/zh-hant',
-  ja: '/ja'
-}
+export const localePath: Record<WebsiteLocale, string> = WEBSITE_LOCALE_PATHS

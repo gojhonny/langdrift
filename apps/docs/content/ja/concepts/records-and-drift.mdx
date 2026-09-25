@@ -1,0 +1,98 @@
+---
+title: Record と Drift
+description: 観測された変化を Record として正規化し、明示的な Evidence とともに Vision Target に照らして解釈します。
+---
+
+# Record と Drift
+
+Record と Drift Event は、異なる問いに答えます。
+
+- **Record** は、正規化された観測事実です。
+- **Drift Event** は、観測された動きを Vision Target に照らして解釈し、その解釈を支える Evidence を引用します。
+
+## 1. マージされたプルリクエストを正規化する
+
+ある連携が、GitHub のプルリクエスト `481` をマージ済みの状態で観測したとします。正規化されたイベントは、正確な `RecordEvent` の形で作成できます。
+
+```ts
+import { createRecord } from '@langdrift/sdk'
+
+const record = createRecord({
+  id: 'REC-001',
+  kind: 'github.pull_request.merged',
+  occurred_at: '2026-09-19T18:00:00Z',
+  source: {
+    integration: 'github',
+    repository: 'example/product',
+    external_id: '9001'
+  },
+  actors: [{ type: 'human', external_id: 'github:12345' }],
+  references: [
+    { type: 'prd', id: 'PRD-001' },
+    { type: 'vision-target', id: 'VT-001' }
+  ],
+  data: {
+    number: 481,
+    title: 'Add Product Vision summary',
+    state: 'closed',
+    author: { type: 'human', external_id: 'github:12345' },
+    created_at: '2026-09-18T10:00:00Z',
+    updated_at: '2026-09-19T18:00:00Z',
+    merged_at: '2026-09-19T18:00:00Z',
+    head: { ref: 'product-vision-summary', sha: 'abc123' },
+    base: { ref: 'main', sha: 'def456' },
+    labels: ['product-vision']
+  }
+})
+```
+
+`createRecord` は `type: 'record'` と `schema_version: 1` を追加し、呼び出し元が渡した事実を検証します。タイムスタンプ、参照、スコアを作り出すことはありません。
+
+SDK は、検証済みで Webhook または API の形をしたマージ済みプルリクエストに対して、`recordFromGitHubPullRequest` も提供します。このヘルパーは、不変の GitHub 識別子から安定したハッシュの Record ID を導出し、明示的なプロバイダーのフィールドだけを対応付けます。上の読みやすい `REC-001` は、この例のために直接指定しています。
+
+<Callout type="info">
+**まだ接続されていません。** GitHub ヘルパーは、メモリ上のイベントを対応付けます。Webhook の受信、GitHub API の取得、アプリの認証、文章からのアーティファクトリンクの抽出は行いません。
+</Callout>
+
+## 2. 動きを解釈する
+
+この解釈は対象を指定し、観測された Record を参照し、その Record を推論の Evidence として引用します。
+
+```ts
+import { createDrift } from '@langdrift/sdk'
+
+const drift = createDrift({
+  id: 'DRIFT-001',
+  vision_target_id: 'VT-001',
+  state: 'expected',
+  impact: {
+    unit: 'score_points',
+    before: 10,
+    delta: 2,
+    after: 12
+  },
+  actors: [{ type: 'human', id: 'user_42' }],
+  references: [
+    { type: 'record', id: record.id },
+    { type: 'prd', id: 'PRD-001' }
+  ],
+  reasoning: {
+    method: 'human',
+    evidence_refs: [record.id],
+    schema_version: 1
+  }
+})
+```
+
+関係は明示的です。
+
+- `vision_target_id` は、比較対象を識別します。
+- `references` は、解釈を `REC-001` と `PRD-001` に結び付けます。
+- `reasoning.evidence_refs` は、`REC-001` を支える Evidence として識別し、`references` の項目と一致する必要があります。
+- `actors` は、解釈の主体を示します。
+
+`createDrift` は Drift のエンベロープ型とプロトコルバージョンを追加します。`after` が `before + delta` と等しいこと、およびすべての Evidence の ID が `references` に現れることを確認します。解釈、影響の単位、値は呼び出し元が持ちます。SDK は Product Vision の計算式を算出しません。
+
+<Callout type="info">
+**`expected` は有益であることを意味しません。** `expected` は、動きが記録された意図と一致することを意味します。`unexpected` は、一致しないことを意味します。どちらの状態も、その変化が有用か有害かを定めるものではありません。
+</Callout>

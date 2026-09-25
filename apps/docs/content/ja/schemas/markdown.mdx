@@ -1,0 +1,54 @@
+---
+title: Markdown
+description: "`langdrift` フロントマターのエンベロープと、その厳格な解析動作です。"
+---
+
+# Markdown
+
+9 つの文書ファミリーは、YAML フロントマターの名前空間を使います。
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Product Vision ダッシュボード
+  owners: [user_42]
+  research: [RES-002]
+  vision_targets: [VT-001]
+---
+
+# Product Vision ダッシュボード
+
+豊かな Markdown の文脈は本文に残ります。
+```
+
+解析されたペイロードは、次のとおりです。
+
+```ts
+{
+  metadata: ArtifactMetadata
+  body: string
+}
+```
+
+`type`、`schema_version`、`id`、`title`、`owners` は必須です。ID は、空白を含まない空でない文字列です。`owners` は、埋め込まれたユーザープロフィールではなく、識別子です。
+
+任意の構造化メタデータには、次のものが含まれます。
+
+- `description`、`summary`、`status`、`scope`、`tags`
+- `deciders`、`questions`、タイムスタンプ
+- `research`、`prds`、`specs`、`vision_targets` のような、型付きの関係配列
+- 一般的な `references`、`supersedes`、`superseded_by`
+- `external` のプロバイダー識別子
+
+`langdrift` 内の未知のフィールドは拒否されます。`langdrift` 名前空間の外にあるルートレベルの YAML は、プロトコルのメタデータではなく、`parseArtifact` はこれを無視します。
+
+## パーサーの規則
+
+フロントマターの区切りは、任意の UTF-8 バイト順マークを除き、ファイルの先頭から始まらなければなりません。パーサーは、不正な YAML、カスタムタグ、重複キー、エイリアス、スキーマに合わないメタデータを拒否します。
+
+本文は、閉じる区切りの直後から始まります。Unicode と元の改行は保持され、本文のテキストは実行されません。見出し、文章、ファイル名は、識別子を与えたり、欠けているメタデータを補ったりしません。関係も、構造化メタデータからのみ取得されます。
+
+Record と Drift Event のエンベロープは、この Markdown のラッパーを使いません。JSON から直接検証されます。

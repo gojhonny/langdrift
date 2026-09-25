@@ -1,0 +1,74 @@
+---
+title: Artefatos
+description: Locais de artefato pertencentes ao pacote, regras de análise e descoberta determinística limitada.
+---
+
+# Artefatos
+
+Um artefato tem metadados validados, um caminho de origem, referências
+explícitas e um nome de recurso. Artefatos Markdown também conservam o texto
+do corpo.
+
+## Locais pertencentes ao pacote
+
+A versão 1 do protocolo descobre somente estes globs recursivos de origem:
+
+- Vision: `research/**/*.md`, `prd/**/*.md` e `context/**/*.md`
+- Loop: `triage/**/*.md`, `design-document/**/*.md`, `spec/**/*.md` e
+  `ticket/**/*.md`
+- Evidence: `adr/**/*.md`, `audit/**/*.md`, `record/**/*.json` e
+  `drift/**/*.json`
+
+Todo glob tem raiz em `.drifts/<pillar>/`. Caminhos aninhados de audit, como
+`evidence/audit/runs` e `evidence/audit/reports`, são cobertos pelo glob de
+audit. Globs de origem arbitrários não são suportados.
+
+Markdown é usado nas nove famílias de documentos. Envelopes de Record e de
+Drift Event usam JSON. Durante a descoberta, o `type` dos metadados precisa
+corresponder ao diretório de origem.
+
+## Análise
+
+```ts
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+```
+
+`parseArtifact` aceita caminhos `.md` e `.json`. Valida os metadados, deriva o
+recurso do pilar, como `vision.prd`, reúne referências explícitas e retorna o
+caminho original do artefato.
+
+Em Markdown, `body` é o texto após o delimitador de fechamento do frontmatter.
+Em Records e Drift Events JSON, `body` fica vazio. Extensões não suportadas,
+entrada malformada, frontmatter ausente ou um artefato maior que 1 MiB
+produzem `LangDriftError` com o código `ARTIFACT_INVALID`.
+
+## Descoberta
+
+```ts
+await discoverArtifacts(root, {
+  maxFiles: 1000,
+  maxDirectories: 1000
+})
+```
+
+Os dois limites têm padrão `1000` e precisam ser inteiros seguros positivos.
+O chamador pode escolher limites diferentes de forma explícita. As leituras de
+arquivo são limitadas a 1 MiB.
+
+A descoberta:
+
+- visita somente os locais `.drifts` declarados pelo pacote
+- ordena as entradas de diretório antes de processá-las
+- ignora entradas com prefixo de ponto e `node_modules`
+- ignora diretórios de artefato que não existem
+- rejeita links simbólicos em vez de segui-los
+- rejeita travessia ascendente, caminhos absolutos, barras invertidas,
+  caracteres de controle, segmentos de caminho ocultos e diretórios de
+  dependência
+
+Ela não percorre o repositório inteiro. Os resultados são determinísticos para
+um sistema de arquivos inalterado: os locais do pacote têm uma ordem declarada
+e cada diretório é percorrido em ordem classificada.
+
+O conteúdo local do projeto não deve ser alterado por um processo não
+confiável enquanto estiver sendo inspecionado.

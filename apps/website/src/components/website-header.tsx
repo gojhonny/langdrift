@@ -1,27 +1,40 @@
 'use client'
 
 import { Brand } from '@repo/react/ui/brand'
+import {
+  LANGDRIFT_LOCALE_LABELS,
+  LANGDRIFT_LOCALES,
+  LanguageSwitcher,
+  type LangdriftLocale
+} from '@repo/react/ui/language-switcher'
 import { useAtom } from 'jotai'
 import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
-import { websiteLinks } from '../app/app-links'
+import { docsUrlForLocale } from '../app/app-links'
 import { Link, usePathname, useRouter } from '../i18n/navigation'
+import { localePath, type WebsiteLocale } from '../i18n/routing'
 import { themeAtom } from '../state'
 
 import './website-header.css'
 
-const languages = [
-  { locale: 'en', label: 'EN', name: 'english' },
-  { locale: 'pt-BR', label: 'PT-BR', name: 'portuguese' },
-  { locale: 'zh-Hant', label: '中文', name: 'chinese' },
-  { locale: 'ja', label: 'あ', name: 'japanese' }
-] as const
+const languageMessageKey = {
+  en: 'english',
+  'pt-BR': 'portuguese',
+  'zh-Hant': 'chinese',
+  ja: 'japanese'
+} as const satisfies Record<LangdriftLocale, string>
 
 // Only set by a drawer interaction in the browser; survives the locale route
 // remount long enough to return focus to the replacement navigation trigger.
-let pendingDrawerFocusLocale: (typeof languages)[number]['locale'] | undefined
+let pendingDrawerFocusLocale: LangdriftLocale | undefined
+
+function websiteHref(locale: WebsiteLocale, pathname: string, suffix: string) {
+  const prefix = localePath[locale]
+  if (pathname === '/') return `${prefix === '/' ? '/' : prefix}${suffix}`
+  return `${prefix === '/' ? '' : prefix}${pathname}${suffix}`
+}
 
 const sections = [
   { label: 'product', href: '/#why' },
@@ -31,8 +44,12 @@ const sections = [
   { label: 'plans', href: '/pricing' }
 ] as const
 
-function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
-  const locale = useLocale()
+function WebsiteLanguageSwitcher({
+  fromDrawer = false
+}: {
+  fromDrawer?: boolean
+}) {
+  const locale = useLocale() as WebsiteLocale
   const t = useTranslations('header')
   const pathname = usePathname()
   const router = useRouter()
@@ -53,18 +70,8 @@ function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
 
   function selectLanguage(
     event: MouseEvent<HTMLAnchorElement>,
-    nextLocale: (typeof languages)[number]['locale']
+    nextLocale: LangdriftLocale
   ) {
-    if (
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    ) {
-      return
-    }
-
     event.preventDefault()
     if (fromDrawer && nextLocale !== locale) {
       pendingDrawerFocusLocale = nextLocale
@@ -76,34 +83,30 @@ function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
   }
 
   return (
-    <nav aria-label={t('language')} className="website-locale-pill">
-      {languages.map((language) => (
-        <Link
-          aria-current={locale === language.locale ? 'page' : undefined}
-          aria-label={t(`languages.${language.name}`)}
-          className="website-locale-link"
-          href={`${pathname}${urlSuffix}`}
-          hrefLang={language.locale}
-          key={language.locale}
-          locale={language.locale}
-          onClick={(event) => selectLanguage(event, language.locale)}
-          scroll={false}
-        >
-          {language.label}
-        </Link>
-      ))}
-    </nav>
+    <LanguageSwitcher
+      activeLocale={locale}
+      label={t('language')}
+      onSelect={selectLanguage}
+      options={LANGDRIFT_LOCALES.map((item) => ({
+        ariaLabel: t(`languages.${languageMessageKey[item]}`),
+        href: websiteHref(item, pathname, urlSuffix),
+        hrefLang: item,
+        label: LANGDRIFT_LOCALE_LABELS[item],
+        locale: item
+      }))}
+    />
   )
 }
 
 function AccessLinks({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('header')
+  const locale = useLocale() as WebsiteLocale
 
   return (
     <>
       {/* Docs is an external, environment-configured origin: a plain anchor
           keeps the i18n router from prefixing or rewriting it. */}
-      <a className="website-docs-link" href={websiteLinks.docs}>
+      <a className="website-docs-link" href={docsUrlForLocale(locale)}>
         {t('docs')}
       </a>
       <Link
@@ -119,7 +122,7 @@ function AccessLinks({ onNavigate }: { onNavigate?: () => void }) {
 
 export function WebsiteHeader() {
   const t = useTranslations('header')
-  const locale = useLocale()
+  const locale = useLocale() as WebsiteLocale
   const [theme, setTheme] = useAtom(themeAtom)
   const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -214,7 +217,7 @@ export function WebsiteHeader() {
           </nav>
           <div className="website-header-controls">
             <div className="website-header-access">
-              <LanguagePill />
+              <WebsiteLanguageSwitcher />
               <AccessLinks />
             </div>
             <button
@@ -281,7 +284,7 @@ export function WebsiteHeader() {
           ))}
         </nav>
         <div className="website-drawer-access">
-          <LanguagePill fromDrawer />
+          <WebsiteLanguageSwitcher fromDrawer />
           <div className="website-drawer-buttons">
             <AccessLinks onNavigate={closeDrawer} />
           </div>

@@ -1,0 +1,72 @@
+---
+title: Segurança e conflitos
+description: Execuções simuladas, regras de preservação, tratamento de conflitos e recuperação do setup.
+---
+
+# Segurança e conflitos
+
+O setup é aditivo e não destrutivo. Ele planeja cada arquivo gerenciado antes
+que uma execução normal grave qualquer coisa.
+
+## Pré-visualização
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run \
+  --json
+```
+
+O resultado atribui a cada caminho gerenciado um status:
+
+- `create` — o arquivo está ausente e seria criado
+- `preserve` — o JSON analisado já é igual ao valor esperado
+- `conflict` — o destino não pode ser reutilizado nem criado com segurança
+
+Uma execução simulada valida e devolve esse plano sem gravar. Seu valor
+`changed` é `false`, inclusive quando arquivos seriam criados.
+
+## Preservação e conflitos
+
+A comparação de JSON ignora espaço em branco e a ordem das chaves do objeto.
+Arquivos correspondentes são preservados byte a byte, inclusive formatação e
+timestamps. Arquivos existentes nunca são sobrescritos.
+
+Os conflitos incluem:
+
+- JSON malformado ou truncado
+- um arquivo regular cujo valor analisado difere do projeto solicitado ou do
+  schema incluído
+- uma versão de protocolo não suportada
+- um destino que não é um arquivo regular
+- um pai obrigatório que não é um diretório
+- um link simbólico em qualquer ponto de um caminho gerenciado
+- uma configuração de integração alterada em um projeto existente
+
+Se a pré-verificação encontrar qualquer conflito, o setup não grava nada,
+mesmo quando outros arquivos gerenciados estão ausentes. Revise manualmente
+os motivos de cada arquivo.
+
+O caminho legado `.drifts/execution` é sempre um conflito. A versão 0.1.0 usa
+`.drifts/loop` e não migra, renomeia, mescla nem remove um layout legado.
+
+## Gravações e novas execuções
+
+Arquivos ausentes são criados com criação exclusiva e sem seguir links
+simbólicos. Se um destino aparecer depois da pré-verificação, o setup o
+preserva quando o conteúdo analisado corresponde. Caso contrário, falha com
+`SETUP_CONCURRENT_CHANGE`.
+
+Uma nova execução sem mudanças informa somente `preserve` e retorna
+`changed: false`. Schemas obrigatórios ausentes são recriados em uma execução
+segura posterior.
+
+A sequência de gravação não é uma transação de sistema de arquivos. Se ocorrer
+uma falha de E/S ou de mudança concorrente depois que um ou mais arquivos
+tiverem sido criados, esses arquivos podem permanecer. O conteúdo existente
+continua sem ser sobrescrito. Inspecione o plano informado, revise qualquer
+arquivo inválido e execute o setup novamente para reparar os arquivos ausentes
+restantes.

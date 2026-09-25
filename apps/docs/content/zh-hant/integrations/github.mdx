@@ -1,0 +1,43 @@
+---
+title: GitHub
+description: 把明確的已合併拉取請求固定資料，確定性地對應成 Record。
+---
+
+# GitHub
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+```
+
+對應器接受已經取得的資料。事件必須描述具名 `owner/repository` 中一筆已關閉且已合併的拉取請求，並帶有數值拉取請求身分、作者、時間戳，以及 head 與 base 分支參照。選用細節包含明確的提交與檔案事實。
+
+產生的 Record 使用：
+
+- `kind: 'github.pull_request.merged'`
+- 來自 `merged_at` 的 `occurred_at`
+- 以儲存庫與拉取請求資料庫 ID 作為來源身分
+- 穩定 ID 來自
+  `recordId('github', 'pull_request', '<pull-request-id>:merged')`
+- 呼叫端提供的產物參照保持不變
+
+拉取請求作者是頂層行動者。若合併者是另一個人，會加入為第二個行動者。`type` 恰好為 `Bot` 的 GitHub 使用者會對應為代理程式；其他使用者對應為人類。外部行動者 ID 的形式是 `github:<numeric-id>`。
+
+Record 的 `data` 包含拉取請求編號、標題、狀態、作者、選用的合併者、建立、更新與合併時間戳，以及 head 與 base 的 ref 與 SHA。若輸入中存在，也會包含標籤名稱、被要求審查者的行動者參照、作為 `url` 的 `html_url` 值、提交，以及帶有狀態、新增數與刪除數的變更檔名。
+
+對應器會驗證事件與選用細節，然後委派給
+`createRecord`。無效輸入會拋出代碼為
+`ARTIFACT_INVALID` 的 `LangDriftError`。
+
+它不會：
+
+- 接收 webhook 或呼叫 GitHub API
+- 進行身分驗證或安裝 GitHub App
+- 擷取提交、檔案、使用者或審查
+- 從散文擷取規格或工作單連結
+- 推斷影響、Vision 目標或 Drift
+
+GitHub 事實會成為 Record。任何 Drift Event 仍是由 Evidence 支持的另一項明確解讀。

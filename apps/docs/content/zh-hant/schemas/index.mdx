@@ -1,0 +1,42 @@
+---
+title: 結構描述
+description: 用於專案、文件、Record 與 Drift Event 的帶版本 JSON Schema 定義。
+---
+
+# 結構描述
+
+協定版本 `1` 使用 JSON Schema Draft 2020-12：
+
+```text
+https://json-schema.org/draft/2020-12/schema
+```
+
+標準模型恰好有三根支柱：
+
+- **Vision** — `research`、`prd`、`context`
+- **Loop** — `triage`、`design-document`、`spec`、`ticket`
+- **Evidence** — `adr`、`audit`、`record`、`drift`
+
+Drift 是 Evidence 類型，不是支柱。前九種類型是 Markdown 文件家族。Record 與 Drift Event 是 JSON 封套。
+
+## 匯出
+
+`@langdrift/sdk/schema` 匯出：
+
+- `SCHEMA_VERSION`，目前是字面值 `1`
+- `schemas`，每種產物類型一份結構描述
+- `projectSchema`
+- `pillarSchemas.vision`、`.loop` 與 `.evidence`
+- `artifactPillars`，類型到支柱的對應
+
+每份支柱結構描述都嵌入它需要的定義與產物形狀，因此產生的結構描述檔是自足的。
+
+## 驗證行為
+
+結構描述要求明確的 `schema_version: 1`。產物 ID 非空，且不含空白。Markdown 中繼資料要求 `type`、`schema_version`、`id`、`title`，以及至少一個 `owner`。Record、Drift Event、參照、行動者與專案欄位分別定義。
+
+若協定定義了封閉形狀，物件會拒絕未知屬性。驗證器不會強制轉換類型、套用預設值、移除欄位，或遷移不支援的版本。格式檢查涵蓋 `date`、`date-time`，以及其他協定專用字串。
+
+`x-langdrift` 是放在標準 JSON Schema 斷言旁邊的協定指引。它記錄文件類型、版本、套件擁有的來源路徑模式、前置資料命名空間與必填欄位、參照關係、支柱，以及承載資料資源等資訊。一般的 JSON Schema 驗證器可以忽略這個擴充；LangDrift 用它來描述解讀。
+
+這些結構描述描述可攜的輸入。它們不定義 Product Vision 公式，也不證明後端、整合或 MCP 伺服器存在。

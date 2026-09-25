@@ -1,0 +1,57 @@
+---
+title: Documentação do LangDrift
+description: O protocolo local, o SDK e as ferramentas de setup para descrever a mudança do produto em relação à intenção registrada.
+---
+
+# Documentação do LangDrift
+
+O LangDrift define um protocolo determinístico para conectar a direção pretendida
+do produto, o trabalho que se segue e a evidência deixada pela mudança.
+
+<Callout type="info">
+**Não publicado.** `@langdrift/sdk` e `@langdrift/setup` são candidatos a
+lançamento da versão `0.1.0`. Os caminhos documentados de `npx` e de importação
+dos pacotes são interfaces pretendidas, e não pacotes atualmente disponíveis
+no npm.
+</Callout>
+
+## Comece por aqui
+
+- [Configure o menor projeto local](/getting-started)
+- [Crie um primeiro artefato](/getting-started/first-artifact)
+- [Entenda Vision → Loop → Evidence](/concepts/vision-loop-evidence)
+- [Acompanhe um Record até um Drift Event](/concepts/records-and-drift)
+- [Veja o que significa determinístico em primeiro lugar](/concepts/deterministic-first)
+
+## O protocolo em resumo
+
+O modelo canônico é **Vision → Loop → Evidence**.
+
+- **Vision** registra a direção pretendida por meio de pesquisas, PRDs e contexto.
+- **Loop** conecta essa direção à triagem, aos documentos de design, às specs e
+  aos tickets.
+- **Evidence** reúne ADRs, auditorias, Records normalizados e Drift Events.
+
+Um **Record** é um fato observado normalizado. Um **Drift Event** é uma
+interpretação do movimento observado em relação a um Vision Target, sustentada
+por Evidence. O Drift deriva do Loop; não constitui um quarto pilar.
+
+## Limites atuais
+
+<Callout type="info">
+**Implementado.** O SDK oferece schemas versionados, validação local estrita,
+descoberta de artefatos, resolução explícita de referências, construtores de
+Record e de Drift, construção de payloads e interfaces de transporte injetadas.
+
+**Conceito.** Product Vision deve ser explicável, decomponível e auditável. A
+fórmula não é definida pelo SDK atual.
+
+**Ainda não conectado.** Não há backend LangDrift em execução, servidor MCP
+incluído no pacote, envio automático nem adaptador Linear ou Obsidian em
+funcionamento. O SDK não inclui um LLM; as aplicações fornecem o sistema
+interpretativo e o transporte.
+</Callout>
+
+O setup é local, explícito e não destrutivo, e não faz requisições de rede.
+Os IDs de projeto e de conta são metadados de roteamento; criar o esqueleto
+local não cria nem autoriza uma conta remota.

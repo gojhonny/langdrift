@@ -9,7 +9,7 @@ Import the public entries declared in `package.json`:
 - `@repo/react/ui/product-vision-curve` and `@repo/react/ui/drift-curve` — Product Vision movement
 - `@repo/react/ui/agent-orb` — Voice Orb
 - `@repo/react/ui/brand`, `@repo/react/ui/metric`, `@repo/react/ui/status-pill`
-- `@repo/react/ui/theme-toggle`, `@repo/react/ui/target-distribution-chart`
+- `@repo/react/ui/theme-toggle`, `@repo/react/ui/language-switcher`, `@repo/react/ui/target-distribution-chart`
 - `@repo/react/ui/icons` and `@repo/react/ui/icons/server`
 - `@repo/react/ui/ai-avatars`
 - `@repo/react/utilities` — `cn`

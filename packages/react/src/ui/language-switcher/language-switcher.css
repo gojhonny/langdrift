@@ -1,0 +1,53 @@
+.ld-language-switcher {
+  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--ld-surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ld-hairline) 80%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--ld-ink) 8%, transparent);
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.15rem;
+  padding: 0.2rem;
+}
+
+.ld-language-switcher__option {
+  align-items: center;
+  background: transparent;
+  border-radius: 999px;
+  color: var(--ld-muted);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 650;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  min-block-size: 1.7rem;
+  padding-inline: 0.7rem;
+  text-decoration: none;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+  white-space: nowrap;
+}
+
+.ld-language-switcher__option[aria-current='page'] {
+  background: color-mix(in srgb, var(--ld-bg) 88%, transparent);
+  color: var(--ld-ink);
+}
+
+.ld-language-switcher__option:hover,
+.ld-language-switcher__option:focus-visible {
+  color: var(--ld-ink);
+}
+
+@media (width < 768px) {
+  .ld-language-switcher__option {
+    font-size: 0.68rem;
+    padding-inline: 0.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld-language-switcher__option {
+    transition: none;
+  }
+}

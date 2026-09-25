@@ -1,0 +1,67 @@
+---
+title: Markdown
+description: O envelope de frontmatter langdrift e seu comportamento estrito de análise.
+---
+
+# Markdown
+
+As nove famílias de documentos usam um namespace de frontmatter YAML:
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Painel de Product Vision
+  owners: [user_42]
+  research: [RES-002]
+  vision_targets: [VT-001]
+---
+
+# Painel de Product Vision
+
+O contexto rico em Markdown permanece no corpo.
+```
+
+O payload analisado é:
+
+```ts
+{
+  metadata: ArtifactMetadata
+  body: string
+}
+```
+
+`type`, `schema_version`, `id`, `title` e `owners` são obrigatórios. IDs são
+strings não vazias sem espaço em branco; owners são identificadores, e não
+perfis de usuário incorporados.
+
+Os metadados estruturados opcionais incluem:
+
+- `description`, `summary`, `status`, `scope` e `tags`
+- `deciders`, `questions` e timestamps
+- arrays de relação tipados, como `research`, `prds`, `specs` e
+  `vision_targets`
+- `references`, `supersedes` e `superseded_by` gerais
+- uma identidade de provedor em `external`
+
+Campos desconhecidos dentro de `langdrift` são rejeitados. YAML de nível raiz
+fora do namespace `langdrift` não é metadado do protocolo e é ignorado por
+`parseArtifact`.
+
+## Regras do parser
+
+O delimitador de frontmatter precisa iniciar o arquivo, exceto por uma marca
+de ordem de bytes UTF-8 opcional. O parser rejeita YAML malformado, tags
+personalizadas, chaves duplicadas, aliases e metadados inválidos para o
+schema.
+
+O corpo começa imediatamente após o delimitador de fechamento. Unicode e as
+quebras de linha originais são preservados, e o texto do corpo não é
+executado. Títulos, prosa e nomes de arquivo não fornecem identidade nem
+preenchem metadados ausentes. As relações também são obtidas somente dos
+metadados estruturados.
+
+Envelopes de Record e de Drift Event não usam esse invólucro Markdown. São
+validados diretamente a partir de JSON.

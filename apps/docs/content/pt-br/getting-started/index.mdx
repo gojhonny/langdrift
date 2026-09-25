@@ -1,0 +1,68 @@
+---
+title: Primeiros passos
+description: Crie o menor esqueleto local do protocolo LangDrift em um repositório existente.
+---
+
+# Primeiros passos
+
+O setup do LangDrift exige Node.js 24 ou posterior e um diretório de projeto
+existente. De dentro de um repositório Git, o comando pode descobrir a raiz
+mais próxima do repositório, então a flag `--root` não é necessária.
+
+<Callout type="info">
+**Não publicado.** O comando `npx` a seguir é a interface pretendida depois
+que `@langdrift/setup` for publicado. Hoje, use uma cópia instalada localmente
+do pacote e invoque o binário `langdrift` pelo gerenciador de pacotes desse
+projeto.
+</Callout>
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+Fora de um repositório Git, passe um diretório existente explícito com
+`--root /path/to/product`. Os IDs de projeto e de conta são metadados de
+roteamento; o setup não cria uma conta nem autentica nenhum dos IDs.
+
+## Arquivos gerados
+
+Um setup novo cria exatamente estes arquivos do protocolo:
+
+```text
+.drifts/project.json
+.drifts/vision/schema.json
+.drifts/loop/schema.json
+.drifts/evidence/schema.json
+```
+
+Os diretórios de artefato são criados depois, à medida que os documentos são
+adicionados. O setup não gera artefatos provisórios, código de integração nem
+configuração de agente.
+
+## Setup seguro e local
+
+Pré-visualize o plano completo de arquivos antes de gravar:
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run
+```
+
+O setup classifica cada destino gerenciado como `create`, `preserve` ou
+`conflict`. Cria arquivos ausentes, preserva arquivos correspondentes byte a
+byte e nunca sobrescreve conteúdo em conflito. Um conflito na pré-verificação
+impede todas as gravações. O comando não faz requisições de rede e não conecta
+GitHub, Linear, Obsidian, MCP nem um backend LangDrift.
+
+## Continue
+
+- [Crie um primeiro artefato de PRD](/getting-started/first-artifact)
+- [Conheça os pilares do protocolo](/concepts/vision-loop-evidence)
+- [Entenda o trabalho determinístico e o interpretativo](/concepts/deterministic-first)
+- [Revise o comportamento e as opções do setup](/setup)

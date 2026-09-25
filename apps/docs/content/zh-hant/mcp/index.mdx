@@ -1,0 +1,84 @@
+---
+title: 承載資料與傳輸
+description: 已驗證的承載資料封套、來源出處、憑證，以及注入的傳輸界線。
+---
+
+# 承載資料與傳輸
+
+<Callout type="info">
+  **尚未連接。** SDK 定義承載資料與傳輸介面。它不包含正式環境 MCP 伺服器，也不證明其存在。
+</Callout>
+
+## 封套
+
+```ts
+interface PayloadEnvelope {
+  schema_version: 1
+  account_id: string
+  project_id: string
+  resource: string
+  resource_id: string
+  source: PayloadSource
+  references: ArtifactRef[]
+  payload: JsonObject
+}
+```
+
+`account_id` 與 `project_id` 來自已驗證的專案。它們為承載資料提供路由與情境；它們不是憑證，也不授予存取權。`resource` 是支柱與類型，例如 `vision.prd`，`resource_id` 是產物或事件 ID。
+
+對 Markdown 產物而言，`payload` 是 `{ metadata, body }`。Record 與 Drift
+Event 的承載資料是它們已驗證的 JSON 封套。`references` 是從已驗證輸入衍生的明確參照。
+
+## 來源出處
+
+`PayloadSource.kind` 是下列其中之一：
+
+- `markdown` — 需要安全的相對 `path`
+- `json` — 需要安全的相對 `path`
+- `integration` — 需要 `integration` 與 `external_id`
+
+已解析的產物會依路徑推斷 `markdown` 或 `json`。直接提供的 Record 會推斷其整合來源。直接提供的 Drift Event 沒有來源欄位，因此呼叫端必須明確提供來源出處。
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+```
+
+來源物件會拒絕多餘欄位與無效組合。檔案出處使用與本機產物相同的相對路徑語法限制。
+
+## 注入的傳輸
+
+```ts
+interface PayloadTransport {
+  send(
+    payload: PayloadEnvelope,
+    context: { authorization: string }
+  ): Promise<{ correlationId?: string }>
+}
+```
+
+`sendPayload` 會驗證並建構封套、解析憑證，然後叫用這個由呼叫端提供的介面。它不會選擇端點或協定拓撲。
+
+憑證使用 `env:NAME` 參照。`resolveCredential` 在執行期讀取值，並拒絕缺少的值，或包含換行或空位元組的值。憑證在傳輸情境中分開傳遞，絕不會納入承載資料封套。
+
+```ts
+await sendPayload(project, input, transport, {
+  credentialRef: 'env:LANGDRIFT_TOKEN',
+  source
+})
+```
+
+SDK 不提供 HTTP 用戶端、持久化、批次處理、背景佇列、自動重試或自動上傳。請不要把密鑰放進 Markdown 本文與 Record 資料，因為那些欄位屬於承載資料內容。
+
+## 傳輸錯誤
+
+注入的配接器可以拋出 `TransportError(status)`。`sendPayload` 的對應是：
+
+- `401` 或 `403` 對應到 `REMOTE_UNAUTHORIZED`
+- 其他 `4xx` 狀態對應到 `REMOTE_REJECTED`
+- 所有其他傳輸失敗對應到 `MCP_UNAVAILABLE`
+
+這些會成為 `LangDriftError` 值。原始遠端回應本文、堆疊與憑證不會被轉送。無法使用的傳輸資料不會在本機排入佇列；任何重試都必須明確進行。

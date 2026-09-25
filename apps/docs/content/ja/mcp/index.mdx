@@ -1,0 +1,83 @@
+---
+title: ペイロードとトランスポート
+description: 検証済みのペイロードエンベロープ、ソースの来歴、認証情報、および注入されたトランスポートの境界です。
+---
+
+# ペイロードとトランスポート
+
+<Callout type="info">
+  **まだ接続されていません。** SDK はペイロードとトランスポートのインターフェースを定義します。本番の MCP サーバーを含まず、その存在を証明もしません。
+</Callout>
+
+## エンベロープ
+
+```ts
+interface PayloadEnvelope {
+  schema_version: 1
+  account_id: string
+  project_id: string
+  resource: string
+  resource_id: string
+  source: PayloadSource
+  references: ArtifactRef[]
+  payload: JsonObject
+}
+```
+
+`account_id` と `project_id` は、検証済みのプロジェクトから得られます。これらはペイロードをルーティングし、文脈を与えます。認証情報ではなく、アクセスを認可しません。`resource` は柱と型であり、たとえば `vision.prd` です。`resource_id` はアーティファクトまたはイベントの ID です。
+
+Markdown アーティファクトの場合、`payload` は `{ metadata, body }` です。Record と Drift Event のペイロードは、検証済みの JSON エンベロープです。`references` は、検証済みの入力から導出された明示的な参照です。
+
+## ソースの来歴
+
+`PayloadSource.kind` は、次のいずれかです。
+
+- `markdown` — 安全な相対 `path` が必要です
+- `json` — 安全な相対 `path` が必要です
+- `integration` — `integration` と `external_id` が必要です
+
+解析済みアーティファクトは、パスから `markdown` または `json` を推測します。直接の Record は、その連携ソースを推測します。直接の Drift Event にはソースフィールドがないため、呼び出し元がソースの来歴を明示的に渡す必要があります。
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+```
+
+ソースオブジェクトは、余分なフィールドと無効な組み合わせを拒否します。ファイルの来歴は、ローカルアーティファクトと同じ相対パスの構文制限を使います。
+
+## 注入されたトランスポート
+
+```ts
+interface PayloadTransport {
+  send(
+    payload: PayloadEnvelope,
+    context: { authorization: string }
+  ): Promise<{ correlationId?: string }>
+}
+```
+
+`sendPayload` はエンベロープを検証して構築し、認証情報を解決し、呼び出し元が渡したこのインターフェースを呼び出します。エンドポイントやプロトコルのトポロジは選びません。
+
+認証情報は `env:NAME` 参照を使います。`resolveCredential` は実行時に値を読み、欠落した値、または改行やヌルバイトを含む値を拒否します。認証情報はトランスポートのコンテキストで別に渡され、ペイロードエンベロープには含まれません。
+
+```ts
+await sendPayload(project, input, transport, {
+  credentialRef: 'env:LANGDRIFT_TOKEN',
+  source
+})
+```
+
+SDK は、HTTP クライアント、永続化、バッチ処理、バックグラウンドキュー、自動再試行、自動アップロードを提供しません。Markdown の本文と Record の `data` はペイロードの内容になるため、秘密情報をそこに置かないでください。
+
+## トランスポートのエラー
+
+注入されたアダプターは `TransportError(status)` を送出できます。`sendPayload` は次のように対応付けます。
+
+- `401` または `403` を `REMOTE_UNAUTHORIZED` へ
+- その他の `4xx` ステータスを `REMOTE_REJECTED` へ
+- それ以外のトランスポート失敗を `MCP_UNAVAILABLE` へ
+
+これらは `LangDriftError` の値になります。リモートレスポンスの生の本文、スタック、認証情報は転送されません。利用できないトランスポートのデータはローカルにキューへ入りません。再試行はいずれも明示的です。

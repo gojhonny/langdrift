@@ -1,0 +1,49 @@
+---
+title: 最初のアーティファクト
+description: 識別子と関係は明示的なまま、文脈は Markdown のままになる PRD を追加します。
+---
+
+# 最初のアーティファクトを作成する
+
+Markdown のアーティファクトは、パッケージが定義した `.drifts` パスの下に置きます。次のようなパス、たとえば `.drifts/vision/prd/product-vision-dashboard.md` に、この PRD を追加します。
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Product Vision ダッシュボード
+  owners:
+    - user_42
+  research:
+    - RES-001
+  vision_targets:
+    - VT-001
+---
+
+# Product Vision ダッシュボード
+
+## 目的
+
+記録された製品の意図に対する動きを、経営層が監査できる形で確認できるようにします。
+
+## 未解決の問い
+
+- それぞれの変化を、どのソースの観測が支えているか
+- その動きを、どの意思決定が説明しているか
+```
+
+`langdrift` フロントマターは、決定論的なエンベロープです。
+
+- `type` と `id` が、アーティファクトの識別子を定めます。
+- `schema_version` が、プロトコルバージョンを選びます。
+- `title` と、少なくとも 1 つの `owners` 識別子が必須です。
+- `research` は、PRD を `RES-001` に明示的に関係付けます。
+- `vision_targets` は、PRD を `VT-001` に明示的に関係付けます。
+
+Markdown の本文は、人と後続のアプリケーションのための豊かな文脈を運びます。SDK はこれをテキストとして保持します。見出し、文章、ファイル名、リンクから、識別子や関係を推測しません。
+
+SDK は、未知のフロントマターフィールド、不正な YAML、重複キー、エイリアス、未対応のスキーマバージョンを拒否します。参照の解決では、`RES-001` は、検出された `research` アーティファクトに解決されなければなりません。`VT-001` は、明示的に既知の `vision-target` 識別子として渡せます。参照の解決は、リモート検索を行いません。
+
+次に、[Vision → Loop → Evidence](/concepts/vision-loop-evidence) を読むか、[Record から Drift Event まで](/concepts/records-and-drift) をたどってください。

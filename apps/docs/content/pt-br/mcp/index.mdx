@@ -1,0 +1,106 @@
+---
+title: Payloads e transporte
+description: Envelopes de payload validados, proveniência da origem, credenciais e o limite do transporte injetado.
+---
+
+# Payloads e transporte
+
+<Callout type="info">
+  **Ainda não conectado.** O SDK define interfaces de payload e de transporte.
+  Não contém nem comprova a existência de um servidor MCP de produção.
+</Callout>
+
+## Envelope
+
+```ts
+interface PayloadEnvelope {
+  schema_version: 1
+  account_id: string
+  project_id: string
+  resource: string
+  resource_id: string
+  source: PayloadSource
+  references: ArtifactRef[]
+  payload: JsonObject
+}
+```
+
+`account_id` e `project_id` vêm do projeto validado. Eles roteiam e
+contextualizam um payload; não são credenciais e não autorizam acesso.
+`resource` é o pilar e o tipo, como `vision.prd`, e `resource_id` é o ID do
+artefato ou do evento.
+
+Para um artefato Markdown, `payload` é `{ metadata, body }`. Payloads de
+Record e de Drift Event são seus envelopes JSON validados. `references` são as
+referências explícitas derivadas da entrada validada.
+
+## Proveniência da origem
+
+`PayloadSource.kind` é um destes valores:
+
+- `markdown` — exige um `path` relativo seguro
+- `json` — exige um `path` relativo seguro
+- `integration` — exige `integration` e `external_id`
+
+Artefatos analisados inferem `markdown` ou `json` a partir do caminho. Um
+Record direto infere a origem da integração. Um Drift Event direto não tem
+campo de origem, então o chamador precisa fornecer a proveniência da origem de
+forma explícita.
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+```
+
+Objetos de origem rejeitam campos extras e combinações inválidas. A
+proveniência de arquivo usa as mesmas restrições de sintaxe de caminho
+relativo dos artefatos locais.
+
+## Transporte injetado
+
+```ts
+interface PayloadTransport {
+  send(
+    payload: PayloadEnvelope,
+    context: { authorization: string }
+  ): Promise<{ correlationId?: string }>
+}
+```
+
+`sendPayload` valida e constrói o envelope, resolve uma credencial e invoca
+essa interface fornecida pelo chamador. Não escolhe um endpoint nem uma
+topologia de protocolo.
+
+As credenciais usam uma referência `env:NAME`. `resolveCredential` lê o valor
+em tempo de execução e rejeita valores ausentes ou que contenham quebra de
+linha ou byte nulo. A credencial é passada separadamente no contexto de
+transporte e nunca entra no envelope do payload.
+
+```ts
+await sendPayload(project, input, transport, {
+  credentialRef: 'env:LANGDRIFT_TOKEN',
+  source
+})
+```
+
+O SDK não oferece cliente HTTP, persistência, agrupamento em lote, fila em
+segundo plano, nova tentativa automática nem envio automático. Mantenha
+segredos fora dos corpos Markdown e dos dados de Record, porque esses campos
+são conteúdo do payload.
+
+## Erros de transporte
+
+Um adaptador injetado pode lançar `TransportError(status)`. `sendPayload`
+mapeia:
+
+- `401` ou `403` para `REMOTE_UNAUTHORIZED`
+- outros status `4xx` para `REMOTE_REJECTED`
+- todas as outras falhas de transporte para `MCP_UNAVAILABLE`
+
+Esses casos tornam-se valores `LangDriftError`. Corpos brutos de resposta
+remota, rastreamentos de pilha e credenciais não são encaminhados. Dados de um
+transporte indisponível não são enfileirados localmente; qualquer nova
+tentativa é explícita.

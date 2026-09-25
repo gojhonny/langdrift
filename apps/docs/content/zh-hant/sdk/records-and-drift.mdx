@@ -1,0 +1,62 @@
+---
+title: Record 與 Drift
+description: 事實封套、經過解讀的 Drift Event，以及經過驗證的建立 API。
+---
+
+# Record 與 Drift
+
+**Record 是一項事實**，來自已識別的來源。**Drift Event 是一項解讀**，對照 Vision 目標，並由明確的 Evidence 支持。建立 Record 絕不會自動建立 Drift 解讀。
+
+## Record
+
+```ts
+function createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+```
+
+呼叫端提供：
+
+- `id` 與可擴充的 `kind`
+- 作為日期時間的 `occurred_at`
+- `source.integration`、`source.external_id`，以及選用的
+  `source.repository`
+- 人類或代理程式 `actors`
+- 明確的 `references`
+- 包含來源事實、且與 JSON 相容的 `data` 物件
+
+`createRecord` 只會加上 `type: 'record'` 與 `schema_version: 1`，然後驗證完整封套。它不會產生時間戳，也不會擷取來源細節。
+
+若要取得穩定的供應者事件身分，SDK 也匯出：
+
+```ts
+recordId(integration: string, sourceId: string, eventId: string): string
+```
+
+它對有序的三段身分做雜湊，並回傳以 `REC-` 為前綴的 ID。呼叫端應使用不可變的供應者識別碼，而不是標題。
+
+## Drift Event
+
+```ts
+function createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+Drift Event 需要：
+
+- `id` 與 `vision_target_id`
+- `state: 'expected' | 'unexpected'`
+- 帶有 `unit`、`before`、`delta` 與 `after` 的 `impact`
+- 人類或代理程式 `actors`
+- 明確的 `references`
+- 帶版本的 `reasoning`
+- 選用的 `created_at`
+
+影響單位是 `percentage_points`、`ratio` 與 `score_points`。`impact.after` 必須在浮點精度內等於 `impact.before + impact.delta`。
+
+推理方法是 `human`、`deterministic` 與 `llm`。每個 `reasoning.evidence_refs` 項目都必須識別 `references` 中的一個項目。大型語言模型推理另外要求非空的證據清單與 `model`；若存在 `model_version`，也要求 `model`。推理封套使用 `schema_version: 1`。
+
+`createDrift` 只會加上頂層類型與結構描述版本，並驗證結果。它不會決定變更是否為 `expected`、不計算影響、不選擇單位、不尋找 Evidence，也不執行推理引擎。
+
+SDK 刻意不定義 Product Vision 公式。持久化、身分授權與解讀原則屬於另行設計的執行期。

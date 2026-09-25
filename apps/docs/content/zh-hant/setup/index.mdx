@@ -1,0 +1,66 @@
+---
+title: 設定
+description: 為 LangDrift 協定專案進行本機且明確的骨架建立。
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# 設定
+
+<PackageStatus package="setup" />
+
+<Callout type="warning">
+  **尚未發布。** 版本 0.1.0 是發行候選版本。下方命令描述的是本機工作區建置或本機套件安裝中的執行檔，而不是目前可用的公開安裝方式。
+</Callout>
+
+`@langdrift/setup` 公開 `langdrift` 執行檔。設定必須明確：
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+`--root` 必須指名一個已存在的目錄。若省略它，設定會從目前目錄向上搜尋 `.git`。在 Git 儲存庫之外，請傳入 `--root`。
+
+專案與帳戶 ID 是路由與情境中繼資料。設定不會建立帳戶、不會驗證任一個 ID 的身分，也不會授權存取專案。
+
+## 產生的檔案
+
+設定恰好管理四個 JSON 檔案：
+
+```text
+.drifts/
+  project.json
+  vision/schema.json
+  loop/schema.json
+  evidence/schema.json
+```
+
+新的 `project.json` 記錄協定版本 `1`、專案身分、設定套件產生器的來源出處，以及整合組態。LangDrift 在本機為啟用；GitHub、Linear 與 Obsidian 一開始為停用。三份支柱結構描述是來自 `@langdrift/sdk` 的自足複本。
+
+設定不會產生空的產物樹、Markdown 文件、代理程式控管設定或佔位整合。
+
+## 命令選項
+
+- `--root <directory>`
+- `--project-id <id>`
+- `--account-id <id>`
+- `--name <name>`
+- `--github-installation-id <numeric-id>`
+- `--github-repository <owner/repository>`
+- `--linear` 或 `--no-linear`
+- `--obsidian` 或 `--no-obsidian`
+- `--dry-run`
+- `--json`
+- `--help` 或 `-h`
+
+若要建立新組態，兩個 GitHub 值必須一起提供。它們只儲存非密鑰的參照。Linear 與 Obsidian 旗標只儲存選用的介面設定。
+
+若缺少身分值，只有當標準輸入與標準錯誤都是互動式終端機，且未使用 `--json` 時，CLI 才會提示。非互動執行與 JSON 執行則會因缺少的欄位而失敗。
+
+## 本機操作
+
+設定不會發出網路請求、不會接收憑證，也不會連接 GitHub、Linear、Obsidian、MCP 伺服器或後端。此套件沒有 `postinstall` 設定掛鉤。建置或封裝工作區不會執行設定，也不會發布任一個套件。

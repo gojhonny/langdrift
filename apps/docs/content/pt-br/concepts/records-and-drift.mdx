@@ -1,0 +1,117 @@
+---
+title: Records e Drift
+description: Normalize uma mudança observada como um Record e, em seguida, interprete-a em relação a um Vision Target com evidência explícita.
+---
+
+# Records e Drift
+
+Um Record e um Drift Event respondem a perguntas diferentes:
+
+- Um **Record** é um fato observado normalizado.
+- Um **Drift Event** interpreta o movimento observado em relação a um Vision
+  Target e cita a Evidence que sustenta essa interpretação.
+
+## 1. Normalizar um pull request mesclado
+
+Suponha que uma integração tenha observado o pull request `481` do GitHub em
+estado mesclado. O evento normalizado pode ser criado com a forma exata de
+`RecordEvent`:
+
+```ts
+import { createRecord } from '@langdrift/sdk'
+
+const record = createRecord({
+  id: 'REC-001',
+  kind: 'github.pull_request.merged',
+  occurred_at: '2026-09-19T18:00:00Z',
+  source: {
+    integration: 'github',
+    repository: 'example/product',
+    external_id: '9001'
+  },
+  actors: [{ type: 'human', external_id: 'github:12345' }],
+  references: [
+    { type: 'prd', id: 'PRD-001' },
+    { type: 'vision-target', id: 'VT-001' }
+  ],
+  data: {
+    number: 481,
+    title: 'Add Product Vision summary',
+    state: 'closed',
+    author: { type: 'human', external_id: 'github:12345' },
+    created_at: '2026-09-18T10:00:00Z',
+    updated_at: '2026-09-19T18:00:00Z',
+    merged_at: '2026-09-19T18:00:00Z',
+    head: { ref: 'product-vision-summary', sha: 'abc123' },
+    base: { ref: 'main', sha: 'def456' },
+    labels: ['product-vision']
+  }
+})
+```
+
+`createRecord` adiciona `type: 'record'` e `schema_version: 1` e, em seguida,
+valida os fatos fornecidos pelo chamador. Não inventa timestamps, referências
+nem pontuações.
+
+O SDK também oferece `recordFromGitHubPullRequest` para um pull request
+mesclado já validado, no formato de webhook ou de API. Esse auxiliar deriva um
+ID estável de Record por hash a partir da identidade imutável do GitHub e
+mapeia somente campos explícitos do provedor. O `REC-001` legível acima é
+fornecido diretamente neste exemplo.
+
+<Callout type="info">
+**Ainda não conectado.** O auxiliar do GitHub mapeia um evento em memória. Não
+recebe webhooks, não consulta APIs do GitHub, não autentica um app e não
+extrai links de artefato da prosa.
+</Callout>
+
+## 2. Interpretar o movimento
+
+A interpretação nomeia seu alvo, referencia o Record observado e cita esse
+Record como evidência de raciocínio:
+
+```ts
+import { createDrift } from '@langdrift/sdk'
+
+const drift = createDrift({
+  id: 'DRIFT-001',
+  vision_target_id: 'VT-001',
+  state: 'expected',
+  impact: {
+    unit: 'score_points',
+    before: 10,
+    delta: 2,
+    after: 12
+  },
+  actors: [{ type: 'human', id: 'user_42' }],
+  references: [
+    { type: 'record', id: record.id },
+    { type: 'prd', id: 'PRD-001' }
+  ],
+  reasoning: {
+    method: 'human',
+    evidence_refs: [record.id],
+    schema_version: 1
+  }
+})
+```
+
+As relações são explícitas:
+
+- `vision_target_id` identifica o alvo de comparação.
+- `references` liga a interpretação a `REC-001` e a `PRD-001`.
+- `reasoning.evidence_refs` identifica `REC-001` como Evidence de apoio e
+  precisa corresponder a uma entrada em `references`.
+- `actors` atribui a interpretação.
+
+`createDrift` adiciona o tipo do envelope de Drift e a versão do protocolo.
+Verifica se `after` é igual a `before + delta` e se todo ID de evidência
+aparece em `references`. O chamador é responsável pela interpretação, pela
+unidade de impacto e pelos valores; o SDK não calcula uma fórmula de Product
+Vision.
+
+<Callout type="info">
+**Expected não é benéfico.** `expected` indica que o movimento
+corresponde à intenção registrada. `unexpected` indica que não corresponde.
+Nenhum dos dois estados determina se a mudança é útil ou prejudicial.
+</Callout>

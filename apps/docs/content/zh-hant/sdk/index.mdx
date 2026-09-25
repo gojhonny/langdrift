@@ -1,0 +1,54 @@
+---
+title: SDK
+description: LangDrift SDK 的執行期需求、協定範圍與公開進入點。
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# SDK
+
+<PackageStatus package="sdk" />
+
+<Callout type="warning">
+  **尚未發布。** 版本 0.1.0 是此儲存庫中的發行候選版本。它不會被呈現為可安裝的公開套件。
+</Callout>
+
+`@langdrift/sdk` 為標準模型實作協定／結構描述版本 `1`：
+
+**Vision → Loop → Evidence**
+
+Drift 是 Evidence 文件類型，不是第四根支柱。Record 擷取一項事實。Drift Event 是對照 Vision 目標、並由 Evidence 支持的事實解讀。
+
+## 執行期
+
+- Node.js 24 或更新版本
+- 帶有 TypeScript 宣告的 ECMAScript 模組
+- AJV 的 JSON Schema Draft 2020-12 驗證器與 `yaml` 解析器
+- 不依賴 React、後端、資料庫、傳輸或大型語言模型
+
+SDK 驗證並正規化呼叫端提供的資料。它不定義 Product Vision 公式、不計算 Product Vision、不持久化實體，也不做身分與授權決策。
+
+## 進入點
+
+套件資訊清單公開：
+
+- `@langdrift/sdk` — 完整的公開 API，依模組再匯出
+- `@langdrift/sdk/schema` — 結構描述與結構描述常數
+- `@langdrift/sdk/mcp` — 承載資料組裝與注入的傳輸契約
+- `@langdrift/sdk/integrations` — GitHub 對應器與整合介面
+
+根 API 把類型、錯誤、診斷、結構描述、驗證、安全路徑、專案、產物、參照、Record 與 Drift Event、承載資料傳輸，以及整合分組在一起。
+
+## 執行模型
+
+檔案系統操作是非同步的：
+
+- `findRepositoryRoot`
+- `resolveSafePath` 與 `readProjectFile`
+- `loadProject`
+- `discoverArtifacts`
+- `resolveReferences`
+
+解析、驗證、事件建立、承載資料組裝、憑證解析、診斷與 GitHub 對應器是同步的。`sendPayload` 是非同步的，因為它會呼叫注入的傳輸。
+
+驗證是嚴格的。SDK 不會強制轉換值、加入預設值、移除未知欄位，或遷移不支援的結構描述版本。驗證與安全路徑失敗使用 `LangDriftError`，帶有穩定的 `code` 與針對欄位的 `issues`。

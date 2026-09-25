@@ -1,0 +1,63 @@
+---
+title: Determinístico em primeiro lugar
+description: Separe operações reproduzíveis do protocolo da interpretação que pertence ao chamador.
+---
+
+# Determinístico em primeiro lugar
+
+O LangDrift raciocina sobre mudanças, não sobre repositórios. Arquivos de
+repositório são entradas estruturadas; eventos normalizados e suas relações
+explícitas são as unidades usadas para descrever o movimento do produto.
+
+## Trabalho determinístico
+
+Os pacotes atuais implementam operações reproduzíveis:
+
+- validar dados de projeto, artefato, Record e Drift contra JSON Schemas
+  versionados;
+- analisar o frontmatter `langdrift` explícito e preservar o corpo Markdown
+  como texto;
+- descobrir somente locais `.drifts` declarados pelo pacote, em ordem
+  classificada, sem seguir links simbólicos;
+- derivar identidades estáveis de Record quando identidades imutáveis de
+  origem são fornecidas a `recordId`;
+- resolver referências locais e registradas explícitas, sem consultas remotas;
+- construir envelopes de payload com roteamento, proveniência, referências e
+  conteúdo validado;
+- planejar o setup como `create`, `preserve` ou `conflict` e evitar
+  sobrescrever conteúdo existente.
+
+A validação não coage valores, não remove campos desconhecidos, não preenche
+fatos ausentes e não migra versões não suportadas. O setup não faz requisições
+de rede.
+
+<Callout type="info">
+**Implementado.** Esses comportamentos de schema, análise, validação,
+descoberta, referência, payload e setup estão disponíveis no código-fonte do
+candidato a lançamento `0.1.0`.
+</Callout>
+
+## Trabalho interpretativo
+
+Aplicações ou pessoas ainda decidem:
+
+- com qual Vision Target o movimento observado deve ser comparado;
+- se esse movimento é `expected` ou `unexpected`;
+- qual Evidence sustenta a interpretação;
+- qual unidade de impacto e quais valores são adequados;
+- se o raciocínio é `human`, `deterministic` ou `llm`;
+- como Product Vision é calculado e apresentado.
+
+O SDK registra e valida essas decisões fornecidas. Não as torna canônicas.
+
+## Sem dependência de LLM
+
+`@langdrift/sdk` não inclui, não chama e não exige um LLM. Um Drift Event pode
+declarar raciocínio `human`, `deterministic` ou `llm`. Quando `llm` é
+informado, o schema exige um identificador de modelo e pelo menos um ID de
+evidência vinculado; o chamador continua responsável por executar o modelo e
+fornecer uma saída suportada.
+
+O transporte segue o mesmo limite. As aplicações injetam um transporte em
+`sendPayload`; o SDK não oferece backend em execução, endpoint, fila, nova
+tentativa automática nem envio automático.

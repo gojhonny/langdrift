@@ -1,0 +1,31 @@
+---
+title: 連携
+description: 現在のパッケージが持つ機能と、設定と接続の境界です。
+---
+
+import { CapabilityTable } from '../../../components/capability-table'
+
+# 連携
+
+<CapabilityTable />
+
+これらの行は、SDK がエクスポートする `integrationCapabilities` オブジェクトから表示されます。現在のリリース候補に存在するコードを説明するものであり、プロバイダーが利用できることを示すものではありません。
+
+<Callout type="info">
+  **まだ接続されていません。** セットアップはローカルの連携設定を保存できますが、アプリのインストール、プロバイダーの認証、イベントの取り込み、トランスポートの開始は行いません。
+</Callout>
+
+GitHub には、明示的に渡されたマージ済みプルリクエストのフィクスチャに対する、決定論的なマッパーがあります。結果はソースの事実の Record です。自動的な Drift の解釈になることはありません。
+
+LangDrift のトランスポートは、呼び出し元が注入するインターフェースです。このパッケージに、本番のサーバーやクライアントのトポロジは含まれません。
+
+Linear と Obsidian は、現在インターフェースのみの状態です。共通の拡張面は、取り込み専用です。
+
+```ts
+interface RecordSourceAdapter {
+  integration: string
+  readRecords(): AsyncIterable<RecordEvent>
+}
+```
+
+このインターフェースは、プロバイダー認証、書き込み、同期、競合解決、双方向の動作を定義しません。各ランタイム連携は、別に設計し、設定する必要があります。

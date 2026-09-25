@@ -1,0 +1,55 @@
+---
+title: はじめに
+description: 既存のリポジトリに、最小のローカルな LangDrift プロトコルのスキャフォールドを作成します。
+---
+
+# はじめに
+
+LangDrift のセットアップには、Node.js 24 以降と、既存のプロジェクトディレクトリが必要です。Git リポジトリの中から実行すると、コマンドは最も近いリポジトリルートを検出できるため、`--root` フラグは不要です。
+
+<Callout type="info">
+**未公開。** 次の `npx` コマンドは、`@langdrift/setup` が公開されたあとの、意図されたインターフェースです。現時点では、ローカルにインストールしたパッケージのコピーを使い、そのプロジェクトのパッケージマネージャーを通じて `langdrift` バイナリを起動してください。
+</Callout>
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+Git リポジトリの外では、`--root /path/to/product` で既存のディレクトリを明示的に渡してください。プロジェクト ID とアカウント ID はルーティング用のメタデータです。セットアップはアカウントを作成せず、どちらの ID も認証しません。
+
+## 生成されるファイル
+
+新しいセットアップが作成するのは、次のプロトコルファイルだけです。
+
+```text
+.drifts/project.json
+.drifts/vision/schema.json
+.drifts/loop/schema.json
+.drifts/evidence/schema.json
+```
+
+アーティファクトのディレクトリは、ドキュメントが追加されるときに後から作成されます。セットアップは、プレースホルダーのアーティファクト、連携コード、エージェント設定を生成しません。
+
+## 安全なローカルセットアップ
+
+書き込む前に、完全なファイルプランをプレビューします。
+
+```sh
+npx @langdrift/setup setup \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product' \
+  --dry-run
+```
+
+セットアップは、管理対象の各宛先を `create`、`preserve`、`conflict` に分類します。欠けているファイルを作成し、一致するファイルはバイト単位で保持し、競合する内容を上書きすることはありません。プリフライトで競合が見つかると、書き込みはすべて行われません。このコマンドはネットワークリクエストを行わず、GitHub、Linear、Obsidian、MCP、LangDrift のバックエンドには接続しません。
+
+## 次へ
+
+- [最初の PRD アーティファクトを作成する](/getting-started/first-artifact)
+- [プロトコルの柱を学ぶ](/concepts/vision-loop-evidence)
+- [決定論的な処理と解釈の処理を理解する](/concepts/deterministic-first)
+- [セットアップの動作とオプションを確認する](/setup)

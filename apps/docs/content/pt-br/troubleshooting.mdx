@@ -1,0 +1,110 @@
+---
+title: Solução de problemas
+description: Casos atuais de falha do SDK e do setup, com orientação de recuperação baseada em códigos.
+---
+
+# Solução de problemas
+
+Use primeiro o `code` do erro. `LangDriftError.issues` contém caminhos em JSON
+Pointer para falhas de validação. `SetupError.files` e `.fields` identificam
+conflitos de setup e entradas ausentes.
+
+## Carregamento do projeto
+
+### `PROJECT_NOT_FOUND`
+
+Nenhuma raiz `.git` foi encontrada na busca ascendente, ou
+`.drifts/project.json` está ausente. Informe explicitamente a raiz existente
+pretendida ou execute o setup local nesse diretório.
+
+### `PROJECT_INVALID`
+
+O arquivo do projeto é JSON malformado ou não corresponde ao schema do
+projeto. Revise-o manualmente. O setup preserva o conteúdo em conflito e não
+o substitui.
+
+### `SCHEMA_UNSUPPORTED`
+
+Um envelope de evento, artefato, projeto ou raciocínio declara uma versão de
+schema diferente de `1`. Este candidato a lançamento não tem caminho de migração.
+Não altere o número sem revisar os dados em relação ao schema da versão 1.
+
+## Artefatos e referências
+
+### `ARTIFACT_INVALID`
+
+As causas atuais incluem:
+
+- JSON malformado ou frontmatter `langdrift` ausente ou inválido
+- uso incompatível de `.md` / `.json` ou divergência entre tipo e diretório
+- campos desconhecidos ou outra divergência de schema
+- arquivo ou corpo acima de 1 MiB
+- limites de descoberta inválidos ou limites de arquivos e diretórios excedidos
+- identidades locais `(type, id)` duplicadas
+- impacto de Drift inconsistente ou proveniência de Evidence ausente
+- um fixture inválido de pull request mesclado do GitHub
+
+Leia os caminhos dos campos em `issues`. O parser não infere uma identidade
+ausente a partir de um título ou do nome do arquivo.
+
+### `PATH_OUTSIDE_ROOT`
+
+O caminho é absoluto, sobe na árvore, contém um segmento ou caractere proibido,
+ou alcança um link simbólico. Use um caminho relativo comum sob a árvore
+`.drifts` do projeto. A descoberta nunca segue links simbólicos.
+
+## Problemas de referência
+
+`REFERENCE_NOT_FOUND` e `REFERENCE_CYCLE` são retornados em
+`resolveReferences(...).issues`; não são lançados como exceção. Registre uma
+identidade externa explicitamente conhecida, corrija o tipo, o ID ou o caminho
+exatos, ou remova o ciclo local antes do transporte.
+
+## Credenciais e transporte
+
+### `CREDENTIAL_MISSING`
+
+A referência não está no formato `env:NAME`, ou o valor de ambiente está
+ausente ou contém uma quebra de linha ou um byte nulo. Passe apenas uma
+referência e forneça o valor ao ambiente de runtime.
+
+### `REMOTE_UNAUTHORIZED`
+
+O transporte injetado informou `401` ou `403`. Os valores de roteamento
+`account_id` e `project_id` não concedem autorização; revise a credencial de
+runtime e a política do destino.
+
+### `REMOTE_REJECTED`
+
+O transporte injetado informou outro status `4xx`. Revise o envelope validado
+e o contrato do destino.
+
+### `MCP_UNAVAILABLE`
+
+O transporte falhou sem uma resposta `4xx` classificada. Nada é enfileirado
+localmente. Tente novamente somente depois de verificar o adaptador fornecido
+pelo chamador.
+
+## Setup
+
+- `ROOT_INVALID` — `--root` não resolve para um diretório existente.
+- `SETUP_ARGUMENT_MISSING` — informe o ID do projeto, o ID da conta e o nome
+  em uma execução não interativa.
+- `SETUP_ARGUMENT_INVALID` — revise as flags suportadas, as flags booleanas em
+  conflito e o par formado pelo ID numérico de instalação do GitHub mais
+  `owner/repository`.
+- `SETUP_CONFLICT` — inspecione o status e o motivo de cada arquivo. A
+  pré-verificação não gravou nada.
+- `SETUP_PATH_CONFLICT` — um caminho gerenciado é um link simbólico ou tem um
+  pai que não é diretório.
+- `SETUP_CONCURRENT_CHANGE` — um destino mudou depois da pré-verificação e foi
+  preservado.
+- `SETUP_WRITE_FAILED` — uma falha de E/S interrompeu a criação. Arquivos
+  criados antes podem permanecer; inspecione e execute novamente.
+
+`.drifts/execution` é um conflito deliberado porque esta versão usa Loop e não
+executa migração de layout legado.
+
+Para diagnósticos seguros da aplicação, `reportError(error, logger)` emite o
+código, uma mensagem genérica e os problemas de validação. Omite corpos e
+rastreamentos de pilha de exceções desconhecidas.

@@ -1,0 +1,32 @@
+---
+title: 整合
+description: 目前的套件能力，以及組態與連接之間的界線。
+---
+
+import { CapabilityTable } from '../../../components/capability-table'
+
+# 整合
+
+<CapabilityTable />
+
+這些列由 SDK 匯出的
+`integrationCapabilities` 物件呈現。它們描述目前發行候選版本中存在的程式碼，而不是供應者是否可用。
+
+<Callout type="info">
+  **尚未連接。** 設定可以儲存本機整合組態，但不會安裝應用程式、驗證供應者身分、擷取事件或啟動傳輸。
+</Callout>
+
+GitHub 有一個確定性對應器，用於明確提供的已合併拉取請求固定資料。結果是來源事實的 Record。它絕不會是自動的 Drift 解讀。
+
+LangDrift 傳輸是由呼叫端注入的介面。此套件不包含正式環境的伺服器或用戶端拓撲。
+
+Linear 與 Obsidian 目前的狀態是 `interface-only`。共同的擴充表面僅限擷取：
+
+```ts
+interface RecordSourceAdapter {
+  integration: string
+  readRecords(): AsyncIterable<RecordEvent>
+}
+```
+
+此介面不定義供應者身分驗證、寫入、同步、衝突解決或雙向行為。每個執行期整合都必須分別設計與設定。

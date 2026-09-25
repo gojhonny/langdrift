@@ -1,0 +1,58 @@
+---
+title: Primeiro artefato
+description: Adicione um PRD cuja identidade e cujas relações sejam explícitas, enquanto o contexto permanece em Markdown.
+---
+
+# Crie um primeiro artefato
+
+Artefatos Markdown ficam nos caminhos `.drifts` definidos pelo pacote.
+Adicione este PRD em um caminho como
+`.drifts/vision/prd/product-vision-dashboard.md`:
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Painel de Product Vision
+  owners:
+    - user_42
+  research:
+    - RES-001
+  vision_targets:
+    - VT-001
+---
+
+# Painel de Product Vision
+
+## Finalidade
+
+Oferecer à liderança uma visão auditável do movimento em relação à intenção de produto registrada.
+
+## Perguntas em aberto
+
+- Quais observações de origem sustentam cada mudança?
+- Quais decisões explicam o movimento?
+```
+
+O frontmatter `langdrift` é o envelope determinístico:
+
+- `type` e `id` estabelecem a identidade do artefato.
+- `schema_version` seleciona a versão do protocolo.
+- `title` e pelo menos um identificador em `owners` são obrigatórios.
+- `research` relaciona explicitamente o PRD a `RES-001`.
+- `vision_targets` o relaciona explicitamente a `VT-001`.
+
+O corpo Markdown carrega contexto rico para pessoas e aplicações posteriores.
+O SDK o preserva como texto. Não infere identidade nem relações a partir de
+títulos, prosa, nomes de arquivo ou links.
+
+O SDK rejeita campos desconhecidos de frontmatter, YAML malformado, chaves
+duplicadas, aliases e versões de schema não suportadas. Durante a resolução de
+referências, `RES-001` precisa resolver para um artefato de research
+descoberto. `VT-001` pode ser fornecido como uma identidade `vision-target`
+explicitamente conhecida; a resolução de referências não faz consulta remota.
+
+Em seguida, leia [Vision → Loop → Evidence](/concepts/vision-loop-evidence) ou
+acompanhe [um Record até um Drift Event](/concepts/records-and-drift).

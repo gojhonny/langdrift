@@ -25,7 +25,7 @@ Illustrative scores such as `73%` stay labeled as demo data. They do not define 
 - Dashboard (`apps/dashboard`, port 3001) — authenticated analysis. Navigation stays Overview, Evolution, Decisions, People, Reports, then Settings.
 - SSO (`apps/sso`, port 3002) — account, organization, plan or trial, then product setup. Do not invent the auth provider, prices, limits, or billing cadence.
 - Mobile (`apps/mobile`, port 3003) — installed companion. Summary and the Voice Orb come before the full curve.
-- Docs (`apps/docs`, port 3004) — documentation site, deployed on Vercel rather than as a local runtime image.
+- Docs (`apps/docs`, port 3004) — documentation site, deployed on Vercel rather than as a local runtime image. Public docs use the same four locales as the Website. Nextra-generated links stay in the active locale. The public Website origin comes from environment configuration. Decision records stay English-only, and unprefixed `/decisions/*` URLs redirect to the English locale URL.
 - Shared UI — first-party concepts live under `packages/react/src/ui`. SmoothUI, shadcn, and Orbz are implementation foundations.
 
 Open choices that must stay open are listed in [07-open-decisions.ctx.md](07-open-decisions.ctx.md).

@@ -1,0 +1,54 @@
+---
+title: SDK
+description: LangDrift SDK のランタイム要件、プロトコルの範囲、公開エントリーポイントです。
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# SDK
+
+<PackageStatus package="sdk" />
+
+<Callout type="warning">
+  **未公開。** バージョン 0.1.0 は、このリポジトリ内のリリース候補です。インストール可能な公開パッケージとしては示していません。
+</Callout>
+
+`@langdrift/sdk` は、正規モデルについてプロトコルおよびスキーマのバージョン `1` を実装します。
+
+**Vision → Loop → Evidence**
+
+Drift は Evidence のドキュメント型であり、第 4 の柱ではありません。Record は事実を捉えます。Drift Event は、Evidence に裏付けられた、Vision Target に対する事実の解釈です。
+
+## ランタイム
+
+- Node.js 24 以降
+- TypeScript の型宣言を伴う ECMAScript モジュール
+- AJV の JSON Schema Draft 2020-12 バリデーターと、`yaml` パーサー
+- React、バックエンド、データベース、トランスポート、LLM への依存はありません
+
+SDK は、呼び出し元が渡したデータを検証し、正規化します。Product Vision の計算式の定義、Product Vision の算出、エンティティの永続化、識別と認可の決定は行いません。
+
+## エントリーポイント
+
+パッケージマニフェストが公開するのは、次のとおりです。
+
+- `@langdrift/sdk` — モジュールごとに再エクスポートされた、完全な公開 API
+- `@langdrift/sdk/schema` — スキーマとスキーマ定数
+- `@langdrift/sdk/mcp` — ペイロード構築と、注入されたトランスポートの契約
+- `@langdrift/sdk/integrations` — GitHub マッパーと連携インターフェース
+
+ルート API は、型、エラー、診断、スキーマ、検証、安全なパス、プロジェクト、アーティファクト、参照、Record と Drift Event、ペイロードトランスポート、連携をグループ化します。
+
+## 実行モデル
+
+ファイルシステム操作は非同期です。
+
+- `findRepositoryRoot`
+- `resolveSafePath` と `readProjectFile`
+- `loadProject`
+- `discoverArtifacts`
+- `resolveReferences`
+
+解析、検証、イベント作成、ペイロード構築、認証情報の解決、診断、GitHub マッパーは同期です。`sendPayload` は、注入されたトランスポートを呼び出すため非同期です。
+
+検証は厳格です。SDK は、値の強制変換、デフォルトの追加、未知フィールドの削除、未対応のスキーマバージョンの移行を行いません。検証と安全なパスの失敗は、安定した `code` とフィールド固有の `issues` を持つ `LangDriftError` を使います。

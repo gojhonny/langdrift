@@ -1,0 +1,40 @@
+---
+title: GitHub
+description: 明示的なマージ済みプルリクエストのフィクスチャから Record への、決定論的な対応付けです。
+---
+
+# GitHub
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+```
+
+マッパーは、すでに取得済みのデータを受け取ります。イベントは、名前付きの `owner/repository` にある、クローズされマージされたプルリクエストを表す必要があります。数値のプルリクエスト識別子、作者、タイムスタンプ、`head` と `base` のブランチ参照が必要です。任意の `details` には、明示的なコミットとファイルの事実が含まれます。
+
+生成される Record は、次を使います。
+
+- `kind: 'github.pull_request.merged'`
+- `merged_at` から得た `occurred_at`
+- ソース識別子としての、リポジトリとプルリクエストのデータベース ID
+- `recordId('github', 'pull_request', '<pull-request-id>:merged')` から得た安定した ID
+- 変更されない、呼び出し元が渡したアーティファクト参照
+
+プルリクエストの作者は、トップレベルの `actor` です。作者とは別のマージ実行者は、2 番目の `actor` として追加されます。`type` が正確に `Bot` である GitHub ユーザーは `agent` に対応し、それ以外のユーザーは `human` に対応します。外部 `actor` ID の形式は `github:<numeric-id>` です。
+
+Record の `data` には、プルリクエスト番号、タイトル、状態、作者、任意のマージ実行者、作成・更新・マージのタイムスタンプ、`head` と `base` の `ref` と SHA が含まれます。入力に存在する場合は、ラベル名、依頼されたレビュアーの `actor` 参照、`url` としての `html_url` の値、コミット、および `status`、`additions`、`deletions` を持つ変更されたファイル名も含まれます。
+
+マッパーは、イベントと任意の `details` の両方を検証したあと、`createRecord` に委譲します。無効な入力は、コード `ARTIFACT_INVALID` の `LangDriftError` を送出します。
+
+次のことは行いません。
+
+- Webhook の受信や、GitHub API の呼び出し
+- GitHub App の認証やインストール
+- コミット、ファイル、ユーザー、レビューの取得
+- 文章からの `spec` や `ticket` のリンク抽出
+- 影響、Vision Target、Drift の推測
+
+GitHub の事実は Record になります。Drift Event は、Evidence に裏付けられた、別個の明示的な解釈のままです。

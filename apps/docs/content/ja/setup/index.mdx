@@ -1,0 +1,66 @@
+---
+title: セットアップ
+description: LangDrift プロトコルプロジェクトのための、ローカルで明示的なスキャフォールディングです。
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# セットアップ
+
+<PackageStatus package="setup" />
+
+<Callout type="warning">
+  **未公開。** バージョン 0.1.0 はリリース候補です。下のコマンドが説明しているのは、ローカルのワークスペースビルド、またはローカルにインストールしたパッケージから得られるバイナリであり、現在入手できる公開インストールではありません。
+</Callout>
+
+`@langdrift/setup` は `langdrift` バイナリを公開します。セットアップは明示的です。
+
+```sh
+langdrift setup \
+  --root /path/to/product \
+  --project-id proj_example \
+  --account-id acc_example \
+  --name 'Example Product'
+```
+
+`--root` は、既存のディレクトリを指す必要があります。省略した場合、セットアップはカレントディレクトリから上方向に `.git` を探します。Git リポジトリの外では、`--root` を渡してください。
+
+プロジェクト ID とアカウント ID は、ルーティングと文脈のメタデータです。セットアップはアカウントを作成せず、どちらの ID も認証せず、プロジェクトへのアクセスも認可しません。
+
+## 生成されるファイル
+
+セットアップが管理するのは、ちょうど 4 つの JSON ファイルです。
+
+```text
+.drifts/
+  project.json
+  vision/schema.json
+  loop/schema.json
+  evidence/schema.json
+```
+
+新しい `project.json` には、プロトコルバージョン `1`、プロジェクトの識別情報、セットアップパッケージのジェネレーター来歴、連携設定が記録されます。LangDrift はローカルで有効です。GitHub、Linear、Obsidian は無効から始まります。3 つの柱のスキーマは、`@langdrift/sdk` からの自己完結したコピーです。
+
+セットアップは、空のアーティファクトツリー、Markdown ドキュメント、エージェントハーネス、プレースホルダーの連携を生成しません。
+
+## コマンドオプション
+
+- `--root <directory>`
+- `--project-id <id>`
+- `--account-id <id>`
+- `--name <name>`
+- `--github-installation-id <numeric-id>`
+- `--github-repository <owner/repository>`
+- `--linear` または `--no-linear`
+- `--obsidian` または `--no-obsidian`
+- `--dry-run`
+- `--json`
+- `--help` または `-h`
+
+2 つの GitHub の値は、新しい設定では一緒に指定する必要があります。格納されるのは、秘密ではない参照だけです。Linear と Obsidian のフラグが格納するのは、任意のインターフェース設定だけです。
+
+識別情報の値が欠けている場合、CLI がプロンプトを出すのは、標準入力と標準エラーが対話型端末であり、かつ `--json` がないときだけです。非対話の実行と JSON の実行は、欠けているフィールドを示して失敗します。
+
+## ローカルでの動作
+
+セットアップはネットワークリクエストを行わず、認証情報を受け取らず、GitHub、Linear、Obsidian、MCP サーバー、バックエンドにも接続しません。このパッケージに `postinstall` のセットアップフックはありません。ワークスペースをビルドまたはパックしても、セットアップは実行されず、どちらのパッケージも公開されません。

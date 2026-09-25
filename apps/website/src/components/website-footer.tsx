@@ -1,7 +1,7 @@
 import { AgentOrb } from '@repo/react/ui/agent-orb'
 import { LogoMark } from '@repo/react/ui/brand'
 import { GithubLogo, LinkedinLogo } from '@repo/react/ui/icons/server'
-import { websiteLinks } from '../app/app-links'
+import { docsUrlForLocale } from '../app/app-links'
 import { Link } from '../i18n/navigation'
 import type { WebsiteLocale } from '../i18n/routing'
 import { homeMessages } from '../messages/home'
@@ -58,7 +58,7 @@ export function WebsiteFooter({
         <nav aria-label={copy.navigation} className="website-footer-links">
           {/* External, environment-configured origin: plain anchor, not the
               locale-aware Link. */}
-          <a href={websiteLinks.docs}>{headerMessages[locale].docs}</a>
+          <a href={docsUrlForLocale(locale)}>{headerMessages[locale].docs}</a>
           <Link href="/pricing" locale={locale}>
             {headerMessages[locale].plans}
           </Link>

@@ -1,0 +1,152 @@
+---
+title: 套件 API
+description: SDK 與設定發行候選版本的 TypeScript 匯出分組。
+---
+
+# 套件 API
+
+這是 TypeScript 套件的參考。它不是 HTTP API，也不定義後端路由。
+
+## `@langdrift/sdk`
+
+根進入點會再匯出每一個公開的 SDK 模組。專用的
+`/schema`、`/mcp` 與 `/integrations` 進入點，為這些範圍公開相同的匯出。
+
+### 協定類型
+
+執行期常數：
+
+- `ARTIFACT_TYPES`
+- `SCHEMA_VERSION`
+
+公開類型：
+
+- `ArtifactType`、`DocumentType` 與 `Pillar`
+- `JsonValue` 與 `JsonObject`
+- `ArtifactRef` 與 `ActorRef`
+- `Project`、`ArtifactMetadata`、`RecordEvent` 與 `DriftEvent`
+
+### 結構描述與驗證
+
+執行期結構描述匯出為 `schemas`、`projectSchema`、`pillarSchemas` 與
+`artifactPillars`。
+
+```ts
+validateProject(input: unknown): Project
+validateArtifact(input: unknown): ArtifactMetadata
+validateRecord(input: unknown): RecordEvent
+validateDrift(input: unknown): DriftEvent
+```
+
+這些函式是同步的，並回傳原始的已驗證物件。它們會拋出
+`LangDriftError`，不會強制轉換或複製資料。
+
+### 安全路徑、專案與產物
+
+```ts
+findRepositoryRoot(start?: string): Promise<string>
+resolveSafePath(root: string, relative: string): Promise<string>
+readProjectFile(
+  root: string,
+  relative: string,
+  maxBytes?: number
+): Promise<string>
+loadProject(root: string): Promise<Project>
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+discoverArtifacts(
+  root: string,
+  options?: DiscoveryOptions
+): Promise<ParsedArtifact[]>
+```
+
+也會匯出 `MAX_ARTIFACT_BYTES`、`artifactLocations` 與 `artifactReferences`。相關類型是 `ParsedArtifact` 與 `DiscoveryOptions`。
+
+### 參照與事件
+
+```ts
+resolveReferences(
+  root: string,
+  artifacts: ParsedArtifact[],
+  knownReferences?: ArtifactRef[]
+): Promise<ReferenceResolution>
+
+recordId(
+  integration: string,
+  sourceId: string,
+  eventId: string
+): string
+
+createRecord(
+  input: Omit<RecordEvent, 'type' | 'schema_version'>
+): RecordEvent
+
+createDrift(
+  input: Omit<DriftEvent, 'type' | 'schema_version'>
+): DriftEvent
+```
+
+會匯出 `ReferenceResolution`。`recordId`、`createRecord` 與
+`createDrift` 是同步的。
+
+### 承載資料與傳輸
+
+```ts
+createPayload(
+  project: Project,
+  input: ParsedArtifact | RecordEvent | DriftEvent,
+  source?: PayloadSource
+): PayloadEnvelope
+
+resolveCredential(
+  reference: string,
+  environment?: Readonly<Record<string, string | undefined>>
+): string
+
+sendPayload(
+  project: Project,
+  artifact: ParsedArtifact | RecordEvent | DriftEvent,
+  transport: PayloadTransport,
+  options: {
+    credentialRef: string
+    environment?: Readonly<Record<string, string | undefined>>
+    source?: PayloadSource
+  }
+): Promise<TransportResult>
+```
+
+公開的傳輸類型是 `PayloadSource`、`PayloadEnvelope`、
+`PayloadTransport` 與 `TransportResult`。`TransportError` 是只帶狀態的錯誤，注入的配接器可以拋出它，讓 `sendPayload` 加以分類。
+
+### 整合與診斷
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+
+reportError(error: unknown, logger: Logger): void
+```
+
+此套件也匯出 `integrationCapabilities`、`RecordSourceAdapter`、
+`GitHubPullRequestEvent`、`GitHubPullRequestDetails`、`LangDriftError`、
+`Issue`、`Diagnostic` 與 `Logger`。
+
+## `@langdrift/setup`
+
+```ts
+planSetup(options?: SetupOptions): Promise<SetupPlan>
+setupProject(options?: SetupOptions): Promise<SetupResult>
+```
+
+此套件匯出 `SetupError`，以及 `SetupOptions`、`SetupFile`、
+`SetupPlan` 與 `SetupResult` 類型。`runCli`、範本與產生器內部實作不是套件匯出。
+
+`planSetup` 會驗證並讀取，但不寫入。`setupProject` 只在計畫沒有衝突之後，寫入安全的 `create` 項目；若為預演，則原樣回傳該計畫。
+
+## 錯誤
+
+SDK 的驗證、路徑、憑證與傳輸使用帶有 `code` 與 `issues: { path, message }[]` 的 `LangDriftError`。設定專用的失敗使用帶有 `code`、`files` 與 `fields` 的 `SetupError`。當專案或路徑驗證失敗時，設定也可能呈現 SDK 的 `LangDriftError`。
+
+只有明確回傳 `Promise` 的函式是非同步的。這些套件中的 API 都不會隱含地寫入日誌、進行遠端查詢、上傳或重試。

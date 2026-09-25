@@ -1,0 +1,44 @@
+---
+title: 參照
+description: 明確解析本機與外部身分，不進行遠端查詢。
+---
+
+# 參照
+
+參照是明確的協定資料。SDK 不會從散文、標題、分支名稱或供應者 URL 推斷它們。
+
+```ts
+interface ArtifactRef {
+  type: string
+  id: string
+  path?: string
+  integration?: string
+  external_id?: string
+}
+```
+
+`type` 與 `id` 構成協定身分。`path` 可以把本機參照限制在單一產物路徑。`integration` 與 `external_id` 是外部身分的全有或全無配對。
+
+文件中繼資料可以提供 `references`、`supersedes`、`superseded_by`，以及有類型的關係陣列，例如 `research`、`specs` 或 `vision_targets`。`external: { integration, id }` 欄位會把文件自身的供應者身分登錄為外部參照。Drift Event 也會參照其 `vision_target_id`。
+
+## 解析一組參照
+
+```ts
+const resolution = await resolveReferences(
+  root,
+  artifacts,
+  [{ type: 'vision-target', id: 'VT-001' }]
+)
+```
+
+解析會以精確的 `(type, id)` 配對索引本機產物。
+
+- 相符的本機身分是 `resolved`。若參照包含 `path`，該路徑必須等於目標產物路徑。
+- 帶有 `integration` 與 `external_id` 的參照是 `external`。
+- 沒有路徑、且與選用第三個引數相符的參照也是 `external`。這份清單是呼叫端已知身分的明確登錄表。
+- 其他情況會產生 `REFERENCE_NOT_FOUND` 問題。
+- 已解析的本機參照之間若有循環，會產生 `REFERENCE_CYCLE` 問題。
+
+問題回傳於 `resolution.issues`；缺少的參照與循環不會拋出。重複的本機 `(type, id)` 身分有歧義，會拋出代碼為 `ARTIFACT_INVALID` 的 `LangDriftError`。
+
+參照路徑會通過與產物相同的安全路徑檢查。路徑不會觸發遠端查詢，已知參照清單也不會查詢或證明後端資料存在。解析只在本機進行，並且必須在傳輸之前當作另一道關卡。

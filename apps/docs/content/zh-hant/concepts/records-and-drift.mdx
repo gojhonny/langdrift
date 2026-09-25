@@ -1,0 +1,98 @@
+---
+title: Record 與 Drift
+description: 把觀察到的變更正規化為 Record，再以明確證據對照 Vision 目標加以解讀。
+---
+
+# Record 與 Drift
+
+Record 與 Drift Event 回答的是不同問題：
+
+- **Record** 是一筆正規化的觀察事實。
+- **Drift Event** 對照 Vision 目標解讀觀察到的移動，並引用支持該解讀的 Evidence。
+
+## 1. 正規化一筆已合併的拉取請求
+
+假設某個整合已觀察到 GitHub 拉取請求 `481` 處於已合併狀態。正規化事件可以用精確的 `RecordEvent` 形狀建立：
+
+```ts
+import { createRecord } from '@langdrift/sdk'
+
+const record = createRecord({
+  id: 'REC-001',
+  kind: 'github.pull_request.merged',
+  occurred_at: '2026-09-19T18:00:00Z',
+  source: {
+    integration: 'github',
+    repository: 'example/product',
+    external_id: '9001'
+  },
+  actors: [{ type: 'human', external_id: 'github:12345' }],
+  references: [
+    { type: 'prd', id: 'PRD-001' },
+    { type: 'vision-target', id: 'VT-001' }
+  ],
+  data: {
+    number: 481,
+    title: 'Add Product Vision summary',
+    state: 'closed',
+    author: { type: 'human', external_id: 'github:12345' },
+    created_at: '2026-09-18T10:00:00Z',
+    updated_at: '2026-09-19T18:00:00Z',
+    merged_at: '2026-09-19T18:00:00Z',
+    head: { ref: 'product-vision-summary', sha: 'abc123' },
+    base: { ref: 'main', sha: 'def456' },
+    labels: ['product-vision']
+  }
+})
+```
+
+`createRecord` 會加上 `type: 'record'` 與 `schema_version: 1`，然後驗證呼叫端提供的事實。它不會編造時間戳、參照或分數。
+
+SDK 也提供 `recordFromGitHubPullRequest`，用於已驗證、呈 webhook 或 API 形狀的已合併拉取請求。該輔助函式從不可變的 GitHub 身分衍生穩定的雜湊 Record ID，並且只對應明確的供應者欄位。上方可讀的 `REC-001` 是為此範例直接提供的。
+
+<Callout type="info">
+**尚未連接。** GitHub 輔助函式對應的是記憶體內的事件。它不會接收 webhook、擷取 GitHub API、驗證應用程式身分，或從散文擷取產物連結。
+</Callout>
+
+## 2. 解讀這項移動
+
+這項解讀指名其目標、參照觀察到的 Record，並引用該 Record 作為推理證據：
+
+```ts
+import { createDrift } from '@langdrift/sdk'
+
+const drift = createDrift({
+  id: 'DRIFT-001',
+  vision_target_id: 'VT-001',
+  state: 'expected',
+  impact: {
+    unit: 'score_points',
+    before: 10,
+    delta: 2,
+    after: 12
+  },
+  actors: [{ type: 'human', id: 'user_42' }],
+  references: [
+    { type: 'record', id: record.id },
+    { type: 'prd', id: 'PRD-001' }
+  ],
+  reasoning: {
+    method: 'human',
+    evidence_refs: [record.id],
+    schema_version: 1
+  }
+})
+```
+
+這些關係是明確的：
+
+- `vision_target_id` 識別比較目標。
+- `references` 把解讀連到 `REC-001` 與 `PRD-001`。
+- `reasoning.evidence_refs` 把 `REC-001` 標為支持性 Evidence，並且必須與 `references` 中的一個項目相符。
+- `actors` 標明這項解讀的歸屬。
+
+`createDrift` 會加上 Drift 封套類型與協定版本。它檢查 `after` 等於 `before + delta`，且每個證據 ID 都出現在 `references` 中。解讀、影響單位與數值由呼叫端負責；SDK 不計算 Product Vision 公式。
+
+<Callout type="info">
+**`expected` 並非表示有益。** `expected` 表示移動符合已記錄的意圖。`unexpected` 表示不符合。兩種狀態都不判定變更是有幫助或有害。
+</Callout>

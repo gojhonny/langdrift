@@ -1,0 +1,49 @@
+---
+title: 第一份產物
+description: 加入一份 PRD，其身分與關係保持明確，背景則仍是 Markdown。
+---
+
+# 建立第一份產物
+
+Markdown 產物位於套件定義的 `.drifts` 路徑下。請把這份 PRD 加在類似 `.drifts/vision/prd/product-vision-dashboard.md` 的路徑：
+
+```md
+---
+langdrift:
+  type: prd
+  schema_version: 1
+  id: PRD-001
+  title: Product Vision 儀表板
+  owners:
+    - user_42
+  research:
+    - RES-001
+  vision_targets:
+    - VT-001
+---
+
+# Product Vision 儀表板
+
+## 目的
+
+讓領導層對照已記錄的產品意圖，取得可稽核的移動視圖。
+
+## 待釐清的問題
+
+- 哪些來源觀察支持每一項變更？
+- 哪些決策解釋這項移動？
+```
+
+`langdrift` 前置資料是確定性封套：
+
+- `type` 與 `id` 確立產物身分。
+- `schema_version` 選取協定版本。
+- `title` 與至少一個 `owners` 識別碼是必填。
+- `research` 明確把 PRD 關聯到 `RES-001`。
+- `vision_targets` 明確把它關聯到 `VT-001`。
+
+Markdown 本文為人與下游應用程式承載豐富背景。SDK 把它保留為文字。它不會從標題、散文、檔名或連結推斷身分或關係。
+
+SDK 會拒絕未知的前置資料欄位、格式錯誤的 YAML、重複鍵、別名，以及不支援的結構描述版本。在參照解析期間，`RES-001` 必須解析到一份已發現的研究產物。`VT-001` 可以作為明確已知的 `vision-target` 身分提供；參照解析不會進行遠端查詢。
+
+接下來，請閱讀 [Vision → Loop → Evidence](/concepts/vision-loop-evidence)，或從 [Record 追到 Drift Event](/concepts/records-and-drift)。

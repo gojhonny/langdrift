@@ -1,0 +1,26 @@
+---
+title: Linear 與 Obsidian
+description: 選用的介面組態，沒有供應者連接或同步。
+---
+
+# Linear 與 Obsidian
+
+兩個整合目前的能力都是 `interface-only`。
+
+設定接受 `--linear` 與 `--no-linear`，以及 `--obsidian` 與
+`--no-obsidian`。這些旗標只會在本機專案組態中寫入對應的 `enabled` 布林值。它們不要求憑證，也不建立連接。
+
+SDK 唯一共同的供應者擴充是 `RecordSourceAdapter`，其
+`readRecords()` 方法回傳 Record 的非同步串流。沒有實作 Linear 或
+Obsidian 專用的配接器。
+
+目前沒有：
+
+- 供應者身分驗證
+- API 或保管庫用戶端
+- 輪詢、webhook 或檔案監看的執行期
+- 供應者寫入路徑
+- 雙向同步
+- 衝突解決或自動連結擷取
+
+應用程式可以分別實作擷取介面。啟用本機設定並不會啟動這樣的實作。

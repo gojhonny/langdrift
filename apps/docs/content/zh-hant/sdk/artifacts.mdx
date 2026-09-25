@@ -1,0 +1,57 @@
+---
+title: 產物
+description: 套件擁有的產物位置、解析規則，以及有界限的確定性發現。
+---
+
+# 產物
+
+一份產物具有已驗證的中繼資料、來源路徑、明確參照，以及資源名稱。Markdown 產物也保留其本文。
+
+## 套件擁有的位置
+
+協定版本 1 只發現下列遞迴來源路徑模式：
+
+- Vision：`research/**/*.md`、`prd/**/*.md` 與 `context/**/*.md`
+- Loop：`triage/**/*.md`、`design-document/**/*.md`、`spec/**/*.md` 與
+  `ticket/**/*.md`
+- Evidence：`adr/**/*.md`、`audit/**/*.md`、`record/**/*.json` 與
+  `drift/**/*.json`
+
+每個路徑模式都以 `.drifts/<pillar>/` 為根。巢狀稽核路徑，例如
+`evidence/audit/runs` 與 `evidence/audit/reports`，由稽核路徑模式涵蓋。不支援任意的來源路徑模式。
+
+九個文件家族使用 Markdown。Record 與 Drift Event 封套使用 JSON。在發現期間，中繼資料 `type` 必須與來源目錄相符。
+
+## 解析
+
+```ts
+parseArtifact(text: string, artifactPath: string): ParsedArtifact
+```
+
+`parseArtifact` 接受 `.md` 與 `.json` 路徑。它會驗證中繼資料、衍生支柱資源（例如 `vision.prd`）、收集明確參照，並回傳原始產物路徑。
+
+對 Markdown 而言，`body` 是結束前置資料分隔線之後的文字。對 JSON Record 與 Drift Event 而言，`body` 是空的。不支援的副檔名、格式錯誤的輸入、缺少前置資料，或大於 1 MiB 的產物，會產生代碼為 `ARTIFACT_INVALID` 的 `LangDriftError`。
+
+## 發現
+
+```ts
+await discoverArtifacts(root, {
+  maxFiles: 1000,
+  maxDirectories: 1000
+})
+```
+
+兩個上限預設都是 `1000`，且必須是正的安全整數。呼叫端可以明確選擇不同上限。檔案讀取以 1 MiB 為上限。
+
+發現程序會：
+
+- 只造訪套件宣告的 `.drifts` 位置
+- 在處理目錄項目之前先排序
+- 略過點號開頭的項目與 `node_modules`
+- 忽略不存在的產物目錄
+- 拒絕符號連結，而不跟隨它們
+- 拒絕路徑穿越、絕對路徑、反斜線、控制字元、隱藏路徑區段與相依目錄
+
+它不會走訪整個儲存庫。若檔案系統未變更，結果是確定的：套件位置有宣告順序，每個目錄依排序順序走訪。
+
+在檢查本機專案內容期間，不受信任的行程不得變更該內容。

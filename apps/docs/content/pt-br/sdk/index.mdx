@@ -1,0 +1,67 @@
+---
+title: SDK
+description: Requisitos de runtime, escopo do protocolo e pontos de entrada públicos do SDK do LangDrift.
+---
+
+import { PackageStatus } from '../../../components/package-status'
+
+# SDK
+
+<PackageStatus package="sdk" />
+
+<Callout type="warning">
+  **Não publicado.** A versão 0.1.0 é um candidato a lançamento neste repositório.
+  Não é apresentada como um pacote público instalável.
+</Callout>
+
+`@langdrift/sdk` implementa a versão `1` do protocolo e do schema para o
+modelo canônico:
+
+**Vision → Loop → Evidence**
+
+Drift é um tipo de documento de Evidence, não um quarto pilar. Um Record
+captura um fato. Um Drift Event é uma interpretação de fatos em relação a um
+Vision Target, sustentada por Evidence.
+
+## Runtime
+
+- Node.js 24 ou mais recente
+- módulos ECMAScript com declarações TypeScript
+- o validador JSON Schema Draft 2020-12 do AJV e o parser `yaml`
+- sem dependência de React, backend, banco de dados, transporte ou LLM
+
+O SDK valida e normaliza os dados fornecidos pelo chamador. Não define a
+fórmula de Product Vision, não calcula Product Vision, não persiste entidades
+e não toma decisões de identidade nem de autorização.
+
+## Pontos de entrada
+
+O manifesto do pacote expõe:
+
+- `@langdrift/sdk` — a API pública completa, reexportada por módulo
+- `@langdrift/sdk/schema` — schemas e constantes de schema
+- `@langdrift/sdk/mcp` — construção de payload e contratos de transporte injetado
+- `@langdrift/sdk/integrations` — o mapeador do GitHub e as interfaces de integração
+
+A API raiz agrupa tipos, erros, diagnósticos, schemas, validação, caminhos
+seguros, projetos, artefatos, referências, Records e Drift Events, transporte
+de payload e integrações.
+
+## Modelo de execução
+
+As operações de sistema de arquivos são assíncronas:
+
+- `findRepositoryRoot`
+- `resolveSafePath` e `readProjectFile`
+- `loadProject`
+- `discoverArtifacts`
+- `resolveReferences`
+
+Análise, validação, criação de eventos, construção de payload, resolução de
+credencial, diagnósticos e o mapeador do GitHub são síncronos. `sendPayload`
+é assíncrono porque chama um transporte injetado.
+
+A validação é estrita. O SDK não coage valores, não adiciona padrões, não
+remove campos desconhecidos e não migra versões de schema não suportadas.
+Falhas de validação e de caminho seguro usam `LangDriftError`, com um `code`
+estável e `issues` específicos de campo.

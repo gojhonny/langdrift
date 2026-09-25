@@ -1,0 +1,41 @@
+---
+title: Integrações
+description: Capacidades atuais do pacote e o limite entre configuração e conexão.
+---
+
+import { CapabilityTable } from '../../../components/capability-table'
+
+# Integrações
+
+<CapabilityTable />
+
+Essas linhas são renderizadas a partir do objeto exportado
+`integrationCapabilities` do SDK. Elas descrevem código que existe no
+candidato a lançamento atual, e não a disponibilidade do provedor.
+
+<Callout type="info">
+  **Ainda não conectado.** O setup pode armazenar configuração local de
+  integração, mas não instala um app, não autentica um provedor, não ingere
+  eventos e não inicia transporte.
+</Callout>
+
+O GitHub tem um mapeador determinístico para um fixture de pull request
+mesclado fornecido explicitamente. O resultado é um Record de fatos de origem.
+Nunca é uma interpretação automática de Drift.
+
+O transporte do LangDrift é uma interface injetada pelo chamador. O pacote não
+inclui uma topologia de servidor ou de cliente de produção.
+
+Linear e Obsidian têm, no momento, status somente de interface. A superfície
+comum de extensão é somente de ingestão:
+
+```ts
+interface RecordSourceAdapter {
+  integration: string
+  readRecords(): AsyncIterable<RecordEvent>
+}
+```
+
+A interface não define autenticação de provedor, gravações, sincronização,
+resolução de conflitos nem comportamento bidirecional. Cada integração de
+runtime precisa ser projetada e configurada separadamente.

@@ -1,0 +1,42 @@
+---
+title: スキーマ
+description: プロジェクト、ドキュメント、Record、Drift Event のための、バージョン管理された JSON Schema 定義です。
+---
+
+# スキーマ
+
+プロトコルバージョン `1` は、JSON Schema Draft 2020-12 を使います。
+
+```text
+https://json-schema.org/draft/2020-12/schema
+```
+
+正規モデルには、ちょうど 3 つの柱があります。
+
+- **Vision** — `research`、`prd`、`context`
+- **Loop** — `triage`、`design-document`、`spec`、`ticket`
+- **Evidence** — `adr`、`audit`、`record`、`drift`
+
+Drift は Evidence の型であり、柱ではありません。最初の 9 つの型は Markdown の文書ファミリーです。Record と Drift Event は JSON エンベロープです。
+
+## エクスポート
+
+`@langdrift/sdk/schema` は、次をエクスポートします。
+
+- `SCHEMA_VERSION`。現在はリテラルの `1` です
+- `schemas`。アーティファクト型ごとに 1 つのスキーマです
+- `projectSchema`
+- `pillarSchemas.vision`、`.loop`、`.evidence`
+- `artifactPillars`。型から柱への対応です
+
+各柱のスキーマは、必要な定義とアーティファクトの形を埋め込んでいるため、生成されるスキーマファイルは自己完結です。
+
+## 検証の動作
+
+スキーマは、明示的な `schema_version: 1` を要求します。アーティファクト ID は空でなく、空白を含みません。Markdown のメタデータは、`type`、`schema_version`、`id`、`title`、および少なくとも 1 つの `owner` を要求します。Record、Drift Event、参照、`actor`、プロジェクトのフィールドは、別に定義されます。
+
+オブジェクトは、プロトコルが閉じた形を定義している箇所で、未知のプロパティを拒否します。バリデーターは、型の強制変換、デフォルトの適用、フィールドの削除、未対応バージョンの移行を行いません。形式チェックの対象は、`date`、`date-time`、およびその他のプロトコル固有の文字列です。
+
+`x-langdrift` は、標準の JSON Schema の表明と並ぶ、プロトコルの案内です。ドキュメント型、バージョン、パッケージが所有するソースグロブ、フロントマターの名前空間と必須フィールド、参照関係、柱、ペイロードの `resource` などの情報を記録します。一般的な JSON Schema バリデーターは、この拡張を無視できます。LangDrift は、解釈の記述にこれを使います。
+
+スキーマが記述するのは、移植可能な入力です。Product Vision の計算式は定義せず、バックエンド、連携、または MCP サーバーが存在することを証明もしません。

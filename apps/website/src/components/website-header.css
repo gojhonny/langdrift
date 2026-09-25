@@ -76,44 +76,6 @@
 
 .website-header-controls { justify-self: end; }
 
-/* The Neongate capsule geometry, adapted to LangDrift's theme tokens. */
-.website-locale-pill {
-  backdrop-filter: blur(16px);
-  background: color-mix(in srgb, var(--ld-surface) 72%, transparent);
-  border: 1px solid color-mix(in srgb, var(--ld-hairline) 80%, transparent);
-  border-radius: 999px;
-  box-shadow: 0 8px 32px color-mix(in srgb, var(--ld-ink) 8%, transparent);
-  display: inline-flex;
-  flex: 0 0 auto;
-  gap: 0.15rem;
-  padding: 0.2rem;
-}
-
-.website-locale-link {
-  align-items: center;
-  background: transparent;
-  border-radius: 999px;
-  color: var(--ld-muted);
-  display: inline-flex;
-  font-size: 0.72rem;
-  font-weight: 650;
-  justify-content: center;
-  letter-spacing: 0.04em;
-  min-block-size: 1.7rem;
-  padding-inline: 0.7rem;
-  text-decoration: none;
-  transition: background 180ms ease, color 180ms ease;
-  white-space: nowrap;
-}
-
-.website-locale-link[aria-current='page'] {
-  background: color-mix(in srgb, var(--ld-bg) 88%, transparent);
-  color: var(--ld-ink);
-}
-
-.website-locale-link:hover,
-.website-locale-link:focus-visible { color: var(--ld-ink); }
-
 .website-docs-link,
 .website-get-started {
   align-items: center;
@@ -250,7 +212,7 @@
   padding-block-start: 24px;
 }
 
-.website-drawer-access .website-locale-link { min-block-size: 44px; }
+.website-drawer-access .ld-language-switcher__option { min-block-size: 44px; }
 
 .website-drawer-buttons {
   display: flex;
@@ -274,6 +236,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .website-header,
-  .website-locale-link,
+  .ld-language-switcher__option,
   .website-get-started::before { transition: none; }
 }

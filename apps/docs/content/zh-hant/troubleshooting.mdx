@@ -1,0 +1,82 @@
+---
+title: 疑難排解
+description: 目前 SDK 與設定的失敗情況，以及依錯誤代碼恢復的指引。
+---
+
+# 疑難排解
+
+請先看錯誤 `code`。`LangDriftError.issues` 包含驗證失敗的 JSON Pointer 路徑。`SetupError.files` 與 `.fields` 指出設定衝突與缺少的輸入。
+
+## 專案載入
+
+### `PROJECT_NOT_FOUND`
+
+向上搜尋時找不到 `.git` 根目錄，或缺少 `.drifts/project.json`。請明確傳入預期且已存在的根目錄，或在該處執行本機設定。
+
+### `PROJECT_INVALID`
+
+專案檔是格式錯誤的 JSON，或不符合專案結構描述。請手動檢查。設定會保留衝突內容，不會取代它。
+
+### `SCHEMA_UNSUPPORTED`
+
+事件、產物、專案或推理封套宣告的結構描述版本不是 `1`。此發行候選版本沒有遷移路徑。在對照版本 1 結構描述檢查資料之前，不要更改這個數字。
+
+## 產物與參照
+
+### `ARTIFACT_INVALID`
+
+目前的原因包括：
+
+- JSON 格式錯誤，或缺少或無效的 `langdrift` 前置資料
+- 不支援的 `.md` 或 `.json` 用法，或類型與目錄不符
+- 未知欄位，或其他結構描述不符
+- 檔案或本文超過 1 MiB
+- 無效的發現上限，或超過檔案或目錄上限
+- 重複的本機 `(type, id)` 身分
+- Drift 影響不一致，或缺少 Evidence 來源出處
+- 無效的 GitHub 已合併拉取請求固定資料
+
+請閱讀 `issues` 中的欄位路徑。解析器不會從標題或檔名推斷缺少的身分。
+
+### `PATH_OUTSIDE_ROOT`
+
+該路徑是絕對路徑、向上穿越、包含禁止的區段或字元，或抵達符號連結。請使用專案 `.drifts` 樹下的一般相對路徑。發現程序絕不會跟隨符號連結。
+
+### 參照問題
+
+`REFERENCE_NOT_FOUND` 與 `REFERENCE_CYCLE` 會出現在
+`resolveReferences(...).issues` 中；它們不會被拋出。請登錄明確已知的外部身分、更正精確的類型、ID 與路徑，或在傳輸前移除本機循環。
+
+## 憑證與傳輸
+
+### `CREDENTIAL_MISSING`
+
+參照不是 `env:NAME` 形式，或環境值不存在，或包含換行或空位元組。只傳入參照，並把值提供給執行環境。
+
+### `REMOTE_UNAUTHORIZED`
+
+注入的傳輸回報 `401` 或 `403`。路由用的 `account_id` 與
+`project_id` 不會授予授權；請檢查執行環境的憑證與目的地原則。
+
+### `REMOTE_REJECTED`
+
+注入的傳輸回報了其他 `4xx` 狀態。請檢查已驗證的封套與目的地契約。
+
+### `MCP_UNAVAILABLE`
+
+傳輸失敗，且沒有已分類的 `4xx` 回應。沒有任何內容會在本機排入佇列。只有在檢查呼叫端提供的配接器之後才重試。
+
+## 設定
+
+- `ROOT_INVALID` — `--root` 無法解析為已存在的目錄。
+- `SETUP_ARGUMENT_MISSING` — 在非互動執行中提供專案 ID、帳戶 ID 與名稱。
+- `SETUP_ARGUMENT_INVALID` — 檢查支援的旗標、互相衝突的布林旗標，以及成對的數值 GitHub 安裝 ID 與
+  `owner/repository`。
+- `SETUP_CONFLICT` — 檢查每個檔案狀態與原因。預檢沒有寫入任何內容。
+- `SETUP_PATH_CONFLICT` — 受管理路徑是符號連結，或父層不是目錄。
+- `SETUP_CONCURRENT_CHANGE` — 目的地在預檢之後變更，並已被保留。
+- `SETUP_WRITE_FAILED` — I/O 失敗中斷了建立。較早建立的檔案可能仍然存在；請檢查後再執行一次。
+
+`.drifts/execution` 是刻意安排的衝突，因為此版本使用 Loop，並且不進行舊版遷移。
+
+若要安全地進行應用程式診斷，`reportError(error, logger)` 會送出代碼、一般訊息與驗證問題。它會略過未知例外的本文與堆疊。

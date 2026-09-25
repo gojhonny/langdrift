@@ -1,0 +1,55 @@
+---
+title: GitHub
+description: Mapeamento determinístico de um fixture explícito de pull request mesclado para um Record.
+---
+
+# GitHub
+
+```ts
+recordFromGitHubPullRequest(
+  event: GitHubPullRequestEvent,
+  references?: ArtifactRef[],
+  details?: GitHubPullRequestDetails
+): RecordEvent
+```
+
+O mapeador aceita dados já obtidos. O evento precisa descrever um pull request
+fechado e mesclado em um `owner/repository` nomeado, com identidade numérica
+do pull request, autor, timestamps e referências das branches head e base. Os
+detalhes opcionais contêm fatos explícitos de commits e de arquivos.
+
+O Record resultante usa:
+
+- `kind: 'github.pull_request.merged'`
+- `occurred_at` a partir de `merged_at`
+- o repositório e o ID de banco de dados do pull request como identidade da origem
+- um ID estável de
+  `recordId('github', 'pull_request', '<pull-request-id>:merged')`
+- referências de artefato fornecidas pelo chamador, sem alteração
+
+O autor do pull request é um ator no nível superior do Record. Se quem fez o
+merge for uma pessoa distinta, essa pessoa entra como segundo ator. Um usuário
+do GitHub cujo `type` exato é `Bot` é mapeado para o tipo `agent`; os demais
+usuários são mapeados para o tipo `human`. IDs externos de atores têm a forma
+`github:<numeric-id>`.
+
+O `data` do Record contém número, título, estado, autor, autor do merge, quando
+houver, timestamps de criação, atualização e merge, além das refs e dos SHAs
+de head e base. Quando presentes na entrada, também inclui nomes dos rótulos,
+referências de atores dos revisores solicitados, o valor de `html_url` como
+`url`, commits e nomes de arquivos alterados com status, adições e remoções.
+
+O mapeador valida o evento e os detalhes opcionais e, em seguida, delega a
+`createRecord`. Entrada inválida lança `LangDriftError` com o código
+`ARTIFACT_INVALID`.
+
+O mapeador não faz o seguinte:
+
+- receber webhooks ou chamar APIs do GitHub
+- autenticar ou instalar um GitHub App
+- buscar commits, arquivos, usuários ou revisões
+- extrair links de Spec ou de Ticket da prosa
+- inferir impacto, um Vision Target ou Drift
+
+Fatos do GitHub tornam-se Records. Qualquer Drift Event permanece uma
+interpretação separada e explícita, sustentada por Evidence.
