@@ -2,7 +2,7 @@
 
 Authored engineering records for a Spec-driven Development cycle. Phase files under `.agents/workflow/` say when each kind is produced. This index does not repeat that protocol.
 
-No first-cycle artifact has been created.
+The first cycle is indexed in the relevant artifact directories.
 
 | Directory | What belongs here |
 | --- | --- |
