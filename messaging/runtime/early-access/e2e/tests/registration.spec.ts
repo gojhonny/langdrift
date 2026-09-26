@@ -2,9 +2,14 @@ import { execFile } from 'node:child_process'
 import { resolve } from 'node:path'
 import { promisify } from 'node:util'
 import { expect, test } from '@playwright/test'
-import { earlyAccessMessages } from '../../../../../apps/website/src/messages/early-access'
 
 const execute = promisify(execFile)
+const challengeFailureByLocale = {
+  en: 'Please complete the security check and try again.',
+  'pt-BR': 'Conclua a verificação de segurança e tente novamente.',
+  'zh-Hant': '請完成安全驗證後再試一次。',
+  ja: 'セキュリティ確認を完了して、もう一度お試しください。'
+} as const
 
 async function mockChallenge(page: import('@playwright/test').Page) {
   await page.route(
@@ -107,7 +112,7 @@ test('all locales show accessible challenge feedback when verification fails', a
     await page.locator('input[type=email]').fill(`test-${locale}@example.com`)
     await page.locator('button[type=submit]').click()
     await expect(page.locator('.early-access-feedback')).toContainText(
-      earlyAccessMessages[locale].challengeFailed
+      challengeFailureByLocale[locale]
     )
     await expect(page.locator('.early-access-feedback')).toHaveAttribute(
       'aria-live',

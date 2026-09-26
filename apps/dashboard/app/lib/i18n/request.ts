@@ -1,7 +1,6 @@
 import { cookies } from 'next/headers'
 import { getRequestConfig } from 'next-intl/server'
 
-// AGENT: We should have one space between third party imports, absolute imports and relative imports.
 import { dashboardLocaleCookie, isDashboardLocale } from './config'
 import { getViewMessages } from './messages'
 import { routeStateMessages } from './route-state.messages'

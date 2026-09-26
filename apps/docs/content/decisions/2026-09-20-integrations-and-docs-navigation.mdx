@@ -37,7 +37,7 @@ Docs is an external, environment-configured origin. It is rendered as a plain an
 
 ## Environment contract
 
-The Docs origin comes from `NEXT_PUBLIC_DOCS_URL`, and the SSO origin from `NEXT_PUBLIC_SSO_URL`, both required by `apps/website/src/env.ts` under the policy in [Environment variables must fail fast](./2026-09-20-environment-variables-fail-fast). Local values live in `apps/website/.env.development`; CI sets explicit build values. The former behaviour where an absent `NEXT_PUBLIC_SSO_URL` degraded into relative `/sign-in` and `/sign-up` links no longer exists.
+The Docs origin comes from `NEXT_PUBLIC_DOCS_URL`, and the SSO origin from `NEXT_PUBLIC_SSO_URL`, both required by `apps/website/env.ts` under the policy in [Environment variables must fail fast](./2026-09-20-environment-variables-fail-fast). Local values live in `apps/website/.env.development`; CI sets explicit build values. The former behaviour where an absent `NEXT_PUBLIC_SSO_URL` degraded into relative `/sign-in` and `/sign-up` links no longer exists.
 
 ## Decision records in Docs
 
