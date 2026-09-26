@@ -1,5 +1,10 @@
 'use client'
 
+// AGENT: One component per file, no exceptions. You can have siblings in the same folder.
+// AGENT: one hook per file, with suffix .hook.ts
+
+// AGENT: Always, ONE comment per file, no exceptions. You can have siblings in the same folder.
+
 // Illustrative product values are frontend fixtures; this is not the Product Vision scoring contract.
 import {
   CheckCircle,
@@ -868,6 +873,7 @@ function LegacyEvolution({
   return <Evolution />
 }
 
+// AGENT: React components should be composable, not injectable. DashboardPageGate and Heading could be built in a page layout, better than this monster.
 export function DashboardView({ section }: { section: DashboardSection }) {
   return (
     <DashboardPageGate section={section}>

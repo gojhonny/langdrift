@@ -1,3 +1,4 @@
+// AGENT: There's no need for 'use client' in atoms
 'use client'
 
 import { atomWithImmer } from 'jotai-immer'

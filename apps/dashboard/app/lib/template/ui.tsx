@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react'
 
+// AGENT: use cn function
 export function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(' ')
 }
 
+// AGENT: These custom components should be in a separate file, and placed under app/lib/components folder
+// AGENT: Also, we should avoid create base components like Card, Kicker, Muted, etc. We should use smoothui or shadcn/ui. And since they are generic, should come from packages/react
 export function Card({
   as: Tag = 'section',
   className,

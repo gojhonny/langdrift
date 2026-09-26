@@ -3,6 +3,7 @@
 import { routeStateMessages } from '@i18n/route-state.messages'
 import './globals.css'
 
+// AGENT: Again, never arbitrary typing, bad: { retry: () => void }
 export default function GlobalError({ retry }: { retry: () => void }) {
   // This boundary also handles a failed locale provider or root layout.
   const messages = routeStateMessages.en
@@ -27,6 +28,7 @@ export default function GlobalError({ retry }: { retry: () => void }) {
           >
             {messages.retry}
           </button>
+          {/* AGENT: When using Next.js, use <Link> component instead of <a> */}
           <a
             className="inline-flex min-h-11 items-center rounded-md px-2 text-sm text-[#171717] underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#171717]"
             href="/overview"

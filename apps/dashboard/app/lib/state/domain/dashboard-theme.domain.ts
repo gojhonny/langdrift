@@ -1,1 +1,1 @@
-export type DashboardTheme = 'dark' | 'light'
+export type DashboardTheme = 'dark' | 'light' | 'system'
