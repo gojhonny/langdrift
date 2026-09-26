@@ -1,0 +1,453 @@
+'use client'
+
+import {
+  Bell,
+  CaretDown,
+  ChartLineUp,
+  FileText,
+  Gear,
+  GitBranch,
+  House,
+  List,
+  Users,
+  X
+} from '@phosphor-icons/react'
+import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
+import { Brand } from '@repo/react/ui/brand'
+import { ThemeToggle } from '@repo/react/ui/theme-toggle'
+import { Tooltip } from '@repo/react/vendors/shadcn'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import type { FormEvent, ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { StateLogger } from '../../../state-logger'
+import {
+  accountMenuOpenAtom,
+  notificationsOpenAtom,
+  productMenuOpenAtom,
+  selectProductAtom,
+  selectedProductAtom,
+  themeAtom,
+  voiceOpenAtom
+} from '../../../state'
+
+const navigation = [
+  { href: '/overview', icon: House, label: 'Overview' },
+  { href: '/evolution', icon: ChartLineUp, label: 'Evolution' },
+  { href: '/decisions', icon: GitBranch, label: 'Decisions' },
+  { href: '/people', icon: Users, label: 'People' },
+  { href: '/reports', icon: FileText, label: 'Reports' }
+]
+
+const sectionLabels: Record<string, string> = {
+  '/overview': 'Overview',
+  '/evolution': 'Evolution',
+  '/decisions': 'Decisions',
+  '/people': 'People',
+  '/reports': 'Reports',
+  '/settings': 'Settings',
+  '/vision-baseline': 'Evolution',
+  '/drift-graph': 'Evolution',
+  '/drift-timeline': 'Evolution',
+  '/drift-events': 'Evolution',
+  '/drift-by-team': 'Evolution',
+  '/drift-by-product-area': 'Evolution',
+  '/intentional-drift': 'Evolution',
+  '/unexplained-drift': 'Evolution',
+  '/drift-report': 'Reports',
+  '/evidence': 'Evidence'
+}
+
+const voiceAnswers: Record<string, string> = {
+  'Why did Product Vision fall?':
+    'Product Vision moved from 91% to 73%. Pricing changed intentionally, authentication remains unexplained, and export behavior is still under review.',
+  'What changed this week?':
+    'Authentication was the largest contributor this week. Four points were intentional evolution and two points remain unexplained.',
+  'Which changes are unexplained?':
+    'Authentication is currently classified as Unexplained Drift. Export behavior remains Under Review rather than being classified prematurely.'
+}
+
+const voicePrompts = Object.keys(voiceAnswers)
+
+function DashboardNavigation({
+  mobile = false,
+  onNavigate
+}: {
+  mobile?: boolean
+  onNavigate?: () => void
+}) {
+  const pathname = usePathname()
+  const theme = useAtomValue(themeAtom)
+  const [productMenuOpen, setProductMenuOpen] = useAtom(productMenuOpenAtom)
+  const selectedProduct = useAtomValue(selectedProductAtom)
+  const selectProduct = useSetAtom(selectProductAtom)
+
+  function chooseProduct(product: string) {
+    selectProduct(product)
+    if (mobile) onNavigate?.()
+  }
+
+  return (
+    <>
+      <a
+        aria-label="LangDrift overview"
+        className={mobile ? 'dashboard-mobile-brand' : 'dashboard-brand'}
+        href="/overview"
+        onClick={() => onNavigate?.()}
+      >
+        <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
+      </a>
+      <div className="product-picker">
+        <button
+          aria-expanded={productMenuOpen}
+          className="product-picker-trigger"
+          onClick={() => setProductMenuOpen((open) => !open)}
+          type="button"
+        >
+          <span className="product-letter">A</span>
+          <span>
+            <small>Product</small>
+            <strong>{selectedProduct}</strong>
+          </span>
+          <CaretDown aria-hidden="true" size={12} />
+        </button>
+        {productMenuOpen ? (
+          <div className="shell-dropdown product-dropdown">
+            {['Atlas Home Hub', 'Atlas Checkout', 'Atlas Mobile'].map(
+              (product) => (
+                <button
+                  key={product}
+                  onClick={() => chooseProduct(product)}
+                  type="button"
+                >
+                  {product}
+                </button>
+              )
+            )}
+          </div>
+        ) : null}
+      </div>
+      <nav
+        aria-label={
+          mobile ? 'Mobile product navigation' : 'Executive product navigation'
+        }
+      >
+        {navigation.map((item) => {
+          const Icon = item.icon
+          return (
+            <a
+              className={pathname === item.href ? 'dashboard-nav-active' : ''}
+              href={item.href}
+              key={item.href}
+              onClick={() => onNavigate?.()}
+            >
+              <Icon aria-hidden="true" size={15} />
+              {item.label}
+            </a>
+          )
+        })}
+      </nav>
+      <a
+        className={
+          pathname === '/settings'
+            ? 'dashboard-nav-active dashboard-settings'
+            : 'dashboard-settings'
+        }
+        href="/settings"
+        onClick={() => onNavigate?.()}
+      >
+        <Gear aria-hidden="true" size={15} /> Settings
+      </a>
+    </>
+  )
+}
+
+export function DashboardShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
+  const [theme, setTheme] = useAtom(themeAtom)
+  const selectedProduct = useAtomValue(selectedProductAtom)
+  const [voiceOpen, setVoiceOpen] = useAtom(voiceOpenAtom)
+  const [notificationsOpen, setNotificationsOpen] = useAtom(
+    notificationsOpenAtom
+  )
+  const [accountMenuOpen, setAccountMenuOpen] = useAtom(accountMenuOpenAtom)
+  const setProductMenuOpen = useSetAtom(productMenuOpenAtom)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [mobileNavPathname, setMobileNavPathname] = useState(pathname)
+  const [voiceQuestion, setVoiceQuestion] = useState('')
+  const [voiceAnswer, setVoiceAnswer] = useState('')
+  const [voiceOrbState, setVoiceOrbState] = useState<AgentOrbState>('idle')
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null)
+  const mobileMenuCloseRef = useRef<HTMLButtonElement>(null)
+  const currentSection = sectionLabels[pathname] ?? 'Overview'
+
+  if (mobileNavPathname !== pathname) {
+    setMobileNavPathname(pathname)
+    setMobileNavOpen(false)
+  }
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document.documentElement.style.colorScheme = theme
+  }, [theme])
+
+  useEffect(() => {
+    if (!mobileNavOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    mobileMenuCloseRef.current?.focus()
+
+    function handleKeydown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setMobileNavOpen(false)
+    }
+
+    window.addEventListener('keydown', handleKeydown)
+    return () => {
+      window.removeEventListener('keydown', handleKeydown)
+      document.body.style.overflow = previousOverflow
+      mobileMenuTriggerRef.current?.focus()
+    }
+  }, [mobileNavOpen])
+
+  function switchTheme() {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }
+
+  function askVoice(question: string) {
+    const trimmed = question.trim()
+    if (!trimmed) return
+
+    setVoiceQuestion(trimmed)
+    setVoiceOrbState('thinking')
+    window.setTimeout(() => {
+      setVoiceAnswer(
+        voiceAnswers[trimmed] ??
+          'LangDrift can answer bounded questions over Product Vision, Drift events, decisions, people, and linked evidence.'
+      )
+      setVoiceOrbState('speaking')
+      window.setTimeout(() => setVoiceOrbState('idle'), 700)
+    }, 260)
+  }
+
+  function submitVoice(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    askVoice(voiceQuestion)
+  }
+
+  return (
+    <main className="dashboard-shell">
+      <StateLogger />
+      <aside className="dashboard-sidebar">
+        <DashboardNavigation />
+      </aside>
+
+      {mobileNavOpen ? (
+        <div className="dashboard-mobile-nav-layer">
+          <button
+            aria-label="Close navigation"
+            className="dashboard-mobile-nav-backdrop"
+            onClick={() => setMobileNavOpen(false)}
+            type="button"
+          />
+          <aside
+            aria-label="Mobile navigation"
+            className="dashboard-mobile-drawer"
+            id="dashboard-mobile-navigation"
+          >
+            <button
+              aria-label="Close navigation"
+              className="dashboard-mobile-nav-close"
+              onClick={() => setMobileNavOpen(false)}
+              ref={mobileMenuCloseRef}
+              type="button"
+            >
+              <X aria-hidden="true" size={17} />
+            </button>
+            <DashboardNavigation
+              mobile
+              onNavigate={() => setMobileNavOpen(false)}
+            />
+          </aside>
+        </div>
+      ) : null}
+
+      <section className="dashboard-workspace">
+        <header className="dashboard-topbar">
+          <div className="dashboard-topbar-leading">
+            <button
+              aria-controls="dashboard-mobile-navigation"
+              aria-expanded={mobileNavOpen}
+              aria-label="Open navigation"
+              className="dashboard-mobile-menu"
+              onClick={() => setMobileNavOpen(true)}
+              ref={mobileMenuTriggerRef}
+              type="button"
+            >
+              <List aria-hidden="true" size={18} />
+            </button>
+            <nav className="dashboard-breadcrumb" aria-label="Breadcrumb">
+              <span>LangDrift</span>
+              <span>/</span>
+              <strong>{selectedProduct}</strong>
+              <span>/</span>
+              <strong>{currentSection}</strong>
+            </nav>
+          </div>
+          <div className="dashboard-actions">
+            <Tooltip content="Ask LangDrift">
+              <button
+                aria-label="Ask LangDrift"
+                className="dashboard-orb-button"
+                onClick={() => setVoiceOpen((open) => !open)}
+                type="button"
+              >
+                <AgentOrb size="28px" speed={0.72} state="idle" />
+              </button>
+            </Tooltip>
+            <button
+              aria-label="Notifications"
+              onClick={() => setNotificationsOpen((open) => !open)}
+              type="button"
+            >
+              <Bell aria-hidden="true" />
+            </button>
+            <ThemeToggle onToggle={switchTheme} theme={theme} />
+            <div className="dashboard-account">
+              <Tooltip content="Account">
+                <button
+                  aria-expanded={accountMenuOpen}
+                  aria-label="Open account menu"
+                  className="dashboard-profile-button"
+                  onClick={() => setAccountMenuOpen((open) => !open)}
+                  type="button"
+                >
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    height={28}
+                    src={aiAvatars.jonny}
+                    unoptimized
+                    width={28}
+                  />
+                </button>
+              </Tooltip>
+              {accountMenuOpen ? (
+                <div className="shell-dropdown account-dropdown">
+                  <a href="/settings">Settings</a>
+                  <button
+                    onClick={() => {
+                      setAccountMenuOpen(false)
+                      setProductMenuOpen(true)
+                    }}
+                    type="button"
+                  >
+                    Switch product
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </header>
+
+        {notificationsOpen ? (
+          <div className="topbar-panel notifications-panel">
+            <strong>2 items need attention</strong>
+            <span>
+              Authentication is unexplained. Export behavior remains under
+              review.
+            </span>
+            <button
+              onClick={() => setNotificationsOpen((open) => !open)}
+              type="button"
+            >
+              Mark reviewed
+            </button>
+          </div>
+        ) : null}
+
+        {voiceOpen ? (
+          <div className="voice-drawer">
+            <button
+              aria-label="Close voice"
+              onClick={() => setVoiceOpen((open) => !open)}
+              type="button"
+            >
+              <X aria-hidden="true" size={14} />
+            </button>
+            <div className="voice-drawer-orb-wrap">
+              <button
+                aria-label={
+                  voiceOrbState === 'listening'
+                    ? 'Stop listening'
+                    : 'Start voice inquiry'
+                }
+                onClick={() =>
+                  setVoiceOrbState(
+                    voiceOrbState === 'listening' ? 'idle' : 'listening'
+                  )
+                }
+                type="button"
+              >
+                <AgentOrb
+                  size="88px"
+                  speed={voiceOrbState === 'listening' ? 1.1 : 0.72}
+                  state={voiceOrbState}
+                />
+              </button>
+            </div>
+            <span>
+              {voiceOrbState === 'listening'
+                ? 'Listening'
+                : 'Executive inquiry'}
+            </span>
+            <strong>Ask LangDrift</strong>
+            <p>
+              Ask over the same structured events, decisions, people, and
+              evidence shown visually.
+            </p>
+            <div className="voice-drawer-prompts">
+              {voicePrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => askVoice(prompt)}
+                  type="button"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            {voiceAnswer ? (
+              <output className="voice-drawer-answer" aria-live="polite">
+                {voiceAnswer}
+              </output>
+            ) : null}
+            <form className="voice-drawer-composer" onSubmit={submitVoice}>
+              <label htmlFor="dashboard-voice-question">
+                Ask about this product
+              </label>
+              <div>
+                <input
+                  id="dashboard-voice-question"
+                  onChange={(event) =>
+                    setVoiceQuestion(event.currentTarget.value)
+                  }
+                  placeholder="What changed this week?"
+                  value={voiceQuestion}
+                />
+                <button disabled={voiceOrbState === 'thinking'} type="submit">
+                  Ask
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : null}
+
+        <div className="dashboard-content">{children}</div>
+      </section>
+    </main>
+  )
+}

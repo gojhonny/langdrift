@@ -1,6 +1,8 @@
 # Dashboard
 
-Authenticated analytical app. Next.js 16 on port 3001. Shared dashboard state uses Zustand.
+*AGENT: This should explain more about the product than a simple stack useless explanation*
+
+Authenticated analytical app. Next.js 16 on port 3001. Shared dashboard state uses Jotai atoms.
 
 Primary navigation is Overview, Evolution, Decisions, People, and Reports. Settings is available from the shell. Evolution also has drill-down routes for the curve, timeline, events, team, product area, intentional evolution, unexplained drift, and the vision baseline. Evidence is a contextual route, not a primary destination.
 
