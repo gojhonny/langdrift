@@ -32,14 +32,16 @@ const labels = {
   }
 }
 
-export function WebsiteFooter({
-  locale,
-  compact = false
-}: {
+interface WebsiteFooterProps {
   locale: WebsiteLocale
   compact?: boolean
-}) {
+}
+
+export function WebsiteFooter(props: WebsiteFooterProps) {
+  const { locale, compact = false } = props
+
   const copy = labels[locale]
+
   return (
     <footer
       className="smooth-footer website-footer"

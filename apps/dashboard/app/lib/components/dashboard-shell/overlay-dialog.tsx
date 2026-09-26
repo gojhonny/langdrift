@@ -3,15 +3,7 @@
 import type { ReactNode } from 'react'
 import { useEffectEvent, useLayoutEffect, useRef } from 'react'
 
-export function OverlayDialog({
-  children,
-  className,
-  id,
-  label,
-  labelledBy,
-  mobileOnly = false,
-  onClose
-}: {
+interface OverlayDialogProps {
   children: ReactNode
   className: string
   id?: string
@@ -19,7 +11,19 @@ export function OverlayDialog({
   labelledBy?: string
   mobileOnly?: boolean
   onClose: () => void
-}) {
+}
+
+export function OverlayDialog(props: OverlayDialogProps) {
+  const {
+    children,
+    className,
+    id,
+    label,
+    labelledBy,
+    mobileOnly = false,
+    onClose
+  } = props
+
   const dialogRef = useRef<HTMLDialogElement>(null)
   const modalRef = useRef(false)
   const close = useEffectEvent(onClose)
@@ -38,6 +42,7 @@ export function OverlayDialog({
       if (!dialog) return
       if (mobileOnly && !media.matches) {
         close()
+
         return
       }
       dialog.close()
@@ -62,6 +67,7 @@ export function OverlayDialog({
     present()
     media.addEventListener('change', present)
     window.addEventListener('keydown', handleEscape)
+
     return () => {
       media.removeEventListener('change', present)
       window.removeEventListener('keydown', handleEscape)

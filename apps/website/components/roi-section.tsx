@@ -11,7 +11,13 @@ import './conversion.css'
 
 const benefitIds = ['context', 'tradeoff', 'opportunity'] as const
 
-export function RoiSection({ locale }: { locale: WebsiteLocale }) {
+interface RoiSectionProps {
+  locale: WebsiteLocale
+}
+
+export function RoiSection(props: RoiSectionProps) {
+  const { locale } = props
+
   const copy = conversionMessages[locale].roi
   const reviewCopy = executiveReviewMessages[locale]
   const event = reviewEvents.find((item) => item.id === 'E02')

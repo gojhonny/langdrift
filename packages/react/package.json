@@ -22,6 +22,7 @@
     "./ui/icons/server": "./src/ui/icons/server.ts",
     "./ui/language-switcher": "./src/ui/language-switcher/index.ts",
     "./ui/metric": "./src/ui/metric/index.ts",
+    "./ui/primitives": "./src/ui/primitives/index.ts",
     "./ui/product-vision-curve": "./src/ui/product-vision-curve/index.ts",
     "./ui/status-pill": "./src/ui/status-pill/index.ts",
     "./ui/theme-toggle": "./src/ui/theme-toggle/index.ts",
@@ -36,8 +37,10 @@
     "@neongate-ai/orbz": "0.3.1",
     "@phosphor-icons/react": "^2.1.10",
     "@repo/design-tokens": "workspace:*",
+    "clsx": "^2.1.1",
     "motion": "^12.42.2",
-    "recharts": "3.10.1"
+    "recharts": "3.10.1",
+    "tailwind-merge": "^3.7.0"
   },
   "peerDependencies": {
     "next": ">=16",

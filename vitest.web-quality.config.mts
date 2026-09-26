@@ -1,12 +1,17 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 
+import dashboardPaths from './apps/dashboard/tsconfig.paths.json'
+
 const local = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
 export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
   resolve: {
     alias: {
+      '@menu': local(
+        `./apps/dashboard/${dashboardPaths.compilerOptions.paths['@menu/*'][0].replace(/\*$/, '')}`
+      ),
       '@atoms': local('./apps/dashboard/app/lib/state/atoms/index.ts'),
       '@domain': local('./apps/dashboard/app/lib/state/domain/index.ts'),
       '@template': local('./apps/dashboard/app/lib/template'),

@@ -26,17 +26,11 @@ export const viewport: Viewport = {
   themeColor: '#fafafa'
 }
 
-// AGENT: we should always define interface for props, and must be interface, not type
 interface RootLayoutProps {
   children: ReactNode
 }
 
-/**
- *
- * AGENT: we NEVER destructucture props in function arguments
- */
 export default async function RootLayout(props: RootLayoutProps) {
-  // AGENT: the first line should be reserved for the props destructuring followed by a space
   const { children } = props
 
   const locale = await getLocale()

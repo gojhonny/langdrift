@@ -2,6 +2,12 @@
 
 import { DashboardRouteError } from '@components/route-state/dashboard-route-error'
 
-export default function RouteError({ retry }: { retry: () => void }) {
+interface RouteErrorProps {
+  retry: () => void
+}
+
+export default function RouteError(props: RouteErrorProps) {
+  const { retry } = props
+
   return <DashboardRouteError retry={retry} />
 }

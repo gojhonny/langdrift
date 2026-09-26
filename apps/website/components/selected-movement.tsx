@@ -3,10 +3,9 @@
 import { useAtomValue } from 'jotai'
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { useHeroPoints } from '@components/hero-chart/use-hero-points.hook'
 import { AnimatedAvatarGroup } from '@repo/react/vendors/smoothui'
 import { selectedPointAtom } from '@state'
-
-import { useHeroPoints } from './hero-chart'
 
 export function SelectedMovement() {
   const t = useTranslations('home.why')

@@ -1,84 +1,21 @@
-import Image from 'next/image'
-
 import type { WebsiteLocale } from '@i18n/routing'
-import {
-  type IntegrationId,
-  integrationsMessages
-} from '@messages/integrations'
+import { integrationsMessages } from '@messages/integrations'
 import { LogoMark } from '@repo/react/ui/brand'
 import { BasicAccordion } from '@repo/react/vendors/smoothui'
 
+import { IntegrationBranches } from './integrations/integration-branches'
+import { IntegrationLogo } from './integrations/integration-logo'
+import { tools } from './integrations/integration-tools'
+
 import './integrations-section.css'
 
-const tools: readonly IntegrationId[] = ['github', 'obsidian', 'linear']
-
-const integrationLogos: Record<
-  IntegrationId,
-  { light: string; dark?: string; width: number }
-> = {
-  github: { light: 'github-black.svg', dark: 'github-white.svg', width: 39 },
-  obsidian: { light: 'obsidian.svg', width: 38 },
-  linear: { light: 'linear-dark.svg', dark: 'linear-light.svg', width: 38 }
+interface IntegrationsSectionProps {
+  locale: WebsiteLocale
 }
 
-function IntegrationLogo({ id }: { id: IntegrationId }) {
-  const { light, dark, width } = integrationLogos[id]
+export function IntegrationsSection(props: IntegrationsSectionProps) {
+  const { locale } = props
 
-  if (!dark) {
-    return (
-      <Image alt="" height={38} src={`/integrations/${light}`} width={width} />
-    )
-  }
-
-  return (
-    <>
-      <Image
-        alt=""
-        className="integration-logo-light"
-        height={38}
-        src={`/integrations/${light}`}
-        width={width}
-      />
-      <Image
-        alt=""
-        className="integration-logo-dark"
-        height={38}
-        src={`/integrations/${dark}`}
-        width={width}
-      />
-    </>
-  )
-}
-
-function IntegrationBranches() {
-  return (
-    <div aria-hidden="true" className="integration-branches">
-      <svg
-        aria-hidden="true"
-        className="integration-branch-spine"
-        focusable="false"
-        preserveAspectRatio="none"
-        viewBox="0 0 2 100"
-      >
-        <path d="M1 0v100" />
-      </svg>
-      {tools.map((id, index) => (
-        <svg
-          aria-hidden="true"
-          focusable="false"
-          key={id}
-          preserveAspectRatio="none"
-          viewBox="0 0 100 12"
-        >
-          {/* the middle branch runs straight out of the spine */}
-          <path d={index === 1 ? 'M0 6h100' : 'M50 6h50'} />
-        </svg>
-      ))}
-    </div>
-  )
-}
-
-export function IntegrationsSection({ locale }: { locale: WebsiteLocale }) {
   const copy = integrationsMessages[locale]
 
   return (
@@ -139,6 +76,7 @@ export function IntegrationsSection({ locale }: { locale: WebsiteLocale }) {
         <ul className="integration-tools">
           {tools.map((id) => {
             const tool = copy.tools[id]
+
             return (
               <li key={id}>
                 <article className="integration-tool integration-surface">

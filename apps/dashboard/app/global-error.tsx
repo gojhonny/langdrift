@@ -3,8 +3,13 @@
 import { routeStateMessages } from '@i18n/route-state.messages'
 import './globals.css'
 
-// AGENT: Again, never arbitrary typing, bad: { retry: () => void }
-export default function GlobalError({ retry }: { retry: () => void }) {
+interface GlobalErrorProps {
+  retry: () => void
+}
+
+export default function GlobalError(props: GlobalErrorProps) {
+  const { retry } = props
+
   // This boundary also handles a failed locale provider or root layout.
   const messages = routeStateMessages.en
 

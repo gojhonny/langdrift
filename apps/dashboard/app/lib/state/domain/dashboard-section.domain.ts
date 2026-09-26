@@ -15,5 +15,3 @@ export type DashboardSection =
   | 'settings'
   | 'unexplained-drift'
   | 'vision-baseline'
-
-// AGENT: This shouldn't be a type. Who defines what page is, it's not a injectable component, it's the file system structure itself

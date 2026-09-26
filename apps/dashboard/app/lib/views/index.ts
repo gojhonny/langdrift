@@ -1,1 +1,7 @@
-export { DashboardView } from './dashboard-view/dashboard-view'
+export { Decisions } from './decisions/decisions'
+export { Evidence } from './evidence/evidence'
+export { Evolution } from './evolution/evolution'
+export { Overview } from './overview/overview'
+export { People } from './people/people'
+export { Reports } from './reports/reports'
+export { Settings } from './settings/settings'

@@ -4,7 +4,9 @@
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "typecheck": "tsc --noEmit",
     "build": "sh ../../cli/src/runtime/next-build.sh build",
-    "start": "sh ../../cli/src/runtime/next-start.sh 3000"
+    "start": "sh ../../cli/src/runtime/next-start.sh 3000",
+    "test:browser": "node e2e/run.mjs compare",
+    "test:browser:baseline": "node e2e/run.mjs capture"
   },
   "dependencies": {
     "@repo/design-tokens": "workspace:*",
@@ -22,6 +24,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

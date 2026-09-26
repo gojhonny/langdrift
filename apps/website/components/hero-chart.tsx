@@ -2,17 +2,12 @@
 
 import { useAtom, useAtomValue } from 'jotai'
 import { useLocale, useTranslations } from 'next-intl'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
-import { getHeroPoints } from '@lib/hero-demo-data'
 import { ProductVisionCurve } from '@repo/react/ui/product-vision-curve'
 import { heroSelectionAtom, selectedPointAtom } from '@state'
 
-export function useHeroPoints() {
-  const t = useTranslations('demo')
-  const locale = useLocale()
-  return useMemo(() => getHeroPoints(t, locale), [locale, t])
-}
+import { useHeroPoints } from './hero-chart/use-hero-points.hook'
 
 export function HeroChart() {
   const t = useTranslations('demo')
@@ -53,6 +48,7 @@ export function HeroChart() {
     frame.addEventListener('animationcancel', stopInterruptedPassage)
     passage.current = !passage.current
     frame.dataset.passage = passage.current ? 'a' : 'b'
+
     return () => {
       frame.removeEventListener('animationcancel', stopInterruptedPassage)
       delete frame.dataset.passage

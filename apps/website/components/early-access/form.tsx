@@ -34,17 +34,16 @@ declare global {
   }
 }
 
-export function EarlyAccessForm({
-  copy,
-  helperId,
-  locale,
-  source
-}: {
+interface EarlyAccessFormProps {
   copy: EarlyAccessMessages
   helperId: string
   locale: WebsiteLocale
   source: 'landing' | 'pricing'
-}) {
+}
+
+export function EarlyAccessForm(props: EarlyAccessFormProps) {
+  const { copy, helperId, locale, source } = props
+
   const [formState, setFormState] = useState(createEarlyAccessFormState)
   const [hydrated, setHydrated] = useState(false)
   useEffect(() => {
@@ -82,6 +81,7 @@ export function EarlyAccessForm({
           update((draft) => {
             draft.status = 'challenge-error'
           })
+
           return
         }
         submitting.current = true

@@ -2,27 +2,17 @@
 
 import { useAtom } from 'jotai'
 import { useLocale, useTranslations } from 'next-intl'
-import type { MouseEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
-import { websiteLinks } from '@app/app-links'
-import { Link, usePathname, useRouter } from '@i18n/navigation'
+import { Link } from '@i18n/navigation'
 import { Brand } from '@repo/react/ui/brand'
-import { LanguageSwitcher } from '@repo/react/ui/language-switcher'
 import { themeAtom } from '@state'
 
+import { AccessLinks } from './website-header/access-links'
+import { drawerFocus } from './website-header/drawer-focus'
+import { LanguagePill } from './website-header/language-pill'
+
 import './website-header.css'
-
-const languages = [
-  { locale: 'en', label: 'EN', name: 'english' },
-  { locale: 'pt-BR', label: 'PT-BR', name: 'portuguese' },
-  { locale: 'zh-Hant', label: '中文', name: 'chinese' },
-  { locale: 'ja', label: 'あ', name: 'japanese' }
-] as const
-
-// Only set by a drawer interaction in the browser; survives the locale route
-// remount long enough to return focus to the replacement navigation trigger.
-let pendingDrawerFocusLocale: (typeof languages)[number]['locale'] | undefined
 
 const sections = [
   { label: 'product', href: '/#why' },
@@ -31,94 +21,6 @@ const sections = [
   { label: 'voice', href: '/#voice' },
   { label: 'plans', href: '/pricing' }
 ] as const
-
-function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
-  const locale = useLocale()
-  const t = useTranslations('header')
-  const pathname = usePathname()
-  const router = useRouter()
-  const [urlSuffix, setUrlSuffix] = useState('')
-
-  useEffect(() => {
-    const syncUrlSuffix = () => {
-      setUrlSuffix(`${window.location.search}${window.location.hash}`)
-    }
-    syncUrlSuffix()
-    window.addEventListener('hashchange', syncUrlSuffix)
-    window.addEventListener('popstate', syncUrlSuffix)
-    return () => {
-      window.removeEventListener('hashchange', syncUrlSuffix)
-      window.removeEventListener('popstate', syncUrlSuffix)
-    }
-  }, [])
-
-  function selectLanguage(
-    event: MouseEvent<HTMLAnchorElement>,
-    nextLocale: (typeof languages)[number]['locale']
-  ) {
-    if (
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    ) {
-      return
-    }
-
-    event.preventDefault()
-    if (fromDrawer && nextLocale !== locale) {
-      pendingDrawerFocusLocale = nextLocale
-    }
-    router.replace(
-      `${pathname}${window.location.search}${window.location.hash}`,
-      { locale: nextLocale, scroll: false }
-    )
-  }
-
-  return (
-    <LanguageSwitcher
-      className={fromDrawer ? '[&_a]:min-h-11' : undefined}
-      currentLocale={locale}
-      label={t('language')}
-      options={languages.map((language) => ({
-        locale: language.locale,
-        label: language.label,
-        name: t(`languages.${language.name}`),
-        href: `${pathname}${urlSuffix}`
-      }))}
-      renderLink={(language, linkProps) => (
-        <Link
-          {...linkProps}
-          locale={language.locale}
-          onClick={(event) => selectLanguage(event, language.locale)}
-          scroll={false}
-        />
-      )}
-    />
-  )
-}
-
-function AccessLinks({ onNavigate }: { onNavigate?: () => void }) {
-  const t = useTranslations('header')
-
-  return (
-    <>
-      {/* Docs is an external, environment-configured origin: a plain anchor
-          keeps the i18n router from prefixing or rewriting it. */}
-      <a className="website-docs-link" href={websiteLinks.docs}>
-        {t('docs')}
-      </a>
-      <Link
-        className="website-get-started"
-        href="/#early-access"
-        onClick={onNavigate}
-      >
-        {t('getStarted')}
-      </Link>
-    </>
-  )
-}
 
 export function WebsiteHeader() {
   const t = useTranslations('header')
@@ -147,6 +49,7 @@ export function WebsiteHeader() {
       setScrolled(!entry.isIntersecting)
     })
     observer.observe(sentinel)
+
     return () => observer.disconnect()
   }, [])
 
@@ -158,12 +61,13 @@ export function WebsiteHeader() {
   }, [locale])
 
   useEffect(() => {
-    if (pendingDrawerFocusLocale !== locale) return
+    if (drawerFocus.locale !== locale) return
     const frame = requestAnimationFrame(() => {
-      if (pendingDrawerFocusLocale !== locale) return
+      if (drawerFocus.locale !== locale) return
       triggerRef.current?.focus({ preventScroll: true })
-      pendingDrawerFocusLocale = undefined
+      drawerFocus.locale = undefined
     })
+
     return () => cancelAnimationFrame(frame)
   }, [locale])
 
@@ -189,6 +93,7 @@ export function WebsiteHeader() {
       if (desktop.matches) setDrawerOpen(false)
     }
     desktop.addEventListener('change', closeOnDesktop)
+
     return () => desktop.removeEventListener('change', closeOnDesktop)
   }, [])
 

@@ -4,11 +4,15 @@ import { visionLoopMessages } from '@messages/vision-loop/index'
 import { VisionLoopEvidenceDemo } from './vision-loop-evidence-demo'
 import './vision-loop-evidence.css'
 
-export function VisionLoopEvidenceSection({
-  locale
-}: {
+interface VisionLoopEvidenceSectionProps {
   locale: WebsiteLocale
-}) {
+}
+
+export function VisionLoopEvidenceSection(
+  props: VisionLoopEvidenceSectionProps
+) {
+  const { locale } = props
+
   const copy = visionLoopMessages[locale]
 
   return (
