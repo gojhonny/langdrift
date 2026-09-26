@@ -33,11 +33,13 @@ A question or task outside that cycle does not enter it.
 
 When implementing or reviewing a change, read the spec that applies and the references that spec uses. Do not read every artifact.
 
+For frontend work, read `.agents/guardrails/README.md` and the canonical guardrails it selects for the task's scope.
+
 Choose checks from the workflow and from commands that exist in the repo. A former harness checklist is not evidence that this change is ready.
 
 ## Cursor
 
-`.cursor/README.md` is Cursor-specific configuration. With an empty hook registry, no Cursor hook is active. `rules/`, `.agents/guardrails/`, and `.agents/hooks/` are reserved directories, not implemented mechanisms. A config file does not prove that a mechanism ran or that it works.
+`.cursor/README.md` is Cursor-specific configuration. Its rules point to canonical guardrails; their presence does not prove Cursor activated them. With an empty hook registry, no Cursor hook is active. `.agents/hooks/` remains reserved for executable mechanisms. A config file does not prove that a mechanism ran or that it works.
 
 ## Limits
 

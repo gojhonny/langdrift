@@ -1,0 +1,7 @@
+---
+description: Canonical guardrails for React surface code, frontend app configuration and styling.
+globs: apps/**,packages/react/**,packages/design-tokens/**
+alwaysApply: false
+---
+
+Read @.agents/guardrails/README.md and load the canonical guardrails selected for the current frontend task.

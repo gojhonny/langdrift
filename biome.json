@@ -40,6 +40,75 @@
   },
   "overrides": [
     {
+      "includes": ["apps/**", "packages/react/**", "packages/design-tokens/**"],
+      "assist": {
+        "actions": {
+          "source": {
+            "organizeImports": {
+              "level": "on",
+              "options": {
+                "groups": [
+                  {
+                    "source": [
+                      "**",
+                      "!:ALIAS:",
+                      "!:PATH:",
+                      "!@repo/**",
+                      "!@langdrift/**",
+                      "!@components",
+                      "!@components/**",
+                      "!@i18n/**",
+                      "!@views",
+                      "!@atoms",
+                      "!@domain",
+                      "!@state/**",
+                      "!@template/**",
+                      "!@menu/**"
+                    ]
+                  },
+                  ":BLANK_LINE:",
+                  [
+                    ":ALIAS:",
+                    "@repo/**",
+                    "@langdrift/**",
+                    "@components",
+                    "@components/**",
+                    "@i18n/**",
+                    "@views",
+                    "@atoms",
+                    "@domain",
+                    "@state/**",
+                    "@template/**",
+                    "@menu/**"
+                  ],
+                  ":BLANK_LINE:",
+                  ":PATH:"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": ["..", "../**", "**/..", "**/../**"],
+                    "message": "Parent-directory traversal is prohibited. Use an ownership-aware absolute import when leaving the local module boundary."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "json": { "formatter": { "expand": "always" } }
+    },
+    {
       "includes": ["packages/react/**"],
       "linter": {
         "rules": {

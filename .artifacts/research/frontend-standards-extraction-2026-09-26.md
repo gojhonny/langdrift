@@ -1,6 +1,8 @@
-# Frontend Standards Extraction — candidate research
+# Frontend Standards Extraction — evidence and promotion record
 
-Status: initial extraction; no promotion approved. This is research evidence, not a guardrail, ADR, spec, or permission to implement. The owner requested an inventory before any promotion or validation work.
+Status: the owner approved canonicalization after the initial extraction. The [canonicalization record](#canonicalization-record) below records the approved resolutions, promoted destinations, held scope and verification. Canonical policy lives in [.agents/guardrails/](../../.agents/guardrails/README.md) and the accepted mechanical configuration, not in this research file. The remaining Dashboard validation set has not been refactored.
+
+The extraction sections below preserve the earlier snapshot and conclusions, including their then-pending approval and unresolved questions. They are historical evidence, not a second active policy or a claim that approval is still missing. Subsequent owner resolutions and runtime verification take precedence as recorded at the end.
 
 ## Snapshot and provenance
 
@@ -183,7 +185,7 @@ Hashes bind the extraction to the owner's uncommitted evidence. No environment v
 
 The provenance investigation used local primary evidence only. The separate tooling-capability lookup consulted official Biome documentation, but the installed schema and read-only probes govern the version-specific assessment below; external style guides did not supply candidate standards. Neither investigation read `.drifts/`, modified production code, ran build/runtime checks, or performed Git mutations. Existing audit reports bind earlier snapshots and do not certify these dirty edits. The “85% complete” estimate is owner context, not a measured code-completeness percentage. Repeated code from a shared legacy ancestor or generated assisted scaffold does not count as independently refactored examples.
 
-## Candidate inventory
+## Candidate inventory — initial extraction
 
 There are **40 entries**: 12 general frontend, six Next.js, three Tailwind, seven conditional Jotai, seven tooling/mechanical, one architectural hold, and four unresolved interpretations. This is an inventory for owner approval, **not 40 accepted standards**.
 
@@ -412,7 +414,7 @@ The owner's remaining “~15%” is a future holdout, not a measured percentage 
 
 Website, SSO and Mobile remain **later validation targets**. Their existing style was not used to override Dashboard evidence, and their regression builds/smoke tests were not run for this extraction.
 
-## Questions requiring owner interpretation
+## Questions recorded during extraction — subsequently resolved
 
 1. **U01 — Did “ONE comment per file” mean “one component per file,” or is a literal comment-count restriction intended?** Recommendation: treat it as the component rule and avoid a numerical comment quota, unless the owner confirms otherwise.
 2. **U02 — Does the bare `@components` requirement apply to consumers of a module's public entrypoint, or prohibit every first-party alias subpath?** Recommendation: use the public entrypoint across that module boundary, retain meaningful subpaths when they identify their own public modules, and keep the already-approved local `./` rule.
@@ -421,8 +423,143 @@ Website, SSO and Mobile remain **later validation targets**. Their existing styl
 
 No further question is needed about Jotai being optional, local React state, no parent traversal, alias naming ownership, log removal, root app placement, or the already-resolved paths/baseUrl cleanup. Deployment alternatives remain parked rather than expanding this first interview.
 
-## Handoff / exit state
+## Initial extraction handoff — historical
 
 The initial extraction is complete at the stated snapshot. This research file is the only agent-authored repository change from this step. All 16 owner-delta SHA-256 hashes were rechecked after synthesis with no mismatch; the inventory has 40 unique entries and the ledger covers all 29 markers plus 12 numbered notes. No guardrail, ADR, Cursor rule, Biome configuration, production file, or Git history was changed. No final standard is declared stable.
 
-**Stop here for owner approval of this inventory and answers to U01–U04.** Approval has not been inferred, no later SDD phase has been started, and the remaining Dashboard validation work has not begun.
+At that handoff, work stopped for owner approval and answers to U01–U04. Approval had not been inferred, no later SDD phase had been started, and the remaining Dashboard validation work had not begun.
+
+## Canonicalization record
+
+### Authority and snapshot
+
+The owner explicitly approved the candidate inventory for promotion and supplied U01–U04 resolutions in the attachment headed “The candidate inventory is approved for promotion. Proceed now with canonicalization.” This authorizes canonical guardrails, validated Biome configuration and thin Cursor activation pointers, not another planning step, Dashboard refactor, SDD phase, or Git publication.
+
+Promotion base: `8910eaccb493972daa09f88ef32e32a72ad2c5fd`, branch `refactor/dashboard-organization`; the tree was clean before this step. That commit contains the earlier extraction and its manual-source snapshot. The older base/HEAD/dirty hashes above still describe the extraction moment, not the promotion's current Git status.
+
+### Owner resolutions
+
+| Resolution | Approved meaning | Disposition |
+| --- | --- | --- |
+| U01 | “ONE comment” was a mistake: one React component per component file and one custom hook per `.hook.ts`; no numerical comment restriction. | Merged into F03/F04. |
+| U02 | Local `./` is allowed, parent traversal is prohibited, cross-boundary imports are absolute; developers own meaningful alias names/abstractions. Public barrels are optional and meaningful absolute subpaths are allowed. | Merged into F01/F12; bare aliases are not mandatory. |
+| U03 | Enum instruction applies specifically to EvolutionClassification. | Dashboard-local pending implementation; broader enum policy remains held. No type was changed in this step. |
+| U04 | CSS is limited to required/strongly implied integration, including technically necessary theme/token work. Current split CSS is unfinished migration unless separation is technically necessary. | Merged into TW01. The earlier “split when useful” recommendation was not accepted; convenience alone is insufficient. |
+
+### Promoted and merged candidates
+
+There are 35 substantive accepted candidates, one architectural hold and four resolved interpretation entries. They are consolidated into four guardrails and supported mechanical configuration, not 40 independent rules/files. Approval of reusable principles does not promote every literal filename or folder appearing in their evidence.
+
+| Candidate IDs | Canonical destination | Consolidation / boundary |
+| --- | --- | --- |
+| F01, F12, U02 | [frontend — ownership and public boundaries](../../.agents/guardrails/frontend.md#ownership-and-public-boundaries) | One ownership-aware import/public API principle; optional explicit named barrels, meaningful subpaths. |
+| F02, F03, F04, U01 | [frontend — components, hooks and composition](../../.agents/guardrails/frontend.md#components-hooks-and-composition) | Props interface/argument/body handling forms one contract; separate component/hook files do not imply one arbitrary function or comment per file. |
+| F05 | [frontend — composition](../../.agents/guardrails/frontend.md#components-hooks-and-composition) | General responsibility composition; no blanket ban on injection, render props or configurable components. |
+| F06, F07 | [frontend — shared UI ownership](../../.agents/guardrails/frontend.md#shared-ui-ownership) | Generic primitives and common icon access have a shared owner; app business compositions stay local. |
+| F08 | [frontend — domain/type ownership](../../.agents/guardrails/frontend.md#ownership-and-public-boundaries) | Domain type ownership and type-only domain imports promote; exact global folders/aliases/suffixes and an enum preference do not. |
+| F09, F10, M07 | [frontend — readable control flow](../../.agents/guardrails/frontend.md#readable-control-flow) | Descriptive bindings, explicit consumed async responses and statement spacing; void side effects do not require invented unused response bindings. |
+| F11, M01, M02, M03, M04 | [frontend — application configuration and documentation](../../.agents/guardrails/frontend.md#application-configuration-and-documentation) | Product-oriented docs; single alias config/no baseUrl; meaningful Turbo overrides; unpublished app manifests; direct commands. |
+| NJS01, NJS02, NJS03 | [nextjs — application and route ownership](../../.agents/guardrails/nextjs.md#application-and-route-ownership) | Root app/ and route-specific identity/metadata. NJS02 references F05 rather than repeating it. |
+| NJS04, NJS06 | [nextjs — navigation and server boundaries](../../.agents/guardrails/nextjs.md#navigation-and-server-boundaries) | Ordinary internal client navigation and server-owned configuration; recovery/fragment/external contexts are distinguished. |
+| NJS05 | [nextjs — localization ownership](../../.agents/guardrails/nextjs.md#localization-ownership) | App-specific i18n location promotes; generic language-control ownership references F06. Locale list, cookie and Settings placement stay local. |
+| TW01, U04 | [tailwind — styling and integration surfaces](../../.agents/guardrails/tailwind.md#application-styling-and-integration-surfaces) | One styling rule owns the narrow CSS exception; no separate CSS policy or current file-layout standard. |
+| TW02, TW03 | [tailwind — class composition and theme roles](../../.agents/guardrails/tailwind.md#class-composition-and-theme-roles) | Conflict-aware cn and semantic theme roles promote without exact helper suffix, palette or arbitrary-value prohibition. |
+| J01, J02, J03, J04 | [jotai — scope and state ownership](../../.agents/guardrails/jotai.md) | Optional app choice; local interaction remains local; cohesive domains and fine-grained independently consumed units. J04's one-atom/.atom.ts realization stays Dashboard-local. |
+| J05, J06 | [jotai — atom definitions and updates](../../.agents/guardrails/jotai.md#atom-definitions-and-updates) | Unnecessary client boundaries removed as a principle; ordinary primitive atoms; Immer only when complex state benefits. No atom files changed. |
+| J07 | [jotai — inspectability](../../.agents/guardrails/jotai.md#inspectability) | Useful diagnostic awareness, not the old registry/logger or automatic transition logs. |
+| M05, M06 | [biome.json](../../biome.json) and the enforcement verification below | Configuration, rather than duplicate guardrail prose, owns validated JSON formatting and import grouping. Scope and execution limits are reported explicitly. |
+
+### Held and Dashboard-local scope
+
+- **A01 remains held.** No deployment packaging/environment architecture was selected and no ADR was created.
+- **U03's broader enum policy remains unpromoted.** Only EvolutionClassification has the owner's specific instruction; implementation is left to the later Dashboard slice.
+- **J04's file mechanics and F08's exact domain layout stay local:** no universal `.atom.ts`/`.domain.ts`, global atoms/domain buckets or fixed alias vocabulary. The reusable ownership/granularity principles do promote.
+- **No promotion** of the current split CSS layout, `.fmt.ts` helper cluster/location/defaults, forced one-second skeleton, blanket route-state sibling scaffolding, system-theme addition, locale list/cookie/UTC/control placement, fixture metrics, exact route groups, or old logger mechanism. These retain the classifications in the initial extraction; this step did not implement or remove them.
+- `apps/dashboard/AGENT_NOTES.md` and every `AGENT:` comment remain intact until the validation cycle is complete. Their existence is evidence, not an alternative canonical policy.
+
+### Documentation and activation verification
+
+`writing-for-agents` guided consolidation: each reusable meaning has one canonical location; specialized guardrails link to general ownership/composition instead of restating it. The guardrails README selects by task scope. AGENTS.md and the harness/Cursor READMEs received only the navigation/status changes needed to stop calling the promoted documents nonexistent reserved mechanisms.
+
+An independent read-only agent checked all four guardrails, their index and activation/navigation files against the approval and all 40 inventory entries. No missing accepted principle, contradiction or duplicate canonical policy was found. Its optional async-binding precision suggestion was applied to avoid requiring meaningless variables for void side effects.
+
+The single [frontend.mdc](../../.cursor/rules/frontend.mdc) contains frontmatter and a pointer to the guardrails index, not policy text. Its form follows the [official Cursor rules documentation](https://cursor.com/docs/rules); actual discovery/attachment in a running Cursor session remains **unverified**. The hook registry is unchanged and empty.
+
+### Mechanical verification
+
+The installed Biome **2.3.15** executable, rather than schema hints alone, was exercised against positive and negative fixtures. New configuration applies to `apps/**`, `packages/react/**` and `packages/design-tokens/**`; it does not impose frontend rules on SDK/core or the messaging runtime. Existing interface-style eligible type definitions, kebab-case filenames and the shared React image-rule exception are preserved. No app/package source was rewritten.
+
+**Correction to the initial capability assessment:** the bundled schema lists `null` for import-group separation, but the actual 2.3.15 configuration deserializer rejects it. The executable accepts `:BLANK_LINE:`, and output/negative-fixture tests confirm that it inserts the approved group breaks. The earlier research assertion that the installed version required `null` was wrong; it is retained only as historical evidence, not implementation advice.
+
+| Enforcement added | Actual coverage | Limit / execution path |
+| --- | --- | --- |
+| F01: `style.noRestrictedImports` at error level | Parent traversal at the beginning or embedded in module specifiers, including `..`, `../parent`, nested traversal, `./nested/../peer`, and `@components/../peer`. Tested on named/type ESM imports, named/wildcard reexports, side-effect imports, string-literal dynamic imports and TypeScript import-equals. | Native rule does **not** cover ordinary `require()` calls, import-type expressions, template-literal/computed dynamic imports or backslash paths. Semantic ownership of an allowed local `./` path remains reviewed. Runs under existing lint. |
+| M06: scoped organizeImports assist | Third-party imports, first-party absolute imports, then relative imports, separated by blank lines. Tests distinguish scoped third-party packages from actual app aliases/workspace packages and allow meaningful absolute subpaths. | Explicit first-party matchers need maintenance when aliases change; they do not constrain developer naming. Side-effect imports and detached comments remain barriers. Runs under `biome check` with assists, **not** the existing `biome lint` command. |
+| M05: scoped `json.formatter.expand: always` | Expanded JSON object/array structure for frontend configs; compact negative fixtures fail and expanded output passes with identical parsed data. | A broad setting would alter 21 of 42 inspected tracked JSON/JSONC files, including a Go event fixture and NATS configuration. That broad scope was rejected. Frontend-only expansion affects 14 of 28 frontend files; root/backend/core/sdk formatting is unchanged. Runs under formatting/check, not lint. |
+
+The JSON impact comparison formatted to stdout only and compared parsed results. All inspected semantic values were preserved. Fourteen existing frontend configurations will need formatting when their migration is authorized; no mass rewrite was performed here. Enabling the scoped formatter adds known frontend formatting debt without changing unrelated runtime fixtures.
+
+#### Reproducible checks and results
+
+| Command / check | Result on this promotion snapshot |
+| --- | --- |
+| `node --test .agents/guardrails/biome.test.mjs` | **PASS: 12 tests.** Includes 42 rejected path/form combinations, eight allowed module paths, five explicit native gaps, scope checks, grouping positive/negative/idempotent cases, attached/detached comments, side-effect barriers, JSON semantic preservation and the existing React override. |
+| `node_modules/.bin/biome check biome.json` | **PASS:** configuration parses and its own formatting/lint/assist check passes. |
+| `node_modules/.bin/biome lint apps/dashboard --files-ignore-unknown=true` | **PASS:** 146 files. This does not prove compliance with human-reviewed guardrails or import/JSON assists. |
+| `node_modules/.bin/biome lint . --files-ignore-unknown=true` | **FAIL:** 392 files inspected; 111 now-detected parent-traversal errors in existing source and one pre-existing informational `noUselessFragments` diagnostic. No fixes applied. |
+| `node_modules/.bin/biome check apps packages/react packages/design-tokens --formatter-enabled=false --linter-enabled=false --files-ignore-unknown=true` | **FAIL:** 352 files inspected; 65 existing organizeImports diagnostics. No fixes applied. |
+| Read-only `biome format` on the 28 tracked frontend JSON/JSONC files | **FAIL:** 14 existing formatting differences. The separate before/after stdout comparison across 42 tracked JSON/JSONC files confirms only those 14 frontend files change under the scoped setting. |
+| Markdown links/anchors, activation-pointer contents, source hashes, candidate disposition coverage, `git diff --check` | **PASS:** ten Markdown documents checked, no broken links; Cursor body contains only the index pointer; all 16 original owner-source hashes unchanged; all 40 candidates accounted for; no whitespace errors. |
+
+Current migration backlog, not edits introduced by this step:
+
+| Surface | Parent-traversal errors / affected files | Import-group diagnostics |
+| --- | --- | ---: |
+| Dashboard | 0 / 0 | 12 |
+| Docs | 8 / 6 | 2 |
+| Mobile | 0 / 0 | 2 |
+| SSO | 7 / 7 | 1 |
+| Website | 93 / 41 | 27 |
+| Shared React | 3 / 2 | 21 |
+| Total | 111 / 56 | 65 |
+
+These failures are **unresolved adoption work**. They were not fixed because the owner explicitly excluded refactoring the validation set and other production changes. Root lint now reports the approved restriction; it is not green. Existing lint/CI scripts were left intact, so import assists and formatting must be checked separately with the commands above. No build, application typecheck, browser audit, or Cursor runtime attachment test was run for this documentation/config-only change.
+
+To reproduce the frontend JSON check without including unrelated root/backend files:
+
+```sh
+node --input-type=module <<'JS'
+import { execFileSync, spawnSync } from 'node:child_process'
+const files = execFileSync('git', [
+  'ls-files', '-z', '--', 'apps', 'packages/react', 'packages/design-tokens'
+], { encoding: 'utf8' }).split('\0').filter(file => /\.jsonc?$/.test(file))
+const result = spawnSync('./node_modules/.bin/biome', [
+  'format', '--files-ignore-unknown=true', ...files
+], { stdio: 'inherit' })
+process.exitCode = result.status ?? 1
+JS
+```
+
+#### Human review and future custom enforcement
+
+The fixture suite invokes Biome; it does not implement a second policy engine. These accepted rules still require human review, with custom automation deferred:
+
+- **F01 native gaps and semantic local boundaries:** stronger module-specifier analysis would be needed for uncovered syntactic forms; ownership cannot be inferred from string length.
+- **F02–F04:** native interface preference does not require named props, initial body destructuring, one component per file, or one hook per `.hook.ts`. These need component/hook-aware syntax analysis.
+- **F05–F08/F12:** composition, generic UI/icon ownership, domain/package ownership and public API intent need review. Targeted manifest/import/export checks could cover specific mechanical parts later. Global useImportType was not enabled beyond the approved domain-contract obligation.
+- **F09/F10/M07:** descriptive names, explicit async absence/failure handling and statement spacing are not enforced by these Biome changes. A syntax checker could catch selected naming lengths, optional chaining in an await-containing statement and padding, but semantic clarity remains reviewed.
+- **NJS01–NJS06:** root app placement, route identity/metadata, ordinary navigation versus recovery, server configuration boundaries and localization ownership are not certified by these config checks.
+- **TW01–TW03:** technical necessity of integration CSS, appropriate cn use and semantic theme roles require review; extension/glob checks alone cannot establish necessity.
+- **J01–J07:** state lifetime, cohesive domain ownership, granularity, necessary client boundaries, appropriate Immer use and useful inspectability remain reviewed. No logger or atom rewrite was added.
+- **M01–M04:** paths/baseUrl/config inheritance, meaningful Turbo overrides, publication exceptions and useful versus passthrough wrappers would need scoped manifest/config analysis; no large checker framework was introduced.
+
+#### Verification binding and exit
+
+The config/tests verified above have these SHA-256 identities:
+
+| File | SHA-256 |
+| --- | --- |
+| `biome.json` | `2f9a6df421aaab1320640b07d65e1eea90c75398c821198bed7fecb2e8167b2c` |
+| `.agents/guardrails/biome.test.mjs` | `ccfd21746b7a0427cc1f59a473694445dea491606ad552046dca8e8f3b9db1d2` |
+
+Canonicalization changes are limited to the four guardrails, their index/test fixture, the research record, Biome configuration, one Cursor activation pointer and the existing navigation READMEs/AGENTS entrypoint. The production diff is empty, the notes are retained, and no ADR, spec, ticket, custom policy-checker framework, hook or Git publication was created. New rules are canonical; adoption is not yet complete and the Frontend Standard is not declared validation-stable. Stop after this promotion and verification; the remaining Dashboard validation phase requires a separate owner instruction.
