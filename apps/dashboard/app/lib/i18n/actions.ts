@@ -1,6 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
+
 import { dashboardLocaleCookie, isDashboardLocale } from './config'
 
 export async function setDashboardLocale(locale: string) {

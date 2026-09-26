@@ -4,8 +4,15 @@ import { executiveReviewMessages } from '@messages/executive-review/index'
 import { ExecutiveReviewDemo } from './executive-review-demo'
 import './executive-review.css'
 
-export function ExecutiveReviewSection({ locale }: { locale: WebsiteLocale }) {
+interface ExecutiveReviewSectionProps {
+  locale: WebsiteLocale
+}
+
+export function ExecutiveReviewSection(props: ExecutiveReviewSectionProps) {
+  const { locale } = props
+
   const copy = executiveReviewMessages[locale]
+
   return (
     <section
       id="executive-review"

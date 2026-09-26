@@ -1,38 +1,20 @@
 'use client'
 
-import type { DashboardSection } from '@domain'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState, type ReactNode } from 'react'
-import { DashboardPageSkeleton } from './dashboard-page-skeleton'
+import { type ReactNode } from 'react'
 
-function TimedPageGate({
-  children,
-  section
-}: {
+import type { DashboardSection } from '@domain'
+
+import { TimedPageGate } from './timed-page-gate'
+
+interface DashboardPageGateProps {
   children: ReactNode
   section: DashboardSection
-}) {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setReady(true), 1000)
-    return () => window.clearTimeout(timer)
-  }, [])
-
-  return (
-    <div aria-busy={!ready}>
-      {ready ? children : <DashboardPageSkeleton section={section} />}
-    </div>
-  )
 }
 
-export function DashboardPageGate({
-  children,
-  section
-}: {
-  children: ReactNode
-  section: DashboardSection
-}) {
+export function DashboardPageGate(props: DashboardPageGateProps) {
+  const { children, section } = props
+
   const pathname = usePathname()
 
   return (

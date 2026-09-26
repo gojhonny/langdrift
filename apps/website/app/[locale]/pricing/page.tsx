@@ -22,6 +22,7 @@ export async function generateMetadata({
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   const copy = conversionMessages[locale].plans
+
   return {
     title: copy.metadataTitle,
     description: copy.metadataDescription,
@@ -40,10 +41,13 @@ export async function generateMetadata({
   }
 }
 
-export default async function PricingPage({ params }: PricingPageProps) {
+export default async function PricingPage(props: PricingPageProps) {
+  const { params } = props
+
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)
+
   return (
     <>
       <StateLogger />

@@ -1,8 +1,10 @@
-import { routeStateMessages } from '@i18n/route-state.messages'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { NextIntlClientProvider } from 'next-intl'
 import type { ReactNode } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+
+import { routeStateMessages } from '@i18n/route-state.messages'
+
 import { DashboardNotFound } from './dashboard-not-found'
 import { DashboardPageGate } from './dashboard-page-gate'
 import { DashboardPageSkeleton } from './dashboard-page-skeleton'

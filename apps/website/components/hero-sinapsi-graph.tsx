@@ -38,6 +38,7 @@ export function HeroSinapsiGraph() {
     }
 
     element.addEventListener('sinapsi-node-click', selectMovement)
+
     return () =>
       element.removeEventListener('sinapsi-node-click', selectMovement)
   }, [graph, points, setSelectedPoint])
@@ -64,6 +65,7 @@ export function HeroSinapsiGraph() {
     }
 
     void mountGraph()
+
     return () => {
       cancelled = true
       window.clearTimeout(timeout)

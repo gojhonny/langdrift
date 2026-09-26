@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from 'next'
-import type { ReactNode } from 'react'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
+import type { ReactNode } from 'react'
 
 import './globals.css'
+
 import { DashboardShell } from './lib/components/dashboard-shell/dashboard-shell'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,25 +26,19 @@ export const viewport: Viewport = {
   themeColor: '#fafafa'
 }
 
-// AGENT: we should always define interface for props, and must be interface, not type
 interface RootLayoutProps {
   children: ReactNode
 }
 
-/**
- *
- * AGENT: we NEVER destructucture props in function arguments
- */
 export default async function RootLayout(props: RootLayoutProps) {
-  // AGENT: the first line should be reserved for the props destructuring followed by a space
   const { children } = props
 
   const locale = await getLocale()
 
   // AGENT: returns always have one space above the return statement
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className="motion-reduce:transition-none">
+    <html className="min-h-full" lang={locale} suppressHydrationWarning>
+      <body className="min-h-full bg-background font-editorial text-ink [transition:background_180ms_ease,color_180ms_ease] motion-reduce:transition-none [&_:where(button:focus-visible,a:focus-visible,input:focus-visible)]:outline-2 [&_:where(button:focus-visible,a:focus-visible,input:focus-visible)]:outline-solid [&_:where(button:focus-visible,a:focus-visible,input:focus-visible)]:outline-brand [&_:where(button:focus-visible,a:focus-visible,input:focus-visible)]:outline-offset-2">
         <NextIntlClientProvider>
           <DashboardShell>{children}</DashboardShell>
         </NextIntlClientProvider>

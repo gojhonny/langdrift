@@ -23,11 +23,13 @@ import { routing } from '@i18n/routing'
 import { getHeroPoints } from '@lib/hero-demo-data'
 import { AnimatedAvatarGroup, ChromaText } from '@repo/react/vendors/smoothui'
 
-export default async function WebsitePage({
-  params
-}: {
+interface WebsitePageProps {
   params: Promise<{ locale: string }>
-}) {
+}
+
+export default async function WebsitePage(props: WebsitePageProps) {
+  const { params } = props
+
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)

@@ -8,7 +8,9 @@ import {
 } from '@testing-library/react'
 import { NextIntlClientProvider } from 'next-intl'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { shellMessages } from '@i18n/shell.messages'
+
 import { setDashboardLocale } from './actions'
 import { dashboardLocaleCookie } from './config'
 import { DashboardLanguageSettings } from './language-settings'

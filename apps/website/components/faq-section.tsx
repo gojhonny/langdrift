@@ -14,8 +14,15 @@ const faqIds = [
   'availability'
 ] as const
 
-export function FaqSection({ locale }: { locale: WebsiteLocale }) {
+interface FaqSectionProps {
+  locale: WebsiteLocale
+}
+
+export function FaqSection(props: FaqSectionProps) {
+  const { locale } = props
+
   const copy = conversionMessages[locale].faq
+
   return (
     <section
       className="conversion-section faq-section"

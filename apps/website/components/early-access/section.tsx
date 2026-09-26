@@ -4,15 +4,15 @@ import { earlyAccessMessages } from '@messages/early-access'
 import { EarlyAccessForm } from './form'
 import './early-access.css'
 
-export function EarlyAccessSection({
-  locale,
-  source,
-  compact = false
-}: {
+interface EarlyAccessSectionProps {
   locale: WebsiteLocale
   source: 'landing' | 'pricing'
   compact?: boolean
-}) {
+}
+
+export function EarlyAccessSection(props: EarlyAccessSectionProps) {
+  const { locale, source, compact = false } = props
+
   const copy = earlyAccessMessages[locale]
   const headingId = `early-access-${source}-heading`
   const helperId = `early-access-${source}-helper`

@@ -7,16 +7,16 @@ import {
   within
 } from '@testing-library/react'
 import { createStore, Provider } from 'jotai'
-import type { ComponentProps, ReactNode } from 'react'
 import { NextIntlClientProvider } from 'next-intl'
-import { getViewMessages } from '@i18n/messages'
-import { shellMessages } from '@i18n/shell.messages'
-import { routeStateMessages } from '@i18n/route-state.messages'
+import type { ComponentProps, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { DashboardShell } from '@components'
 import { themeAtom } from '@atoms'
-import { DashboardView } from '@views'
+import { DashboardShell } from '@components'
+import { getViewMessages } from '@i18n/messages'
+import { routeStateMessages } from '@i18n/route-state.messages'
+import { shellMessages } from '@i18n/shell.messages'
+import EvolutionPage from '@menu/evolution/page'
 
 const route = vi.hoisted(() => ({ pathname: '/overview' }))
 vi.mock('next/navigation', () => ({ usePathname: () => route.pathname }))
@@ -217,7 +217,7 @@ describe('Dashboard accessibility and voice lifecycle', () => {
     vi.useFakeTimers()
     render(
       <Provider>
-        <DashboardView section="evolution" />
+        <EvolutionPage />
       </Provider>,
       { wrapper: TestIntlProvider }
     )

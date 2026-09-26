@@ -5,8 +5,15 @@ import './conversion.css'
 
 const planIds = ['trial', 'plus', 'pro'] as const
 
-export function PlansSection({ locale }: { locale: WebsiteLocale }) {
+interface PlansSectionProps {
+  locale: WebsiteLocale
+}
+
+export function PlansSection(props: PlansSectionProps) {
+  const { locale } = props
+
   const copy = conversionMessages[locale].plans
+
   return (
     <section className="plans-section" aria-labelledby="plans-heading">
       <div className="plans-introduction">
@@ -17,6 +24,7 @@ export function PlansSection({ locale }: { locale: WebsiteLocale }) {
       <div className="plans-grid">
         {planIds.map((id) => {
           const plan = copy.cards[id]
+
           return (
             <article
               className="website-plan"

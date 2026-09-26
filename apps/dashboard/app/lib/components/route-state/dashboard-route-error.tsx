@@ -3,7 +3,13 @@
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
-export function DashboardRouteError({ retry }: { retry: () => void }) {
+interface DashboardRouteErrorProps {
+  retry: () => void
+}
+
+export function DashboardRouteError(props: DashboardRouteErrorProps) {
+  const { retry } = props
+
   const t = useTranslations('routeState')
 
   return (

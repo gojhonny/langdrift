@@ -50,7 +50,9 @@ export const viewport: Viewport = {
   themeColor: '#0b0b0c'
 }
 
-export default async function LocaleLayout({ children, params }: LayoutProps) {
+export default async function LocaleLayout(props: LayoutProps) {
+  const { children, params } = props
+
   const { locale } = await params
   if (!hasLocale(routing.locales, locale)) notFound()
   setRequestLocale(locale)

@@ -1,8 +1,10 @@
 'use client'
 
-import { LanguageSwitcher } from '@repo/react/ui/language-switcher'
 import { useLocale, useTranslations } from 'next-intl'
 import { useState, useTransition } from 'react'
+
+import { LanguageSwitcher } from '@repo/react/ui/language-switcher'
+
 import { setDashboardLocale } from './actions'
 
 const languages = [

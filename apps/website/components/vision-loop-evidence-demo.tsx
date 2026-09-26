@@ -3,86 +3,24 @@
 import { useId, useState } from 'react'
 
 import {
-  type EvidenceCopy,
   type ScenarioId,
   type VisionLoopMessages,
   visionLoopScenarios
 } from '@lib/vision-loop-content'
-import { AnimatedTabs, BasicAccordion } from '@repo/react/vendors/smoothui'
+import { AnimatedTabs } from '@repo/react/vendors/smoothui'
 
-type DemoProps = Pick<
-  VisionLoopMessages,
-  'labels' | 'scenarios' | 'selectorLabel'
->
+import { EvidenceRecord } from './vision-loop-evidence/evidence-record'
+import { PillarIcon } from './vision-loop-evidence/pillar-icon'
 
-function PillarIcon({ type }: { type: 'vision' | 'loop' | 'evidence' }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className="vle-pillar-icon"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {type === 'vision' ? (
-        <>
-          <circle cx="12" cy="12" r="8" />
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
-        </>
-      ) : type === 'loop' ? (
-        <path d="M19.4 8A8 8 0 0 0 5 5L3 8m0-5v5h5M4.6 16A8 8 0 0 0 19 19l2-3m0 5v-5h-5" />
-      ) : (
-        <path d="M7 3h7l4 4v14H6V3h1m7 0v5h4M9 12h6m-6 4h6" />
-      )}
-    </svg>
-  )
+interface DemoProps {
+  labels: VisionLoopMessages['labels']
+  scenarios: VisionLoopMessages['scenarios']
+  selectorLabel: VisionLoopMessages['selectorLabel']
 }
 
-function EvidenceRecord({
-  copy,
-  id,
-  sourceLabel
-}: {
-  copy: EvidenceCopy
-  id: string
-  sourceLabel: string
-}) {
-  return (
-    <li className="vle-evidence-record">
-      <span className="vle-record-kind">{copy.kindLabel}</span>
-      <h4>{copy.title}</h4>
-      <p>{copy.summary}</p>
-      <BasicAccordion
-        className="vle-source-context"
-        headingLevel={5}
-        items={[
-          {
-            id,
-            title: (
-              <>
-                {sourceLabel}
-                <span className="website-sr-only">: {copy.title}</span>
-              </>
-            ),
-            content: <p>{copy.sourceContext}</p>
-          }
-        ]}
-      />
-    </li>
-  )
-}
+export function VisionLoopEvidenceDemo(props: DemoProps) {
+  const { labels, scenarios, selectorLabel } = props
 
-export function VisionLoopEvidenceDemo({
-  labels,
-  scenarios,
-  selectorLabel
-}: DemoProps) {
   const instanceId = useId()
   const [scenarioId, setScenarioId] = useState<ScenarioId>('priority-shift')
   const tabs = visionLoopScenarios.map(({ id }) => ({
@@ -110,6 +48,7 @@ export function VisionLoopEvidenceDemo({
       {visionLoopScenarios.map((scenario) => {
         const copy = scenarios[scenario.id]
         const active = scenario.id === scenarioId
+
         return (
           <div
             key={scenario.id}

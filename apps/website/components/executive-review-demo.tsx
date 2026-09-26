@@ -21,7 +21,8 @@ import {
 } from '@lib/executive-review-data'
 import { TargetDistributionChart } from '@repo/react/ui/target-distribution-chart'
 
-import { EvidenceMatrix, ReviewTimeline } from './executive-review-panels'
+import { EvidenceMatrix } from './executive-review/evidence-matrix'
+import { ReviewTimeline } from './executive-review/review-timeline'
 
 const questions: QuestionId[] = [
   'overview',
@@ -40,13 +41,14 @@ function reveal(element: HTMLElement | null) {
   })
 }
 
-export function ExecutiveReviewDemo({
-  copy,
-  locale
-}: {
+interface ExecutiveReviewDemoProps {
   copy: ExecutiveReviewMessages
   locale: WebsiteLocale
-}) {
+}
+
+export function ExecutiveReviewDemo(props: ExecutiveReviewDemoProps) {
+  const { copy, locale } = props
+
   const prefix = useId()
   const inspectorId = `${prefix}-source-context`
   const t = createTranslator({ locale, messages: copy })
@@ -134,6 +136,7 @@ export function ExecutiveReviewDemo({
     const source = reviewSources.find((item) => item.id === id)
     if (!source || !visibleEvents.some((event) => event.id === source.eventId))
       return null
+
     return (
       <button
         key={id}
