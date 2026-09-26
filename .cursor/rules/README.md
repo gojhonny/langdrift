@@ -1,3 +1,5 @@
 # Cursor rules
 
-Reserved for Cursor-specific activation. When a future obligation belongs to the project, the canonical text lives outside this folder and a Cursor rule only points at it. No rule is implemented here. Two copies of the same obligation are not kept.
+Cursor-specific activation only. `frontend.mdc` points matching frontend work to `.agents/guardrails/README.md`, which selects the canonical policy by scope. Keep policy text in the guardrails, not in this directory.
+
+The pointer is configured; actual attachment in a Cursor session has not been verified. The format follows the [Cursor rules reference](https://cursor.com/docs/rules). This README is navigation documentation, not an activation rule.

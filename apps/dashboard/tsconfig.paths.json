@@ -1,1 +1,16 @@
-{ "compilerOptions": { "baseUrl": ".", "paths": { "@/*": ["src/*"] } } }
+{
+  "compilerOptions": {
+    "paths": {
+      "@components": ["./app/lib/components/index.ts"],
+      "@components/*": ["./app/lib/components/*"],
+      "@i18n/*": ["./app/lib/i18n/*"],
+      "@views": ["./app/lib/views/index.ts"],
+      "@atoms": ["./app/lib/state/atoms/index.ts"],
+      "@domain": ["./app/lib/state/domain/index.ts"],
+      "@state/*": ["./app/lib/state/*"],
+      "@template/*": ["./app/lib/template/*"],
+
+      "@menu/*": ["./app/(menu)/*"]
+    }
+  }
+}

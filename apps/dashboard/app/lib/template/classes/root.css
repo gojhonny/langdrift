@@ -1,0 +1,15 @@
+:root {
+  --ld-bg: #fafafa;
+  --ld-surface: #ffffff;
+  --ld-surface-subtle: #f7f7f7;
+  --ld-ink: #171717;
+  --ld-muted: #737373;
+  --ld-hairline: #e8e8e8;
+  --ld-chart-grid: #ededed;
+  --ld-chart-line: #171717;
+  --ld-chart-point: #171717;
+  --ld-chart-surface: #ffffff;
+  --ld-chart-tooltip: #ffffff;
+  --ld-font-editorial: 'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --ld-font-mono: 'Geist Mono', 'SFMono-Regular', Consolas, monospace;
+}

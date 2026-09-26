@@ -2,7 +2,6 @@
 
 Upstream repository: `https://github.com/mattpocock/skills`.
 Pinned commit: `c55ee46073ed923f86ce59a5eb3b6d895095d1b7`.
-Local license text: [UPSTREAM-LICENSE](UPSTREAM-LICENSE), copied verbatim from that commit's `LICENSE`. No selected source file carried an additional notice beyond that MIT text.
 
 Invocation metadata was copied from the pinned files. This install did not add `disable-model-invocation` or `allow_implicit_invocation` to any file that lacked it. Where upstream `agents/openai.yaml` already sets `allow_implicit_invocation: false`, that field remains because it was upstream, not because this migration invented it.
 

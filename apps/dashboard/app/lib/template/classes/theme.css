@@ -1,0 +1,15 @@
+@theme inline {
+  --color-background: var(--ld-bg);
+  --color-surface: var(--ld-surface);
+  --color-subtle: var(--ld-surface-subtle);
+  --color-ink: var(--ld-ink);
+  --color-muted: var(--ld-muted);
+  --color-hairline: var(--ld-hairline);
+  --color-brand: var(--ld-brand);
+  --color-intentional: var(--ld-intentional);
+  --color-unexplained: var(--ld-unexplained);
+  --color-review: var(--ld-review);
+  --color-aligned: var(--ld-aligned);
+  --font-editorial: var(--ld-font-editorial);
+  --font-mono: var(--ld-font-mono);
+}

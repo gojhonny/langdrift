@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@repo/design-tokens';
+@import '@repo/react/styles.css';
+@import './lib/template/classes/app.css';

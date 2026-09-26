@@ -1,14 +1,8 @@
 'use client'
 
-import { useReducedMotion } from 'motion/react'
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis
-} from 'recharts'
+import { classificationText } from '@repo/react/ui/classification-text'
+import { afterPaint } from '@repo/react/utilities'
+import { lazy, Suspense, useEffect, useState } from 'react'
 
 export type DriftClassification =
   | 'baseline'
@@ -48,6 +42,7 @@ export interface ProductVisionCurveProps {
   data: VisionPoint[]
   formatNumber?: (value: number) => string
   labels?: {
+    loading?: string
     classifications?: Partial<Record<DriftClassification, string>>
     describeEvent?: (event: VisionDriftEvent) => string
     product?: string
@@ -66,12 +61,11 @@ const classificationLabels: Record<DriftClassification, string> = {
   unexplained: 'Unexplained Drift'
 }
 
-const classificationColors: Record<DriftClassification, string> = {
-  baseline: 'var(--ld-muted, #71717a)',
-  intentional: '#3b82f6',
-  review: '#a855f7',
-  unexplained: '#dc2626'
-}
+const DeferredChart = lazy(() =>
+  import('./product-vision-chart').then((module) => ({
+    default: module.ProductVisionChart
+  }))
+)
 
 function fallbackReason(classification: DriftClassification) {
   if (classification === 'intentional')
@@ -99,7 +93,8 @@ export function ProductVisionCurve({
   pointPadding = 0,
   selectedEventId
 }: ProductVisionCurveProps) {
-  const reduceMotion = useReducedMotion()
+  const [ready, setReady] = useState(false)
+  useEffect(() => afterPaint(() => setReady(true)), [])
   const selectedEvent =
     data.find((point) => point.event?.id === selectedEventId)?.event ??
     [...data].reverse().find((point) => point.event)?.event
@@ -123,158 +118,30 @@ export function ProductVisionCurve({
         className="product-vision-chart"
         style={{ height: compact ? 128 : 250 }}
       >
-        <ResponsiveContainer height="100%" width="100%">
-          <LineChart
-            data={data}
-            margin={{ bottom: 4, left: 0, right: 24, top: compact ? 16 : 54 }}
+        {ready ? (
+          <Suspense
+            fallback={
+              <span className="sr-only">
+                {labels?.loading ?? 'Loading Product Vision curve'}
+              </span>
+            }
           >
-            <CartesianGrid
-              stroke="var(--ld-chart-grid, #e8e8e8)"
-              vertical={false}
+            <DeferredChart
+              compact={compact}
+              data={data}
+              eventClassifications={eventClassifications}
+              formatNumber={formatNumber}
+              labels={labels}
+              onSelectEvent={onSelectEvent}
+              pointPadding={pointPadding}
+              selectedEventId={selectedEventId}
             />
-            <XAxis
-              axisLine={false}
-              dataKey="label"
-              fontSize={compact ? 10 : 12}
-              padding={{ left: pointPadding }}
-              tickLine={false}
-              tick={{ fill: 'var(--ld-muted, #71717a)' }}
-            />
-            <YAxis
-              axisLine={false}
-              domain={['dataMin - 4', 'dataMax + 4']}
-              fontSize={compact ? 10 : 12}
-              tickCount={4}
-              tick={{ fill: 'var(--ld-muted, #71717a)' }}
-              tickFormatter={formatNumber}
-              tickLine={false}
-              width={40}
-            />
-            <Line
-              dataKey="value"
-              dot={(props) => {
-                const index = props.index ?? 0
-                const point = data[index]
-                const event = point?.event
-                const selected = event?.id === selectedEventId
-                const cx = Number(props.cx ?? 0)
-                const cy = Number(props.cy ?? 0)
-                const color = event
-                  ? classificationColors[event.classification]
-                  : 'var(--ld-chart-point, #111)'
-
-                if (!event) {
-                  return (
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      fill="var(--ld-chart-point, #111)"
-                      key={`vision-dot-${String(index)}`}
-                      r={3}
-                      stroke="var(--ld-chart-surface, #fff)"
-                      strokeWidth={2}
-                    />
-                  )
-                }
-
-                const actor = event.actors[0]
-                const activate = () => onSelectEvent?.(event)
-                const avatarClipId = `vision-avatar-${event.id}`
-
-                return (
-                  // biome-ignore lint/a11y/useSemanticElements: Recharts dot markers render inside SVG and cannot contain an HTML button.
-                  <g
-                    aria-label={
-                      labels?.describeEvent?.(event) ??
-                      `${event.title}, ${event.delta} Product Vision, ${eventClassifications[event.classification]}, ${event.date}`
-                    }
-                    className="product-vision-event-dot"
-                    key={event.id}
-                    onClick={activate}
-                    onFocus={activate}
-                    onKeyDown={(keyboardEvent) => {
-                      if (
-                        keyboardEvent.key === 'Enter' ||
-                        keyboardEvent.key === ' '
-                      ) {
-                        keyboardEvent.preventDefault()
-                        activate()
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      fill={selected ? '#f97316' : color}
-                      r={selected ? 7 : 5}
-                      stroke="var(--ld-chart-surface, #fff)"
-                      strokeWidth={3}
-                    />
-                    {!compact ? (
-                      <>
-                        <circle
-                          cx={cx}
-                          cy={cy - 24}
-                          fill="var(--ld-ink, #111)"
-                          r={12}
-                          stroke="var(--ld-chart-surface, #fff)"
-                          strokeWidth={2}
-                        />
-                        {actor?.src ? (
-                          <>
-                            <defs>
-                              <clipPath
-                                id={avatarClipId}
-                                clipPathUnits="userSpaceOnUse"
-                              >
-                                <circle cx={cx} cy={cy - 24} r={10} />
-                              </clipPath>
-                            </defs>
-                            <image
-                              clipPath={`url(#${avatarClipId})`}
-                              height="20"
-                              href={actor.src}
-                              preserveAspectRatio="xMidYMid slice"
-                              width="20"
-                              x={cx - 10}
-                              y={cy - 34}
-                            />
-                          </>
-                        ) : (
-                          <text
-                            fill="var(--ld-surface, #fff)"
-                            fontSize="7"
-                            fontWeight="700"
-                            textAnchor="middle"
-                            x={cx}
-                            y={cy - 21.5}
-                          >
-                            {actor?.initials ?? 'LD'}
-                          </text>
-                        )}
-                        <text
-                          fill="var(--ld-muted, #71717a)"
-                          fontSize="11"
-                          textAnchor="middle"
-                          x={cx}
-                          y={cy - 41}
-                        >
-                          {formatDelta(event.delta)}
-                        </text>
-                      </>
-                    ) : null}
-                  </g>
-                )
-              }}
-              isAnimationActive={!compact && !reduceMotion}
-              stroke="var(--ld-chart-line, #111)"
-              strokeWidth={2}
-              type="monotone"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+          </Suspense>
+        ) : (
+          <span className="sr-only">
+            {labels?.loading ?? 'Loading Product Vision curve'}
+          </span>
+        )}
       </div>
 
       {selectedEvent && !compact ? (
@@ -312,7 +179,10 @@ export function ProductVisionCurve({
           </div>
           <div className="product-vision-event-status">
             <b>{formatDelta(selectedEvent.delta)}</b>
-            <span data-classification={selectedEvent.classification}>
+            <span
+              className={classificationText[selectedEvent.classification]}
+              data-classification={selectedEvent.classification}
+            >
               {eventClassifications[selectedEvent.classification]}
             </span>
           </div>
