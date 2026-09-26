@@ -1,12 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 
-import '@repo/react/styles.css'
 import './globals.css'
-import './product-experience.css'
-import './polish.css'
-import './responsive.css'
-import { DashboardShell } from './_lib/components/dashboard-shell/dashboard-shell'
+import { DashboardShell } from './lib/components/dashboard-shell/dashboard-shell'
 
 export const metadata: Metadata = {
   title: 'LangDrift Dashboard',

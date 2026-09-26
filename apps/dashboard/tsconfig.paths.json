@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
-      "@components": ["./app/_lib/components/index.ts"],
-      "@views": ["./app/_lib/views/index.ts"],
-      "@state/*": ["./app/_lib/state/*"],
-      "@template/*": ["./app/_lib/template/*"],
+      "@components": ["./app/lib/components/index.ts"],
+      "@views": ["./app/lib/views/index.ts"],
+      "@state/*": ["./app/lib/state/*"],
+      "@template/*": ["./app/lib/template/*"],
 
       "@menu/*": ["./app/(menu)/*"]
     }

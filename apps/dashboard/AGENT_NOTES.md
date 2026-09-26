@@ -34,3 +34,5 @@ Bad:
 ```
 
 11. we're going to replace zustand with jotai.
+
+12. We use tailwindcss. We should not have any pure css in the app
