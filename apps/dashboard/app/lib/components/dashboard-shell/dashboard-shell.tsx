@@ -12,11 +12,6 @@ import {
   Users,
   X
 } from '@phosphor-icons/react'
-import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
-import { aiAvatars } from '@repo/react/ui/ai-avatars'
-import { Brand } from '@repo/react/ui/brand'
-import { ThemeToggle } from '@repo/react/ui/theme-toggle'
-import { Tooltip } from '@repo/react/vendors/shadcn/tooltip'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -24,18 +19,24 @@ import { usePathname } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import type { FormEvent, ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { OverlayDialog } from './overlay-dialog'
 
-import { cx } from '@template/ui'
 import {
   accountMenuOpenAtom,
   notificationsOpenAtom,
   productMenuOpenAtom,
-  selectProductAtom,
   selectedProductAtom,
+  selectProductAtom,
   themeAtom,
   voiceOpenAtom
 } from '@atoms'
+import { AgentOrb, type AgentOrbState } from '@repo/react/ui/agent-orb'
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
+import { Brand } from '@repo/react/ui/brand'
+import { ThemeToggle } from '@repo/react/ui/theme-toggle'
+import { Tooltip } from '@repo/react/vendors/shadcn/tooltip'
+import { cn } from '@template/formatters/cn.fmt'
+
+import { OverlayDialog } from './overlay-dialog'
 
 const navigation = [
   { href: '/overview', icon: House, label: 'Overview' },
@@ -86,9 +87,9 @@ function DashboardNavigation({
   }
 
   const linkClass = (active: boolean) =>
-    cx(
+    cn(
       'flex items-center rounded-md text-muted no-underline hover:bg-subtle hover:text-ink',
-      active && 'bg-subtle font-semibold text-ink',
+      active && 'bg-subtle font-semibold',
       mobile
         ? 'min-h-[38px] gap-[9px] px-2.5 text-[11px]'
         : 'min-h-[30px] gap-2 px-2 text-[10px]'
@@ -108,17 +109,14 @@ function DashboardNavigation({
       >
         <Brand compact tone={theme === 'dark' ? 'dark' : 'light'} />
       </Link>
-      <div className={cx('relative', mobile ? 'mb-3.5' : 'mb-3')}>
+      <div className={cn('relative', mobile ? 'mb-3.5' : 'mb-3')}>
         <button
           aria-expanded={productMenuOpen}
-          className={cx(
-            'grid w-full min-h-11 cursor-pointer items-center gap-[7px] rounded-lg border border-hairline bg-subtle px-2 py-1.5 text-left text-inherit',
-            'grid-cols-[28px_minmax(0,1fr)_auto]'
-          )}
+          className="grid w-full min-h-11 cursor-pointer grid-cols-[28px_minmax(0,1fr)_auto] items-center gap-[7px] rounded-lg border border-hairline bg-subtle px-2 py-1.5 text-left text-inherit"
           onClick={() => setProductMenuOpen((open) => !open)}
           type="button"
         >
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-brand text-[11px] font-bold text-[#171717]">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-brand text-[11px] font-bold text-brand-ink">
             A
           </span>
           <span className="grid min-w-0 gap-px">
@@ -152,7 +150,7 @@ function DashboardNavigation({
             ? t('mobileProductNavigation')
             : t('executiveProductNavigation')
         }
-        className={cx('grid', mobile ? 'gap-0.5' : 'gap-px')}
+        className={cn('grid', mobile ? 'gap-0.5' : 'gap-px')}
       >
         {navigation.map((item) => {
           const Icon = item.icon
@@ -172,7 +170,7 @@ function DashboardNavigation({
       </nav>
       <Link
         aria-current={pathname === '/settings' ? 'page' : undefined}
-        className={cx(linkClass(pathname === '/settings'), 'mt-auto')}
+        className={cn(linkClass(pathname === '/settings'), 'mt-auto')}
         href="/settings"
         onClick={() => onNavigate?.()}
       >
@@ -282,7 +280,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
     'inline-flex h-[31px] min-w-[31px] cursor-pointer items-center justify-center rounded-md border border-hairline bg-surface text-inherit max-sm:h-[30px] max-sm:w-[30px] max-sm:min-w-[30px] max-[420px]:h-[29px] max-[420px]:w-[29px] max-[420px]:min-w-[29px]'
 
   return (
-    <div className="min-h-screen [--ld-muted:#6b6b6b] dark:[--ld-muted:#a1a1aa] [&_button:focus-visible]:outline-ink [&_a:focus-visible]:outline-ink [&_input:focus-visible]:outline-ink [&_:focus]:scroll-mt-20 max-sm:block sm:grid sm:grid-cols-[214px_minmax(0,1fr)]">
+    <div className="min-h-screen [--ld-muted:var(--ld-shell-muted)] [&_button:focus-visible]:outline-ink [&_a:focus-visible]:outline-ink [&_input:focus-visible]:outline-ink [&_:focus]:scroll-mt-20 max-sm:block sm:grid sm:grid-cols-[214px_minmax(0,1fr)]">
       <a
         className="fixed top-3 left-3 z-[110] -translate-y-24 rounded-md bg-ink px-4 py-2 text-surface focus:translate-y-0"
         href="#dashboard-content"
@@ -298,7 +296,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           label={t('mobileNavigation')}
           mobileOnly
           onClose={() => setMobileNavOpen(false)}
-          className="fixed inset-y-0 left-0 m-0 flex h-dvh max-h-none w-[min(320px,88vw)] max-w-none flex-col overflow-y-auto border-0 border-r border-hairline bg-surface px-3 pt-[calc(14px+env(safe-area-inset-top,0))] pb-[calc(16px+env(safe-area-inset-bottom,0))] text-ink shadow-[18px_0_48px_rgba(0,0,0,.16)] backdrop:bg-black/35"
+          className="fixed inset-y-0 left-0 m-0 flex h-dvh max-h-none w-[min(320px,88vw)] max-w-none flex-col overflow-y-auto border-0 border-r border-hairline bg-surface px-3 pt-[calc(14px+env(safe-area-inset-top,0))] pb-[calc(16px+env(safe-area-inset-bottom,0))] text-ink shadow-[18px_0_48px_rgba(0,0,0,.16)] backdrop:bg-scrim/35"
           id="dashboard-mobile-navigation"
         >
           <button
@@ -348,7 +346,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 aria-controls={voiceOpen ? 'dashboard-voice' : undefined}
                 aria-expanded={voiceOpen}
                 aria-label={t('askLangDrift')}
-                className={cx(iconButton, 'border-0 bg-transparent p-0')}
+                className={cn(iconButton, 'border-0 bg-transparent p-0')}
                 onClick={() => setVoiceOpen((open) => !open)}
                 type="button"
               >
@@ -373,7 +371,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 <button
                   aria-expanded={accountMenuOpen}
                   aria-label={t('openAccount')}
-                  className={cx(iconButton, 'border-0 bg-transparent p-0')}
+                  className={cn(iconButton, 'border-0 bg-transparent p-0')}
                   onClick={() => setAccountMenuOpen((open) => !open)}
                   type="button"
                 >
@@ -436,7 +434,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             id="dashboard-voice"
             labelledBy="dashboard-voice-title"
             onClose={() => setVoiceOpen(false)}
-            className="fixed inset-y-0 right-0 left-auto z-[80] m-0 flex h-dvh max-h-none w-[min(360px,92vw)] max-w-none flex-col items-center gap-3 overflow-y-auto border-0 border-l border-hairline bg-surface px-6 pt-[70px] pb-6 text-center text-ink shadow-[-16px_0_50px_rgba(0,0,0,.08)] backdrop:bg-black/35 max-sm:w-screen max-sm:border-l-0 max-sm:px-[18px] max-sm:pt-[calc(66px+env(safe-area-inset-top,0))] max-sm:pb-[calc(20px+env(safe-area-inset-bottom,0))]"
+            className="fixed inset-y-0 right-0 left-auto z-[80] m-0 flex h-dvh max-h-none w-[min(360px,92vw)] max-w-none flex-col items-center gap-3 overflow-y-auto border-0 border-l border-hairline bg-surface px-6 pt-[70px] pb-6 text-center text-ink shadow-[-16px_0_50px_rgba(0,0,0,.08)] backdrop:bg-scrim/35 max-sm:w-screen max-sm:border-l-0 max-sm:px-[18px] max-sm:pt-[calc(66px+env(safe-area-inset-top,0))] max-sm:pb-[calc(20px+env(safe-area-inset-bottom,0))]"
           >
             <button
               aria-label={t('closeVoice')}

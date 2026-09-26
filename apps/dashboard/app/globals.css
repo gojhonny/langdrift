@@ -2,4 +2,60 @@
 @import 'tw-animate-css';
 @import '@repo/design-tokens';
 @import '@repo/react/styles.css';
-@import './lib/template/classes/app.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Dashboard overrides the shared token contract without changing its consumers. */
+:root {
+  --ld-bg: #fafafa;
+  --ld-surface: #ffffff;
+  --ld-surface-subtle: #f7f7f7;
+  --ld-ink: #171717;
+  --ld-muted: #737373;
+  --ld-shell-muted: #6b6b6b;
+  --ld-brand-ink: #171717;
+  --ld-aligned-text: var(--color-green-700);
+  --ld-hairline: #e8e8e8;
+  --ld-chart-grid: #ededed;
+  --ld-chart-line: #171717;
+  --ld-chart-point: #171717;
+  --ld-chart-surface: #ffffff;
+  --ld-chart-tooltip: #ffffff;
+  --ld-font-editorial: 'Geist', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --ld-font-mono: 'Geist Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+[data-theme='dark'] {
+  --ld-bg: #0b0b0c;
+  --ld-surface: #111113;
+  --ld-surface-subtle: #151517;
+  --ld-ink: #f5f5f5;
+  --ld-muted: #a1a1aa;
+  --ld-shell-muted: #a1a1aa;
+  --ld-aligned-text: var(--color-green-400);
+  --ld-hairline: #29292d;
+  --ld-chart-grid: #29292d;
+  --ld-chart-line: #f5f5f5;
+  --ld-chart-point: #f5f5f5;
+  --ld-chart-surface: #111113;
+  --ld-chart-tooltip: #151517;
+}
+
+@theme inline {
+  --color-background: var(--ld-bg);
+  --color-surface: var(--ld-surface);
+  --color-subtle: var(--ld-surface-subtle);
+  --color-ink: var(--ld-ink);
+  --color-muted: var(--ld-muted);
+  --color-hairline: var(--ld-hairline);
+  --color-brand: var(--ld-brand);
+  --color-brand-ink: var(--ld-brand-ink);
+  --color-intentional: var(--ld-intentional);
+  --color-unexplained: var(--ld-unexplained);
+  --color-review: var(--ld-review);
+  --color-aligned: var(--ld-aligned);
+  --color-aligned-text: var(--ld-aligned-text);
+  --color-scrim: #000000;
+  --font-editorial: var(--ld-font-editorial);
+  --font-mono: var(--ld-font-mono);
+}

@@ -12,15 +12,6 @@ import {
   ShieldCheck,
   WarningDiamond
 } from '@phosphor-icons/react'
-import { aiAvatars } from '@repo/react/ui/ai-avatars'
-import {
-  ProductVisionCurve,
-  type VisionDriftEvent,
-  type VisionPoint
-} from '@repo/react/ui/product-vision-curve'
-import { classificationText } from '@repo/react/ui/classification-text'
-import { ThemeToggle } from '@repo/react/ui/theme-toggle'
-import { AnimatedAvatarGroup, FigmaComment } from '@repo/react/vendors/smoothui'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -34,14 +25,24 @@ import {
   selectedProductAtom,
   themeAtom
 } from '@atoms'
+import { DashboardPageGate } from '@components/route-state/dashboard-page-gate'
 import type {
   DashboardSection,
   EvolutionClassification,
   EvolutionGroup
 } from '@domain'
-import { DashboardPageGate } from '@components/route-state/dashboard-page-gate'
 import { DashboardLanguageSettings } from '@i18n/language-settings'
-import { Card, cx, Kicker } from '@template/ui'
+import { aiAvatars } from '@repo/react/ui/ai-avatars'
+import { classificationText } from '@repo/react/ui/classification-text'
+import {
+  ProductVisionCurve,
+  type VisionDriftEvent,
+  type VisionPoint
+} from '@repo/react/ui/product-vision-curve'
+import { ThemeToggle } from '@repo/react/ui/theme-toggle'
+import { AnimatedAvatarGroup, FigmaComment } from '@repo/react/vendors/smoothui'
+import { cn } from '@template/formatters/cn.fmt'
+import { Card, Kicker } from '@template/ui'
 
 function useVisionPoints(): VisionPoint[] {
   const t = useTranslations('view')
@@ -171,7 +172,7 @@ function ClassificationPill({
   const t = useTranslations('view')
   return (
     <span
-      className={cx(
+      className={cn(
         'rounded-full border border-hairline px-1.5 py-1 text-[8px]',
         className,
         classificationText[classification]
@@ -214,10 +215,9 @@ function VisionPanel() {
           {(['30d', '90d', '1y', 'all'] as const).map((item) => (
             <button
               aria-pressed={range === item}
-              className={cx(
+              className={cn(
                 'min-h-6 cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
-                range === item &&
-                  'bg-surface text-ink shadow-[0_1px_4px_rgba(0,0,0,.08)]'
+                range === item && 'shadow-[0_1px_4px_rgba(0,0,0,.08)]'
               )}
               key={item}
               onClick={() => setRange(item)}
@@ -452,7 +452,7 @@ function BaselineProvenance() {
             {t('baseline.title')}
           </h2>
         </div>
-        <span className="rounded-full border border-aligned px-[7px] py-1 text-[8px] text-green-700 dark:text-green-400">
+        <span className="rounded-full border border-aligned px-[7px] py-1 text-[8px] text-aligned-text">
           {t('baseline.current')}
         </span>
       </div>
@@ -491,9 +491,9 @@ function EvolutionControls() {
         {classifications.map(([value, label]) => (
           <button
             aria-pressed={classification === value}
-            className={cx(
+            className={cn(
               'min-h-[26px] cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
-              classification === value && 'bg-subtle font-semibold text-ink'
+              classification === value && 'font-semibold'
             )}
             key={value}
             onClick={() => setClassification(value)}
@@ -510,9 +510,9 @@ function EvolutionControls() {
         {groups.map(([value, label]) => (
           <button
             aria-pressed={groupBy === value}
-            className={cx(
+            className={cn(
               'min-h-[26px] cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
-              groupBy === value && 'bg-subtle font-semibold text-ink'
+              groupBy === value && 'font-semibold'
             )}
             key={value}
             onClick={() => setGroupBy(value)}

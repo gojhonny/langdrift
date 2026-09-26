@@ -1,9 +1,6 @@
 import type { ReactNode } from 'react'
 
-// AGENT: use cn function
-export function cx(...parts: Array<string | false | null | undefined>) {
-  return parts.filter(Boolean).join(' ')
-}
+import { cn } from './formatters/cn.fmt'
 
 // AGENT: These custom components should be in a separate file, and placed under app/lib/components folder
 // AGENT: Also, we should avoid create base components like Card, Kicker, Muted, etc. We should use smoothui or shadcn/ui. And since they are generic, should come from packages/react
@@ -18,7 +15,7 @@ export function Card({
 }) {
   return (
     <Tag
-      className={cx(
+      className={cn(
         'rounded-[10px] border border-hairline bg-surface',
         className
       )}
@@ -37,7 +34,7 @@ export function Kicker({
 }) {
   return (
     <span
-      className={cx(
+      className={cn(
         'font-mono text-[8px] tracking-[0.08em] text-muted uppercase',
         className
       )}
@@ -56,5 +53,5 @@ export function Muted({
   className?: string
   children: ReactNode
 }) {
-  return <Tag className={cx('text-muted', className)}>{children}</Tag>
+  return <Tag className={cn('text-muted', className)}>{children}</Tag>
 }

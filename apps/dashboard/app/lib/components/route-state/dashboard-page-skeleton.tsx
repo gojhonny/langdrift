@@ -1,9 +1,11 @@
 'use client'
 
-import type { DashboardSection } from '@domain'
-import { SkeletonLoader } from '@repo/react/vendors/smoothui/skeleton-loader'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
+
+import type { DashboardSection } from '@domain'
+import { SkeletonLoader } from '@repo/react/vendors/smoothui/skeleton-loader'
+import { cn } from '@template/formatters/cn.fmt'
 
 function SkeletonCard({
   children,
@@ -14,7 +16,10 @@ function SkeletonCard({
 }) {
   return (
     <div
-      className={`grid min-w-0 gap-3 rounded-xl border border-hairline bg-surface p-4 ${className}`}
+      className={cn(
+        'grid min-w-0 gap-3 rounded-xl border border-hairline bg-surface p-4',
+        className
+      )}
     >
       {children}
     </div>
@@ -26,7 +31,10 @@ function SummaryCards() {
     <div className="mb-2.5 grid grid-cols-1 gap-2.5 min-[621px]:grid-cols-2 min-[881px]:grid-cols-[minmax(0,2fr)_minmax(170px,1fr)_minmax(170px,1fr)]">
       {['vision', 'intentional', 'unexplained'].map((card, index) => (
         <SkeletonCard
-          className={`min-h-[132px] ${index === 0 ? 'min-[621px]:col-span-2 min-[881px]:col-span-1' : ''}`}
+          className={cn(
+            'min-h-[132px]',
+            index === 0 && 'min-[621px]:col-span-2 min-[881px]:col-span-1'
+          )}
           key={card}
         >
           <SkeletonLoader className="h-2 w-28 max-w-full" />
@@ -97,7 +105,12 @@ function ListCard({
 function DetailCards({ reports = false }: { reports?: boolean }) {
   return (
     <div
-      className={`grid grid-cols-1 gap-2.5 ${reports ? 'min-[901px]:grid-cols-[2fr_1fr_1fr]' : 'min-[901px]:grid-cols-3'}`}
+      className={cn(
+        'grid grid-cols-1 gap-2.5',
+        reports
+          ? 'min-[901px]:grid-cols-[2fr_1fr_1fr]'
+          : 'min-[901px]:grid-cols-3'
+      )}
     >
       {['first', 'second', 'third'].map((card) => (
         <SkeletonCard
