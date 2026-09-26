@@ -24,10 +24,6 @@
   outline: none;
 }
 
-.product-vision-event-dot:focus-visible circle:first-child {
-  stroke: #f97316;
-  stroke-width: 4px;
-}
 
 .product-vision-event-detail {
   align-items: start;
@@ -94,21 +90,6 @@
   white-space: nowrap;
 }
 
-.product-vision-event-status > span[data-classification='intentional'] {
-  color: #3b82f6;
-}
-
-.product-vision-event-status > span[data-classification='unexplained'] {
-  color: #dc2626;
-}
-
-.product-vision-event-status > span[data-classification='review'] {
-  color: #a855f7;
-}
-
-.product-vision-event-status > span[data-classification='baseline'] {
-  color: var(--ld-muted, #71717a);
-}
 
 .product-vision-curve-compact .recharts-cartesian-axis-tick-value {
   font-size: 9px;

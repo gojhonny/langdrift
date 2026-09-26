@@ -1,0 +1,2452 @@
+{
+  "schemaVersion": 1,
+  "title": "Dashboard independent post-remediation audit",
+  "auditDate": "2026-09-26",
+  "scope": "Dashboard and affected shared React components; Website/SSO/Mobile regression consumers",
+  "authorization": "Owner requested feature implementation first, then independent audit; during audit explicitly changed loading2000ms to1000ms. No audit finding fixed.",
+  "skills": [
+    "accessibility",
+    "best-practices",
+    "core-web-vitals"
+  ],
+  "snapshot": {
+    "head": "5769cbe29e0b85baa322e2a7ca7eeb92e8fde98a",
+    "date": "2026-09-26T08:28:10.333Z",
+    "files": [
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-product-area/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-product-area/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-product-area/loading.tsx",
+        "sha256": "663afe025292b178f83222cbd7fc206aa0ca99787b2927e49136335fb8901e2c"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-product-area/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-team/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-team/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-team/loading.tsx",
+        "sha256": "f3742c9f08f4a7e54e0c4bf3521b853f17f0edcdb44dd517135f17dd71970d1f"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-by-team/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-events/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-events/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-events/loading.tsx",
+        "sha256": "abe0fb50ab94501adc816cb5f73956814eb62843a4b40d3c779b99a56ff71a5d"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-events/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-graph/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-graph/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-graph/loading.tsx",
+        "sha256": "724bfe8417fe7ba84c86e894ef08a63999b3667eac193a29d60cc00bf76226d4"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-graph/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-timeline/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-timeline/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-timeline/loading.tsx",
+        "sha256": "218b69316017fa86fdaa58409ee64e704930d6a30dece2cd462d67ff124995b6"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/drift-timeline/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/intentional-drift/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/intentional-drift/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/intentional-drift/loading.tsx",
+        "sha256": "567490717efa8b9f7af8f9b625cc92f91584f4257c674e0f0e92de9f2baae02f"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/intentional-drift/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/unexplained-drift/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/unexplained-drift/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/unexplained-drift/loading.tsx",
+        "sha256": "927e9d600c5d8fee188c5940102fbd5cbb39ffc6b07244dcb1ff08456eb673dc"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/unexplained-drift/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/vision-baseline/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/vision-baseline/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/vision-baseline/loading.tsx",
+        "sha256": "1c29c181638d25f54537006a25f6792b623b34c77d60a1fbfba42f6164dcfed3"
+      },
+      {
+        "file": "apps/dashboard/app/(evolution)/vision-baseline/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/decisions/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/decisions/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/decisions/loading.tsx",
+        "sha256": "bea340e9fe42e6e6296f79412a628f280108941644dd449305567e8f5205e1f1"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/decisions/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evidence/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evidence/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evidence/loading.tsx",
+        "sha256": "fa314165c12bc6e9c67ed5d5ba06a210d43212790a6a1b12f942e41ab675a359"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evidence/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evolution/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evolution/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evolution/loading.tsx",
+        "sha256": "6143a4ba035dbca3a787846575cc6b3656259d3f97d904b2d295eb46999fd42f"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/evolution/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/overview/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/overview/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/overview/loading.tsx",
+        "sha256": "a156e3d2d12880d0211441367819c5a85f76ba621e737598ffb44095b3700399"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/overview/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/people/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/people/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/people/loading.tsx",
+        "sha256": "78d20d6cf849aef03628202e51f32c733ba757c590297e4d034469c098f91aed"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/people/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/reports/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/reports/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/reports/loading.tsx",
+        "sha256": "02a52b781b441964be27b920b76fcf8a0fa7645362df880f8400140b0435816b"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/reports/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/settings/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/settings/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/settings/loading.tsx",
+        "sha256": "0043324e7f47b33d103172f7663fa4153a287fbd15bc6fa1a7ea19a0c5f7249e"
+      },
+      {
+        "file": "apps/dashboard/app/(menu)/settings/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/(reports)/drift-report/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/(reports)/drift-report/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/(reports)/drift-report/loading.tsx",
+        "sha256": "c62ac6e97ba08f0addb6bcdcf5b2034cfb49f46305fd85253b858e950a7d17bb"
+      },
+      {
+        "file": "apps/dashboard/app/(reports)/drift-report/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/app/default.tsx",
+        "sha256": "3aab98c3cc2b6c0a42f962b986819d48827b1a29744ebf97e724c639d0075160"
+      },
+      {
+        "file": "apps/dashboard/app/error.tsx",
+        "sha256": "34da4dd0c7da71f37729245d7b2af71d9da1949cad640a6a5314e8a9f7612963"
+      },
+      {
+        "file": "apps/dashboard/app/global-error.tsx",
+        "sha256": "3eb4b174a8faaf081d0ce7b2dd99fecdbcab3e95fd227fdcfa47151680446cca"
+      },
+      {
+        "file": "apps/dashboard/app/layout.tsx",
+        "sha256": "a54beb381f0669265cf84319f616db0300d9c2ccbbd149bc6a79b98504279667"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+        "sha256": "b726e508c5fffb13c3ac8ef36a177f2b8d360f3a4c1ef231571b2924fe4dd268"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.tsx",
+        "sha256": "08c680475e110620dc48c7291f0e76179dfc5504325525358cc25465ab28a778"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/overlay-dialog.tsx",
+        "sha256": "1852139173cc2bf6d3f5856db16a5e9f989ecafa9a60cd61e40b8cb63fe9175d"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/route-state/dashboard-not-found.tsx",
+        "sha256": "17fee3fd206c3281b554abcc26a8a665c835446b0ad0e3cd28457a240ecdcd44"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/route-state/dashboard-page-gate.tsx",
+        "sha256": "891e9592447c229a3b2ad0484b5ef7c9922aa8877e3bdf0bb19689565fc04a79"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/route-state/dashboard-page-skeleton.tsx",
+        "sha256": "e918510ee590ee22214e8b4342c960acf6ef5d826486e0fa032c388a4f84a277"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/route-state/dashboard-route-error.tsx",
+        "sha256": "59d1a1f104a0bf19438e4cdaacc29e3bb691b34e4f6937c01c07b8bdd69a9703"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/route-state/route-state.test.tsx",
+        "sha256": "818889d45c3008d0632e2832d68bfd425d2265afd57ddb671298e1670005d687"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/actions.ts",
+        "sha256": "a4f93d6d03246cb1cf566415fd40f75ff4fc74277e02b53b49d13e34d8f890c8"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/config.ts",
+        "sha256": "91ee594a73f9e7e59555fe2ba3447f00d7e3ef715c9c515b4a4dbee3a9b61fdb"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/language-settings.tsx",
+        "sha256": "f5d398bedb7053852463147d9cd44542586b5387efca762e9cb8950ec83d4134"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/locale.test.tsx",
+        "sha256": "082c05354b557a15becae8f75ffdb1b425a30e52a6b583ebce63393193b2a4d8"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/messages/en.ts",
+        "sha256": "bb1e4535ac6cf2c8b62c51bd3947c5f9690d862acd61dedc39806f168cea1588"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/messages/index.ts",
+        "sha256": "4e5df68f9236cfa19eebec2d386d8b0721f20c74f2aa1b2567ff36281b611e00"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/messages/ja.ts",
+        "sha256": "c856d95a33064bc954a312b16e57cdece7c795820701a14394604acf1abf09ea"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/messages/pt-br.ts",
+        "sha256": "460c5626822136b9ef21a735bed6e95af6634337441014eadac396a1d0677962"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/messages/zh-hant.ts",
+        "sha256": "080fbe499199b6ff5dd8776ac40d7e151fb05bee3a802e0a7ea7e08ef16e66fb"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/request.ts",
+        "sha256": "fddb807a9b938d0190a635466eb69aec18328e6373b35c08808c25660779f211"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/route-state.messages.ts",
+        "sha256": "6a27bb2b28a4a1fed2738e51004c1d1c7cfb343415146a914e533f4d1bf26c85"
+      },
+      {
+        "file": "apps/dashboard/app/lib/i18n/shell.messages.ts",
+        "sha256": "fd14316dd5aaa7f9f3b3c7bf875085732d3aefec95b85b2898947c4f34ce3b41"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/account-menu-open.atom.ts",
+        "sha256": "ee6ca9376d65e01e580951a331bf16c26a75f44a2300be4e65f86bc69f373087"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/classification.atom.ts",
+        "sha256": "09526b1e4765c513b669fd18079abbfba37356b7f5e3f1cfc36b546a01986299"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/group-by.atom.ts",
+        "sha256": "702dce6b3fa8a05ef41d5d394be53879bc2014aecf3baa190a1500084a261014"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/index.ts",
+        "sha256": "5f60ece082b4da6a0a425efd0be8109c74c17fd30a5f46927d284045fb6b8641"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/notifications-open.atom.ts",
+        "sha256": "ab47bdeec89255bcc120cabfaeee295dc64ee6d808c6be9bdb6fbae39150ceb6"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/product-menu-open.atom.ts",
+        "sha256": "f3f6e884c6100d507f01744c09d5013426bc19da358e13efc15f7d9ef8318f20"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/range.atom.ts",
+        "sha256": "3e73c6ebb94ae127298c98985a7789dbbeeb7ec72ea40d06df958eef1413df05"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/select-product.atom.ts",
+        "sha256": "841281d60904b215d13df5c4f772e1587d12cfb382556db93326a7deb4793e14"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/selected-point.atom.ts",
+        "sha256": "35a75561d9cebe1db9dd240b4011fc0aeb866a9a9ef8f06a64533bf4ecacb7a3"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/selected-product.atom.ts",
+        "sha256": "63a55f30bccd36f5582b3fdfb95e5b969a259288ceda6fa363e1e18133932e21"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/theme.atom.ts",
+        "sha256": "1037e26d87c767abc19183ec4e0f18b416abea7aaff0748c8aba2d4699bbc4d0"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/voice-open.atom.ts",
+        "sha256": "25d3bdc320a13744a09676fe7800458b77d50fc26e57c77304edf79b14947de4"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-locale.domain.ts",
+        "sha256": "cf4c27162517ec091c251432e28bef1d4f8ec3eac66bef4dde2e7b6ae93f50ef"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-range.domain.ts",
+        "sha256": "b1c45ec8a2236e606fe33a6cd6c5596c4052bc97fa3a5f1d2cb267cc089542b1"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-section.domain.ts",
+        "sha256": "092984a1c25520538c7feda7868928e65f5a259c827f63458389fdf311a6d0cb"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-theme.domain.ts",
+        "sha256": "a57a8dde8d669e296e4e66f02aa1696fe04f54c16e083c5497117a2a4deae104"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/evolution-classification.domain.ts",
+        "sha256": "8d4d39f6754a415e05933daa07e19c6aebd16576f969d8694f256c14fe2755bc"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/evolution-group.domain.ts",
+        "sha256": "d71e603ce6833802ff448d6accadb93896afe6589748e430d90f68105c7fa13d"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/index.ts",
+        "sha256": "beb041a7753761ae85ca70f47ea5e79fe4b542adf77c0e51acdeb2c4ceaed2eb"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/state-logger.tsx",
+        "sha256": null
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/state.ts",
+        "sha256": null
+      },
+      {
+        "file": "apps/dashboard/app/lib/views/dashboard-view/dashboard-view.tsx",
+        "sha256": "f10572124e6dacd640532db3d608b65b528dbf954682be6371841e6756e87321"
+      },
+      {
+        "file": "apps/dashboard/app/lib/views/index.ts",
+        "sha256": "630ef5cf80ccf00ccfe7692f7b1367d6d536f0836b913995efa30dc223db2c39"
+      },
+      {
+        "file": "apps/dashboard/app/loading.tsx",
+        "sha256": "a156e3d2d12880d0211441367819c5a85f76ba621e737598ffb44095b3700399"
+      },
+      {
+        "file": "apps/dashboard/app/not-found.tsx",
+        "sha256": "00cc89c6d85d788edfcec5075a8bea66ded54148cfc9ac95d0510e7ce76b2aa3"
+      },
+      {
+        "file": "apps/dashboard/next.config.ts",
+        "sha256": "0c01913cb39156c8369f1bb5c5c3da0c8c8aa6e1e6aab87981350572355f5f97"
+      },
+      {
+        "file": "apps/dashboard/package.json",
+        "sha256": "1daaa121c608ec42dff9712b329e4958fd964abe5703a762141d0908bcb1a9f4"
+      },
+      {
+        "file": "apps/dashboard/tsconfig.paths.json",
+        "sha256": "25daea203d6652d93cb2100cc287af14b930784dcf081a70807bcfa9a54aa102"
+      },
+      {
+        "file": "apps/website/src/components/website-header.tsx",
+        "sha256": "6bee3a3924636ec8646cbb585ef6f73832a2c43708f94b3306d2610afe1773a4"
+      },
+      {
+        "file": "package.json",
+        "sha256": "23b0b0704eca8c91e8ebf0eac031ac402a8459a12bd5aa827b046dd63c58a5ad"
+      },
+      {
+        "file": "packages/react/package.json",
+        "sha256": "edd18f7cf276a7586524456054a87cd6e36cf2e842d11340f49d4fb3c941859d"
+      },
+      {
+        "file": "packages/react/src/styles.css",
+        "sha256": "b7c88772c0c2f0ccba2bc1e052f1ebc2a98af17baa64a6f756aa5271d4cec0b6"
+      },
+      {
+        "file": "packages/react/src/ui/agent-orb/agent-orb.tsx",
+        "sha256": "288eda8785613e641fc211739448ce9e172bd5bc76a6ce7a97fe561915f90c72"
+      },
+      {
+        "file": "packages/react/src/ui/classification-text.ts",
+        "sha256": "b37dcd610533c298314603f65e7c8f54a0698957f85901e8884d91a66328ae76"
+      },
+      {
+        "file": "packages/react/src/ui/language-switcher/index.ts",
+        "sha256": "b51dab4e6e85a3dae5f02fad026dfa113bdfdc87d97c4dc3e212906416b724f1"
+      },
+      {
+        "file": "packages/react/src/ui/language-switcher/language-switcher.test.tsx",
+        "sha256": "60a16b8af2e98c7fe905b96365bd2eae8eec8455fa89a45fe94101afd2fab904"
+      },
+      {
+        "file": "packages/react/src/ui/language-switcher/language-switcher.tsx",
+        "sha256": "9f90855be1e93e8423c5a6c3937469a910a01ff2330edc5b86237817fa35f4fd"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-chart.tsx",
+        "sha256": "aa6bedf48760b21b1c16d3e83c4f0f9c8be51b6eece955a56156ba6f0ddd272e"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.css",
+        "sha256": "40aefe6681f0bb43f44ee6983c195f23fb1416418fb8fe06338b48bfe1fdd6c3"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.test.tsx",
+        "sha256": "957afcf85f1a128b20fd1229e062b0d79515a830cacd744abb5603bfeae18cb3"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.tsx",
+        "sha256": "c043563fad0142bbf3a76f69d6d7c1f66c48f03ce13a9b1747317bc9cb5cd4d4"
+      },
+      {
+        "file": "packages/react/src/ui/theme-toggle/theme-toggle.css",
+        "sha256": null
+      },
+      {
+        "file": "packages/react/src/ui/theme-toggle/theme-toggle.tsx",
+        "sha256": "d088b5800ae710e972153699d25b9b6e153cb56c5ace69171ee1b55703c23818"
+      },
+      {
+        "file": "packages/react/src/utilities/after-paint.ts",
+        "sha256": "147ac690e8149d769eacb1cceef21034ba0152fbd811f08990e7b3f3c1874cfc"
+      },
+      {
+        "file": "packages/react/src/utilities/index.ts",
+        "sha256": "00f8c1f6b456f196ccb878c7273e0f56f2e90e0eb6a78863222d49c4e3aa66b1"
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.css",
+        "sha256": null
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.test.tsx",
+        "sha256": "cc0b4740a4d5ddfaac4ad12c21df4697ce3ea37f81dccab986742f162bfb5fe4"
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.tsx",
+        "sha256": "dcc3000b292e9186496036034d58e62018a808913149e8351ef60ec44d943e8d"
+      },
+      {
+        "file": "packages/react/src/vendors/smoothui/figma-comment.tsx",
+        "sha256": "c38c5bda3ffdeb9004a0cbf484a4302a4304ae4c4478c0de50f0da20fb41098c"
+      },
+      {
+        "file": "packages/react/src/vendors/smoothui/skeleton-loader.test.tsx",
+        "sha256": "ad34865779aec1807aae4e2ee0ae78e41e9b2fdf00621722c00272af0906d7bd"
+      },
+      {
+        "file": "packages/react/src/vendors/smoothui/skeleton-loader.tsx",
+        "sha256": "f5478d0708f44129a6674055aa016b153ced6840ccddec2ae809f2c1936caa52"
+      },
+      {
+        "file": "vitest.web-quality.config.mts",
+        "sha256": "7207baaf89e162a1d16bf9b155a61bebde3aacb062ef6f820bd4f2f2acbd29ad"
+      },
+      {
+        "file": "pnpm-lock.yaml",
+        "sha256": "4cd06113ad77b39cf9336c188e67a734b2b0076acf205a95b85c30c17b719baa"
+      }
+    ],
+    "branch": "refactor/dashboard-organization",
+    "status": " M apps/dashboard/app/layout.tsx\n M apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.tsx\n D apps/dashboard/app/lib/state/state-logger.tsx\n D apps/dashboard/app/lib/state/state.ts\n M apps/dashboard/app/lib/views/dashboard-view/dashboard-view.tsx\n M apps/dashboard/app/lib/views/index.ts\n M apps/dashboard/next.config.ts\n M apps/dashboard/package.json\n M apps/dashboard/tsconfig.paths.json\n M apps/website/src/components/website-header.tsx\n M package.json\n M packages/react/package.json\n M packages/react/src/styles.css\n M packages/react/src/ui/agent-orb/agent-orb.tsx\n M packages/react/src/ui/product-vision-curve/product-vision-curve.css\n M packages/react/src/ui/product-vision-curve/product-vision-curve.tsx\n D packages/react/src/ui/theme-toggle/theme-toggle.css\n M packages/react/src/ui/theme-toggle/theme-toggle.tsx\n M packages/react/src/utilities/index.ts\n D packages/react/src/vendors/shadcn/tooltip.css\n M packages/react/src/vendors/shadcn/tooltip.tsx\n M packages/react/src/vendors/smoothui/figma-comment.tsx\n M pnpm-lock.yaml\n?? .audits/reports/dashboard-web-quality-2026-09-26.json\n?? .audits/reports/dashboard-web-quality-2026-09-26.md\n?? apps/dashboard/app/(evolution)/drift-by-product-area/default.tsx\n?? apps/dashboard/app/(evolution)/drift-by-product-area/error.tsx\n?? apps/dashboard/app/(evolution)/drift-by-product-area/loading.tsx\n?? apps/dashboard/app/(evolution)/drift-by-product-area/not-found.tsx\n?? apps/dashboard/app/(evolution)/drift-by-team/default.tsx\n?? apps/dashboard/app/(evolution)/drift-by-team/error.tsx\n?? apps/dashboard/app/(evolution)/drift-by-team/loading.tsx\n?? apps/dashboard/app/(evolution)/drift-by-team/not-found.tsx\n?? apps/dashboard/app/(evolution)/drift-events/default.tsx\n?? apps/dashboard/app/(evolution)/drift-events/error.tsx\n?? apps/dashboard/app/(evolution)/drift-events/loading.tsx\n?? apps/dashboard/app/(evolution)/drift-events/not-found.tsx\n?? apps/dashboard/app/(evolution)/drift-graph/default.tsx\n?? apps/dashboard/app/(evolution)/drift-graph/error.tsx\n?? apps/dashboard/app/(evolution)/drift-graph/loading.tsx\n?? apps/dashboard/app/(evolution)/drift-graph/not-found.tsx\n?? apps/dashboard/app/(evolution)/drift-timeline/default.tsx\n?? apps/dashboard/app/(evolution)/drift-timeline/error.tsx\n?? apps/dashboard/app/(evolution)/drift-timeline/loading.tsx\n?? apps/dashboard/app/(evolution)/drift-timeline/not-found.tsx\n?? apps/dashboard/app/(evolution)/intentional-drift/default.tsx\n?? apps/dashboard/app/(evolution)/intentional-drift/error.tsx\n?? apps/dashboard/app/(evolution)/intentional-drift/loading.tsx\n?? apps/dashboard/app/(evolution)/intentional-drift/not-found.tsx\n?? apps/dashboard/app/(evolution)/unexplained-drift/default.tsx\n?? apps/dashboard/app/(evolution)/unexplained-drift/error.tsx\n?? apps/dashboard/app/(evolution)/unexplained-drift/loading.tsx\n?? apps/dashboard/app/(evolution)/unexplained-drift/not-found.tsx\n?? apps/dashboard/app/(evolution)/vision-baseline/default.tsx\n?? apps/dashboard/app/(evolution)/vision-baseline/error.tsx\n?? apps/dashboard/app/(evolution)/vision-baseline/loading.tsx\n?? apps/dashboard/app/(evolution)/vision-baseline/not-found.tsx\n?? apps/dashboard/app/(menu)/decisions/default.tsx\n?? apps/dashboard/app/(menu)/decisions/error.tsx\n?? apps/dashboard/app/(menu)/decisions/loading.tsx\n?? apps/dashboard/app/(menu)/decisions/not-found.tsx\n?? apps/dashboard/app/(menu)/evidence/default.tsx\n?? apps/dashboard/app/(menu)/evidence/error.tsx\n?? apps/dashboard/app/(menu)/evidence/loading.tsx\n?? apps/dashboard/app/(menu)/evidence/not-found.tsx\n?? apps/dashboard/app/(menu)/evolution/default.tsx\n?? apps/dashboard/app/(menu)/evolution/error.tsx\n?? apps/dashboard/app/(menu)/evolution/loading.tsx\n?? apps/dashboard/app/(menu)/evolution/not-found.tsx\n?? apps/dashboard/app/(menu)/overview/default.tsx\n?? apps/dashboard/app/(menu)/overview/error.tsx\n?? apps/dashboard/app/(menu)/overview/loading.tsx\n?? apps/dashboard/app/(menu)/overview/not-found.tsx\n?? apps/dashboard/app/(menu)/people/default.tsx\n?? apps/dashboard/app/(menu)/people/error.tsx\n?? apps/dashboard/app/(menu)/people/loading.tsx\n?? apps/dashboard/app/(menu)/people/not-found.tsx\n?? apps/dashboard/app/(menu)/reports/default.tsx\n?? apps/dashboard/app/(menu)/reports/error.tsx\n?? apps/dashboard/app/(menu)/reports/loading.tsx\n?? apps/dashboard/app/(menu)/reports/not-found.tsx\n?? apps/dashboard/app/(menu)/settings/default.tsx\n?? apps/dashboard/app/(menu)/settings/error.tsx\n?? apps/dashboard/app/(menu)/settings/loading.tsx\n?? apps/dashboard/app/(menu)/settings/not-found.tsx\n?? apps/dashboard/app/(reports)/drift-report/default.tsx\n?? apps/dashboard/app/(reports)/drift-report/error.tsx\n?? apps/dashboard/app/(reports)/drift-report/loading.tsx\n?? apps/dashboard/app/(reports)/drift-report/not-found.tsx\n?? apps/dashboard/app/default.tsx\n?? apps/dashboard/app/error.tsx\n?? apps/dashboard/app/global-error.tsx\n?? apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx\n?? apps/dashboard/app/lib/components/dashboard-shell/overlay-dialog.tsx\n?? apps/dashboard/app/lib/components/route-state/\n?? apps/dashboard/app/lib/i18n/\n?? apps/dashboard/app/lib/state/atoms/\n?? apps/dashboard/app/lib/state/domain/\n?? apps/dashboard/app/loading.tsx\n?? apps/dashboard/app/not-found.tsx\n?? packages/react/src/ui/classification-text.ts\n?? packages/react/src/ui/language-switcher/\n?? packages/react/src/ui/product-vision-curve/product-vision-chart.tsx\n?? packages/react/src/ui/product-vision-curve/product-vision-curve.test.tsx\n?? packages/react/src/utilities/after-paint.ts\n?? packages/react/src/vendors/shadcn/tooltip.test.tsx\n?? packages/react/src/vendors/smoothui/skeleton-loader.test.tsx\n?? packages/react/src/vendors/smoothui/skeleton-loader.tsx\n?? vitest.web-quality.config.mts\n",
+    "dirty": true,
+    "loadingDelayMs": 1000,
+    "changedSince2s": [
+      "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+      "apps/dashboard/app/lib/components/route-state/dashboard-page-gate.tsx",
+      "apps/dashboard/app/lib/components/route-state/route-state.test.tsx"
+    ],
+    "previousSnapshot": ".audits/runs/dashboard-independent-2026-09-26/snapshot.json"
+  },
+  "features": {
+    "loadingDelayMs": 1000,
+    "pageDirectories": 17,
+    "siblings": [
+      "loading.tsx",
+      "not-found.tsx",
+      "default.tsx",
+      "error.tsx"
+    ],
+    "globalError": true,
+    "locales": [
+      "en",
+      "pt-BR",
+      "zh-Hant",
+      "ja"
+    ],
+    "languageControl": "Shared packages/react LanguageSwitcher; Dashboard Settings and Website",
+    "i18nDirectory": "apps/dashboard/app/lib/i18n",
+    "styling": "Tailwind; SmoothUI-derived shared SkeletonLoader withMIT attribution",
+    "atomLogging": false,
+    "sddAdvanced": false,
+    "gitPublication": false
+  },
+  "evidenceEpochs": [
+    {
+      "name": "initial independent feature snapshot",
+      "date": "2026-09-26T08:11:57.084Z",
+      "loadingDelayMs": 2000,
+      "raw": ".audits/runs/dashboard-independent-2026-09-26",
+      "coverage": "24settled principal-route/theme/viewport axe scans,8locale scans,keyboard/modal/reliability/consumer checks,31+42tests,5typechecks,4builds; performance superseded"
+    },
+    {
+      "name": "final snapshot",
+      "date": "2026-09-26T08:28:10.333Z",
+      "loadingDelayMs": 1000,
+      "raw": ".audits/runs/dashboard-independent-1s-2026-09-26",
+      "coverage": "31tests,3filelint,Dashboardbuild+TypeScript,12Lighthouse,9CDP sessions,orb/gate probes,targeted final findings/locale/darkmodal confirmations"
+    }
+  ],
+  "claims": [
+    {
+      "id": "A1",
+      "claim": "Comment accessible name and expanded-content association",
+      "classification": "Verified fixed",
+      "evidence": "Keyboard activation, aria-expanded and live aria-controls target (a11y interactions)."
+    },
+    {
+      "id": "A2",
+      "claim": "Muted and classification text contrast",
+      "classification": "Verified fixed",
+      "evidence": "24 settled route/theme/viewport axe scans; muted token ratios 4.97–7.36:1. SVG incomplete nodes remain unverified."
+    },
+    {
+      "id": "A3",
+      "claim": "Mobile navigation modality, containment, inertness, Escape, scroll lock, focus restoration",
+      "classification": "Verified fixed",
+      "evidence": "Native :modal, forward/reverse Tab, rejected background focus, AX-tree isolation, Escape restoration."
+    },
+    {
+      "id": "A4",
+      "claim": "Mobile fullscreen voice modality",
+      "classification": "Verified fixed",
+      "evidence": "320px native modal; containment, inertness, Escape/restoration and scroll lock."
+    },
+    {
+      "id": "A5",
+      "claim": "Desktop voice remains nonmodal",
+      "classification": "Verified fixed",
+      "evidence": "Native dialog :modal=false, background focus and scrolling remain available; Escape from background closes."
+    },
+    {
+      "id": "A6",
+      "claim": "Skip-to-content navigation",
+      "classification": "Verified fixed",
+      "evidence": "First Tab exposes skip link; Enter focuses main#dashboard-content."
+    },
+    {
+      "id": "A7",
+      "claim": "Content-only main landmark",
+      "classification": "Verified fixed",
+      "evidence": "One main, without header/nav/aside descendants on all six settled routes."
+    },
+    {
+      "id": "A8",
+      "claim": "aria-current navigation",
+      "classification": "Verified fixed",
+      "evidence": "Correct principal-route links expose aria-current=page, including mobile."
+    },
+    {
+      "id": "A9",
+      "claim": "Range/classification/group selected semantics",
+      "classification": "Verified fixed",
+      "evidence": "Named groups with one pressed selection; keyboard Space changes all three."
+    },
+    {
+      "id": "A10",
+      "claim": "Tooltip and ThemeToggle viewport clamping",
+      "classification": "Verified fixed",
+      "evidence": "Both tooltip geometries remain within320px viewport with8px edge margins."
+    },
+    {
+      "id": "A11",
+      "claim": "Tooltip hover/focus/Escape/reduced-motion behavior",
+      "classification": "Partially fixed",
+      "evidence": "Individual behaviors pass, but pointer leave hides a still-focused trigger tooltip: A11Y-1."
+    },
+    {
+      "id": "A12",
+      "claim": "Shared-component API compatibility",
+      "classification": "Verified fixed",
+      "evidence": "Additive optional props, five typechecks/four builds and Website/SSO/Mobile smoke. Behavioral defects separately reported."
+    },
+    {
+      "id": "P1",
+      "claim": "Route-specific deferred chart loading",
+      "classification": "Verified fixed",
+      "evidence": "Deferred chart chunk (~90,170B) loads on Overview/Evolution after page content; absent on Settings. Failure recovery is separateBP-01."
+    },
+    {
+      "id": "P2",
+      "claim": "Reserved chart/detail layout while loading",
+      "classification": "Verified fixed",
+      "evidence": "Identical 332×250px chart geometry before/after load at390px; CLS0 in all measured sessions. Skeleton overflow is separate A11Y-2."
+    },
+    {
+      "id": "P3",
+      "claim": "Deferred decorative orb initialization",
+      "classification": "Verified fixed",
+      "evidence": "Orbz definition followsFCP inall9throttledsessions; dimensions/reduced-motion source preserved."
+    },
+    {
+      "id": "P4",
+      "claim": "Immediate orb button availability",
+      "classification": "Verified fixed",
+      "evidence": "Voice dialog opens with decorative Orbz import blocked and custom element undefined. This verifies independence, not interactivity before React hydration."
+    },
+    {
+      "id": "P5",
+      "claim": "Next.js client navigation",
+      "classification": "Verified fixed",
+      "evidence": "Overview→Evolution→Settings→Evolution retains in-document sentinel; internal Next links."
+    },
+    {
+      "id": "P6",
+      "claim": "Shared atom state across navigation",
+      "classification": "Verified fixed",
+      "evidence": "Theme/product/range/classification/group persist. Selected point statically inspected, not separately asserted."
+    },
+    {
+      "id": "P7",
+      "claim": "Transient menus/navigation close on route change",
+      "classification": "Verified fixed",
+      "evidence": "Account, product, notifications and mobile-navigation runtime transitions."
+    },
+    {
+      "id": "P8",
+      "claim": "Stale voice-response timer cancellation",
+      "classification": "Verified fixed",
+      "evidence": "Replacement and close browser races; unmount unit checks; locale cleanup statically inspected."
+    },
+    {
+      "id": "P9",
+      "claim": "nosniff response header",
+      "classification": "Verified fixed",
+      "evidence": "Production /overview x-content-type-options=nosniff."
+    },
+    {
+      "id": "P10",
+      "claim": "Strict-origin referrer policy",
+      "classification": "Verified fixed",
+      "evidence": "Production referrer-policy=strict-origin-when-cross-origin."
+    },
+    {
+      "id": "P11",
+      "claim": "Framework-identification header disabled",
+      "classification": "Verified fixed",
+      "evidence": "No x-powered-by response header; poweredByHeader:false."
+    }
+  ],
+  "findings": [
+    {
+      "id": "A11Y-1",
+      "priority": "P2",
+      "title": "Tooltip disappears while keyboard focus remains",
+      "status": "Confirmed regression",
+      "file": "packages/react/src/vendors/shadcn/tooltip.tsx",
+      "line": 30,
+      "evidence": "Focus Account, hover it, move pointer away; after120ms tooltip disappears but trigger staysfocused. PreviousHEAD focus-within behavior didnot disappear. WCAG1.4.13 persistence.",
+      "fixApplied": false
+    },
+    {
+      "id": "BP-01",
+      "priority": "P2",
+      "title": "Chart retry cannot recover a transient deferred-chunk failure",
+      "status": "Confirmed new reliability issue",
+      "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.tsx",
+      "line": 64,
+      "evidence": "Abort deferredchart chunk, allow network again, press Tryagain; route refreshes but alert remains andchartcount0. Documentreload recovers. Module-level Reactlazy rejectioncached; Nextretryprop correct.",
+      "fixApplied": false
+    },
+    {
+      "id": "A11Y-2",
+      "priority": "P3",
+      "title": "Loading skeleton overflows320px viewport by12px",
+      "status": "Confirmed visual regression",
+      "file": "apps/dashboard/app/lib/components/route-state/dashboard-page-skeleton.tsx",
+      "line": 196,
+      "evidence": "During skeleton document.scrollWidth332 atviewport320; settledwidth320. Decorativew-80 track causesoverflow. Not provenWCAGcontent/functionloss.",
+      "fixApplied": false
+    },
+    {
+      "id": "A11Y-3",
+      "priority": "Advisory",
+      "title": "Visible PT-BR label differs from accessible name",
+      "status": "Not verified",
+      "file": "packages/react/src/ui/language-switcher/language-switcher.tsx",
+      "line": 56,
+      "evidence": "Experimental LH label-content-name-mismatch score0, categoryweight0. PT-BR vs Português(Brasil). Abbreviationcase needsmanualspeech/conformance review, notconfirmedWCAGfailure.",
+      "fixApplied": false
+    },
+    {
+      "id": "A11Y-4",
+      "priority": "P2",
+      "title": "Dark voice submit button has insufficient contrast",
+      "status": "Confirmed newly discovered pre-existing issue (source attribution)",
+      "file": "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.tsx",
+      "line": 521,
+      "evidence": "Enabled normal16px/400 Ask button: #f5f5f5 on #f97316, contrast2.5711:1 versus required4.5:1. Confirmed after750ms theme plus750ms overlay settling, opacity1 throughout ancestors. Same classes/tokens inHEAD; baseline production runtime not rebuilt.",
+      "fixApplied": false
+    }
+  ],
+  "performance": {
+    "tools": {
+      "lighthouse": "13.5.0",
+      "axe": "4.13.0",
+      "webVitals": "6.2.2",
+      "playwright": "1.63.0",
+      "chromium": "153.0.8010.12",
+      "next": "16.3.5",
+      "react": "19.2.4",
+      "node": "26.9.0"
+    },
+    "lighthouseConditions": [
+      {
+        "profile": "mobile",
+        "version": "13.5.0",
+        "environment": {
+          "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Mobile Safari/537.36",
+          "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+          "benchmarkIndex": 2889.5,
+          "credits": {
+            "axe-core": "4.13.0"
+          }
+        },
+        "settings": {
+          "output": [
+            "json"
+          ],
+          "maxWaitForFcp": 30000,
+          "maxWaitForLoad": 45000,
+          "pauseAfterFcpMs": 5500,
+          "pauseAfterLoadMs": 5500,
+          "networkQuietThresholdMs": 1000,
+          "cpuQuietThresholdMs": 1000,
+          "formFactor": "mobile",
+          "throttling": {
+            "rttMs": 150,
+            "throughputKbps": 1638.4,
+            "requestLatencyMs": 562.5,
+            "downloadThroughputKbps": 1474.5600000000002,
+            "uploadThroughputKbps": 675,
+            "cpuSlowdownMultiplier": 4
+          },
+          "throttlingMethod": "simulate",
+          "screenEmulation": {
+            "mobile": true,
+            "width": 412,
+            "height": 823,
+            "deviceScaleFactor": 1.75,
+            "disabled": false
+          },
+          "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+          "auditMode": false,
+          "gatherMode": false,
+          "clearStorageTypes": [
+            "file_systems",
+            "shader_cache",
+            "service_workers",
+            "cache_storage"
+          ],
+          "disableStorageReset": false,
+          "debugNavigation": false,
+          "channel": "cli",
+          "usePassiveGathering": false,
+          "disableFullPageScreenshot": false,
+          "skipAboutBlank": false,
+          "blankPage": "about:blank",
+          "ignoreStatusCode": false,
+          "locale": "en-US",
+          "blockedUrlPatterns": null,
+          "additionalTraceCategories": null,
+          "extraHeaders": null,
+          "precomputedLanternData": null,
+          "onlyAudits": null,
+          "onlyCategories": [
+            "performance",
+            "accessibility",
+            "best-practices"
+          ],
+          "skipAudits": null
+        }
+      },
+      {
+        "profile": "desktop",
+        "version": "13.5.0",
+        "environment": {
+          "networkUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+          "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+          "benchmarkIndex": 2835,
+          "credits": {
+            "axe-core": "4.13.0"
+          }
+        },
+        "settings": {
+          "output": [
+            "json"
+          ],
+          "maxWaitForFcp": 30000,
+          "maxWaitForLoad": 45000,
+          "pauseAfterFcpMs": 5500,
+          "pauseAfterLoadMs": 5500,
+          "networkQuietThresholdMs": 1000,
+          "cpuQuietThresholdMs": 1000,
+          "formFactor": "desktop",
+          "throttling": {
+            "rttMs": 40,
+            "throughputKbps": 10240,
+            "requestLatencyMs": 0,
+            "downloadThroughputKbps": 0,
+            "uploadThroughputKbps": 0,
+            "cpuSlowdownMultiplier": 1
+          },
+          "throttlingMethod": "simulate",
+          "screenEmulation": {
+            "mobile": false,
+            "width": 1350,
+            "height": 940,
+            "deviceScaleFactor": 1,
+            "disabled": false
+          },
+          "emulatedUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+          "auditMode": false,
+          "gatherMode": false,
+          "clearStorageTypes": [
+            "file_systems",
+            "shader_cache",
+            "service_workers",
+            "cache_storage"
+          ],
+          "disableStorageReset": false,
+          "debugNavigation": false,
+          "channel": "cli",
+          "usePassiveGathering": false,
+          "disableFullPageScreenshot": false,
+          "skipAboutBlank": false,
+          "blankPage": "about:blank",
+          "ignoreStatusCode": false,
+          "locale": "en-US",
+          "blockedUrlPatterns": null,
+          "additionalTraceCategories": null,
+          "extraHeaders": null,
+          "precomputedLanternData": null,
+          "onlyAudits": null,
+          "onlyCategories": [
+            "performance",
+            "accessibility",
+            "best-practices"
+          ],
+          "skipAudits": null
+        }
+      }
+    ],
+    "scriptedConditions": {
+      "browser": "153.0.8010.12",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 1.75,
+      "cache": "cold and disabled",
+      "cpuSlowdown": 4,
+      "network": {
+        "latencyMs": 150,
+        "downloadBytesPerSecond": 209715.2,
+        "uploadBytesPerSecond": 86400
+      },
+      "locale": "en",
+      "theme": "light initially",
+      "authentication": "local demo"
+    },
+    "summaries": [
+      {
+        "route": "overview",
+        "mobile": {
+          "lcp": {
+            "median": 2785.2171,
+            "min": 2778.12835,
+            "max": 2785.8339,
+            "samples": [
+              2778.12835,
+              2785.2171,
+              2785.8339
+            ]
+          },
+          "observedLcp": {
+            "median": 1416,
+            "min": 1156,
+            "max": 1605,
+            "samples": [
+              1156,
+              1416,
+              1605
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "tbt": {
+            "median": 90,
+            "min": 82,
+            "max": 143.5,
+            "samples": [
+              82,
+              90,
+              143.5
+            ]
+          },
+          "scriptBytes": {
+            "median": 355248,
+            "min": 355248,
+            "max": 355248,
+            "samples": [
+              355248,
+              355248,
+              355248
+            ]
+          },
+          "totalBytes": {
+            "median": 382684,
+            "min": 382684,
+            "max": 382684,
+            "samples": [
+              382684,
+              382684,
+              382684
+            ]
+          },
+          "accessibility": [
+            1,
+            1,
+            1
+          ],
+          "bestPractices": [
+            1,
+            1,
+            1
+          ]
+        },
+        "desktop": {
+          "lcp": 713.2533999999999,
+          "observedLcp": 1166,
+          "cls": 0,
+          "tbt": 0,
+          "scriptBytes": 360893,
+          "accessibility": 1,
+          "bestPractices": 1
+        },
+        "scripted": {
+          "inp": {
+            "median": 72,
+            "min": 64,
+            "max": 88,
+            "samples": [
+              64,
+              72,
+              88
+            ]
+          },
+          "lcp": {
+            "median": 2808,
+            "min": 2796,
+            "max": 2836,
+            "samples": [
+              2796,
+              2808,
+              2836
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "contentReady": {
+            "median": 2747.600000023842,
+            "min": 2740.199999988079,
+            "max": 2779.599999964237,
+            "samples": [
+              2740.199999988079,
+              2747.600000023842,
+              2779.599999964237
+            ]
+          },
+          "chartReady": {
+            "median": 3562.900000035763,
+            "min": 3561,
+            "max": 3592.899999976158,
+            "samples": [
+              3561,
+              3562.900000035763,
+              3592.899999976158
+            ]
+          },
+          "firstContentfulPaint": {
+            "median": 656,
+            "min": 644,
+            "max": 684,
+            "samples": [
+              644,
+              656,
+              684
+            ]
+          },
+          "buttonPresent": {
+            "median": 187.4000000357628,
+            "min": 182.0999999642372,
+            "max": 211.80000001192093,
+            "samples": [
+              182.0999999642372,
+              187.4000000357628,
+              211.80000001192093
+            ]
+          },
+          "orbDefined": {
+            "median": 1827,
+            "min": 1813.7999999523163,
+            "max": 1887.3999999761581,
+            "samples": [
+              1813.7999999523163,
+              1827,
+              1887.3999999761581
+            ]
+          },
+          "scriptBytes": {
+            "median": 351112,
+            "min": 351112,
+            "max": 351112,
+            "samples": [
+              351112,
+              351112,
+              351112
+            ]
+          },
+          "scriptDecodedBytes": {
+            "median": 1131505,
+            "min": 1131505,
+            "max": 1131505,
+            "samples": [
+              1131505,
+              1131505,
+              1131505
+            ]
+          },
+          "errors": [],
+          "inpAttribution": [
+            {
+              "name": "INP",
+              "value": 88,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 5,
+                "processingDuration": 17.30000001192093,
+                "presentationDelay": 65.69999998807907
+              }
+            },
+            {
+              "name": "INP",
+              "value": 72,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.30000001192092896,
+                "processingDuration": 12,
+                "presentationDelay": 59.69999998807907
+              }
+            },
+            {
+              "name": "INP",
+              "value": 64,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.800000011920929,
+                "processingDuration": 12.5,
+                "presentationDelay": 50.69999998807907
+              }
+            }
+          ]
+        }
+      },
+      {
+        "route": "evolution",
+        "mobile": {
+          "lcp": {
+            "median": 2710.6413000000002,
+            "min": 2710.6026,
+            "max": 3244.2044999999994,
+            "samples": [
+              2710.6026,
+              2710.6413000000002,
+              3244.2044999999994
+            ]
+          },
+          "observedLcp": {
+            "median": 1162,
+            "min": 1150,
+            "max": 1406,
+            "samples": [
+              1150,
+              1162,
+              1406
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "tbt": {
+            "median": 80.5,
+            "min": 67,
+            "max": 84.5,
+            "samples": [
+              67,
+              80.5,
+              84.5
+            ]
+          },
+          "scriptBytes": {
+            "median": 355250,
+            "min": 355250,
+            "max": 355250,
+            "samples": [
+              355250,
+              355250,
+              355250
+            ]
+          },
+          "totalBytes": {
+            "median": 382604,
+            "min": 382604,
+            "max": 382604,
+            "samples": [
+              382604,
+              382604,
+              382604
+            ]
+          },
+          "accessibility": [
+            1,
+            1,
+            1
+          ],
+          "bestPractices": [
+            1,
+            1,
+            1
+          ]
+        },
+        "desktop": {
+          "lcp": 701.7731000000001,
+          "observedLcp": 1406,
+          "cls": 0,
+          "tbt": 0,
+          "scriptBytes": 360893,
+          "accessibility": 1,
+          "bestPractices": 1
+        },
+        "scripted": {
+          "inp": {
+            "median": 64,
+            "min": 56,
+            "max": 72,
+            "samples": [
+              56,
+              64,
+              72
+            ]
+          },
+          "lcp": {
+            "median": 2784,
+            "min": 2772,
+            "max": 2796,
+            "samples": [
+              2772,
+              2784,
+              2796
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "contentReady": {
+            "median": 2734.399999976158,
+            "min": 2722.699999988079,
+            "max": 2746.800000011921,
+            "samples": [
+              2722.699999988079,
+              2734.399999976158,
+              2746.800000011921
+            ]
+          },
+          "chartReady": {
+            "median": 3531.099999964237,
+            "min": 3516.100000023842,
+            "max": 3561,
+            "samples": [
+              3516.100000023842,
+              3531.099999964237,
+              3561
+            ]
+          },
+          "firstContentfulPaint": {
+            "median": 648,
+            "min": 620,
+            "max": 656,
+            "samples": [
+              620,
+              648,
+              656
+            ]
+          },
+          "buttonPresent": {
+            "median": 181.5,
+            "min": 180.89999997615814,
+            "max": 191.10000002384186,
+            "samples": [
+              180.89999997615814,
+              181.5,
+              191.10000002384186
+            ]
+          },
+          "orbDefined": {
+            "median": 1820.8999999761581,
+            "min": 1813.3999999761581,
+            "max": 1844.699999988079,
+            "samples": [
+              1813.3999999761581,
+              1820.8999999761581,
+              1844.699999988079
+            ]
+          },
+          "scriptBytes": {
+            "median": 351114,
+            "min": 351114,
+            "max": 351114,
+            "samples": [
+              351114,
+              351114,
+              351114
+            ]
+          },
+          "scriptDecodedBytes": {
+            "median": 1131506,
+            "min": 1131506,
+            "max": 1131506,
+            "samples": [
+              1131506,
+              1131506,
+              1131506
+            ]
+          },
+          "errors": [],
+          "inpAttribution": [
+            {
+              "name": "INP",
+              "value": 72,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 1.199999988079071,
+                "processingDuration": 11.600000023841858,
+                "presentationDelay": 59.19999998807907
+              }
+            },
+            {
+              "name": "INP",
+              "value": 56,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.800000011920929,
+                "processingDuration": 10.899999976158142,
+                "presentationDelay": 44.30000001192093
+              }
+            },
+            {
+              "name": "INP",
+              "value": 64,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 1,
+                "processingDuration": 11.100000023841858,
+                "presentationDelay": 51.89999997615814
+              }
+            }
+          ]
+        }
+      },
+      {
+        "route": "settings",
+        "mobile": {
+          "lcp": {
+            "median": 2709.4494000000004,
+            "min": 2708.71815,
+            "max": 2717.5711499999993,
+            "samples": [
+              2708.71815,
+              2709.4494000000004,
+              2717.5711499999993
+            ]
+          },
+          "observedLcp": {
+            "median": 1164,
+            "min": 1153,
+            "max": 1422,
+            "samples": [
+              1153,
+              1164,
+              1422
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "tbt": {
+            "median": 45,
+            "min": 28.999999999999545,
+            "max": 47,
+            "samples": [
+              28.999999999999545,
+              45,
+              47
+            ]
+          },
+          "scriptBytes": {
+            "median": 265080,
+            "min": 265080,
+            "max": 265080,
+            "samples": [
+              265080,
+              265080,
+              265080
+            ]
+          },
+          "totalBytes": {
+            "median": 292432,
+            "min": 292432,
+            "max": 292432,
+            "samples": [
+              292432,
+              292432,
+              292432
+            ]
+          },
+          "accessibility": [
+            1,
+            1,
+            1
+          ],
+          "bestPractices": [
+            1,
+            1,
+            1
+          ]
+        },
+        "desktop": {
+          "lcp": 703.4645,
+          "observedLcp": 1411,
+          "cls": 0,
+          "tbt": 0,
+          "scriptBytes": 270723,
+          "accessibility": 1,
+          "bestPractices": 1
+        },
+        "scripted": {
+          "inp": {
+            "median": 64,
+            "min": 64,
+            "max": 80,
+            "samples": [
+              64,
+              64,
+              80
+            ]
+          },
+          "lcp": {
+            "median": 2780,
+            "min": 2772,
+            "max": 2780,
+            "samples": [
+              2772,
+              2780,
+              2780
+            ]
+          },
+          "cls": {
+            "median": 0,
+            "min": 0,
+            "max": 0,
+            "samples": [
+              0,
+              0,
+              0
+            ]
+          },
+          "contentReady": {
+            "median": 2722.5,
+            "min": 2722.5,
+            "max": 2723.300000011921,
+            "samples": [
+              2722.5,
+              2722.5,
+              2723.300000011921
+            ]
+          },
+          "chartReady": {
+            "samples": []
+          },
+          "firstContentfulPaint": {
+            "median": 648,
+            "min": 648,
+            "max": 648,
+            "samples": [
+              648,
+              648,
+              648
+            ]
+          },
+          "buttonPresent": {
+            "median": 181.5999999642372,
+            "min": 180.60000002384186,
+            "max": 182.0999999642372,
+            "samples": [
+              180.60000002384186,
+              181.5999999642372,
+              182.0999999642372
+            ]
+          },
+          "orbDefined": {
+            "median": 1834.5999999642372,
+            "min": 1812.800000011921,
+            "max": 1834.699999988079,
+            "samples": [
+              1812.800000011921,
+              1834.5999999642372,
+              1834.699999988079
+            ]
+          },
+          "scriptBytes": {
+            "median": 261188,
+            "min": 261188,
+            "max": 261188,
+            "samples": [
+              261188,
+              261188,
+              261188
+            ]
+          },
+          "scriptDecodedBytes": {
+            "median": 821067,
+            "min": 821067,
+            "max": 821067,
+            "samples": [
+              821067,
+              821067,
+              821067
+            ]
+          },
+          "errors": [],
+          "inpAttribution": [
+            {
+              "name": "INP",
+              "value": 80,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.9000000357627869,
+                "processingDuration": 14.399999976158142,
+                "presentationDelay": 64.69999998807907
+              }
+            },
+            {
+              "name": "INP",
+              "value": 64,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.40000003576278687,
+                "processingDuration": 14.099999964237213,
+                "presentationDelay": 49.5
+              }
+            },
+            {
+              "name": "INP",
+              "value": 64,
+              "attribution": {
+                "type": "pointer",
+                "inputDelay": 0.6000000238418579,
+                "processingDuration": 14,
+                "presentationDelay": 49.39999997615814
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "orbIndependence": {
+      "scenario": "Decorative Orbz runtime blocked; immediate shell voice control remains operable",
+      "orbDefined": false,
+      "buttonDisabled": false,
+      "dialogVisible": true,
+      "gateBusy": false,
+      "time": 162.9000000357628,
+      "blocked": [
+        "/_next/static/chunks/17vi5_qg-q94f.js",
+        "/_next/static/chunks/17vi5_qg-q94f.js"
+      ],
+      "errors": []
+    },
+    "gateTiming": {
+      "scenario": "Unthrottled local direct load and client navigation; observer records busy→ready",
+      "events": [
+        {
+          "busy": true,
+          "time": 324,
+          "path": "/overview"
+        },
+        {
+          "busy": false,
+          "time": 1359.8999999761581,
+          "path": "/overview"
+        },
+        {
+          "busy": true,
+          "time": 1481.5,
+          "path": "/settings"
+        },
+        {
+          "busy": false,
+          "time": 2484.100000023842,
+          "path": "/settings"
+        },
+        {
+          "busy": true,
+          "time": 2800.399999976158,
+          "path": "/evolution"
+        },
+        {
+          "busy": false,
+          "time": 3803.199999988079,
+          "path": "/evolution"
+        }
+      ],
+      "gates": [
+        {
+          "route": "/overview",
+          "busyDurationMs": 1035.8999999761581
+        },
+        {
+          "route": "/settings",
+          "busyDurationMs": 1002.6000000238419
+        },
+        {
+          "route": "/evolution",
+          "busyDurationMs": 1002.8000000119209
+        }
+      ]
+    },
+    "targets": {
+      "mobileMedianLcpMs": 2500,
+      "scriptedInpMs": 200,
+      "cls": 0.1
+    },
+    "acceptance": [
+      {
+        "route": "overview",
+        "mobileLcpTargetMet": false,
+        "scriptedInpTargetMet": true,
+        "clsTargetMet": true
+      },
+      {
+        "route": "evolution",
+        "mobileLcpTargetMet": false,
+        "scriptedInpTargetMet": true,
+        "clsTargetMet": true
+      },
+      {
+        "route": "settings",
+        "mobileLcpTargetMet": false,
+        "scriptedInpTargetMet": true,
+        "clsTargetMet": true
+      }
+    ],
+    "fieldData": null,
+    "interpretation": "Lighthouse simulates dependencies and does not faithfully preserve arbitrary timer idle duration; actual trace and CDP values retained separately. Timer starts after hydration. Three samples are lab evidence, not field p75."
+  },
+  "accessibility": {
+    "initialAxe": {
+      "principalRouteScans": 24,
+      "localeScans": 8,
+      "violations": 0,
+      "svgContrastIncompleteNodes": 13,
+      "sourceEpoch": "2000ms"
+    },
+    "finalDarkModals": [
+      {
+        "name": "Open navigation",
+        "dom": {
+          "modal": true,
+          "bodyOverflow": "hidden",
+          "theme": "dark",
+          "width": 320,
+          "scrollWidth": 320,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 281.59375,
+            "height": 720,
+            "top": 0,
+            "right": 281.59375,
+            "bottom": 720,
+            "left": 0
+          }
+        },
+        "scan": {
+          "availability": "available",
+          "version": "4.13.0",
+          "violations": [],
+          "incomplete": [
+            {
+              "id": "color-contrast",
+              "count": 9
+            }
+          ],
+          "passes": 15
+        },
+        "restoredFocus": true
+      },
+      {
+        "name": "Ask LangDrift",
+        "dom": {
+          "modal": true,
+          "bodyOverflow": "hidden",
+          "theme": "dark",
+          "width": 320,
+          "scrollWidth": 320,
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720,
+            "top": 0,
+            "right": 320,
+            "bottom": 720,
+            "left": 0
+          }
+        },
+        "scan": {
+          "availability": "available",
+          "version": "4.13.0",
+          "violations": [
+            {
+              "id": "color-contrast",
+              "impact": "serious",
+              "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+              "nodes": [
+                {
+                  "html": "<button class=\"min-w-[54px] cursor-pointer rounded-[7px] border-0 bg-brand px-2.5\" type=\"submit\">Ask</button>",
+                  "target": [
+                    ".min-w-\\[54px\\]"
+                  ],
+                  "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.57 (foreground color: #f5f5f5, background color: #f97316, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+                }
+              ]
+            }
+          ],
+          "incomplete": [
+            {
+              "id": "color-contrast",
+              "count": 1
+            }
+          ],
+          "passes": 15
+        },
+        "restoredFocus": true
+      }
+    ],
+    "finalLanguageMapping": [
+      {
+        "visible": "EN",
+        "accessibleName": "English",
+        "pressed": "true",
+        "disabled": false
+      },
+      {
+        "visible": "PT-BR",
+        "accessibleName": "Português (Brasil)",
+        "pressed": "false",
+        "disabled": false
+      },
+      {
+        "visible": "中文",
+        "accessibleName": "繁體中文",
+        "pressed": "false",
+        "disabled": false
+      },
+      {
+        "visible": "あ",
+        "accessibleName": "日本語",
+        "pressed": "false",
+        "disabled": false
+      }
+    ],
+    "finalVoiceConfirmation": {
+      "text": "Ask",
+      "disabled": false,
+      "color": "rgb(245, 245, 245)",
+      "backgroundColor": "rgb(249, 115, 22)",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "opacity": "1",
+      "className": "min-w-[54px] cursor-pointer rounded-[7px] border-0 bg-brand px-2.5",
+      "ratio": 2.571065055944225,
+      "expectedNormalTextMinimum": 4.5,
+      "ancestors": [
+        {
+          "tag": "DIV",
+          "opacity": "1",
+          "color": "rgb(245, 245, 245)"
+        },
+        {
+          "tag": "FORM",
+          "opacity": "1",
+          "color": "rgb(245, 245, 245)"
+        },
+        {
+          "tag": "DIALOG",
+          "opacity": "1",
+          "color": "rgb(245, 245, 245)"
+        },
+        {
+          "tag": "BODY",
+          "opacity": "1",
+          "color": "rgb(245, 245, 245)"
+        }
+      ],
+      "brandToken": "#f97316",
+      "inkToken": "#f5f5f5",
+      "theme": "dark",
+      "modal": true,
+      "rect": {
+        "x": 248,
+        "y": 664,
+        "width": 54,
+        "height": 36,
+        "top": 664,
+        "right": 302,
+        "bottom": 700,
+        "left": 248
+      }
+    },
+    "finalVoiceAxeConfirmation": {
+      "version": "4.13.0",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "nodes": [
+            {
+              "html": "<button class=\"min-w-[54px] cursor-pointer rounded-[7px] border-0 bg-brand px-2.5\" type=\"submit\">Ask</button>",
+              "target": [
+                ".min-w-\\[54px\\]"
+              ],
+              "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.57 (foreground color: #f5f5f5, background color: #f97316, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ],
+      "incomplete": []
+    },
+    "unverified": [
+      "native zoom",
+      "assistive-technology speech",
+      "chart contrast incomplete nodes",
+      "language-abbreviation speech behavior",
+      "dark account/notifications/product overlay scans"
+    ]
+  },
+  "historical": {
+    "source": ".audits/reports/dashboard-web-quality-2026-09-26.json",
+    "baseline": [
+      {
+        "route": "evolution",
+        "profile": "mobile",
+        "sample": 1,
+        "lcp": 2862.13065,
+        "cls": 0,
+        "tbt": 73.5,
+        "performance": 0.95,
+        "accessibility": 0.9,
+        "bestPractices": 1,
+        "bytes": 344950
+      },
+      {
+        "route": "overview",
+        "profile": "desktop",
+        "sample": 1,
+        "lcp": 594.768,
+        "cls": 0,
+        "tbt": 0,
+        "performance": 1,
+        "accessibility": 0.9,
+        "bestPractices": 1,
+        "bytes": 347359
+      },
+      {
+        "route": "overview",
+        "profile": "mobile",
+        "sample": 1,
+        "lcp": 2969.885,
+        "cls": 0,
+        "tbt": 91,
+        "performance": 0.89,
+        "accessibility": 0.9,
+        "bestPractices": 1,
+        "bytes": 347359
+      },
+      {
+        "route": "overview",
+        "profile": "mobile",
+        "sample": 2,
+        "lcp": 2812.1094000000003,
+        "cls": 0,
+        "tbt": 143,
+        "performance": 0.94,
+        "accessibility": 0.9,
+        "bestPractices": 1,
+        "bytes": 347359
+      },
+      {
+        "route": "overview",
+        "profile": "mobile",
+        "sample": 3,
+        "lcp": 2867.5825999999997,
+        "cls": 0,
+        "tbt": 92,
+        "performance": 0.95,
+        "accessibility": 0.9,
+        "bestPractices": 1,
+        "bytes": 347359
+      },
+      {
+        "route": "settings",
+        "profile": "mobile",
+        "sample": 1,
+        "lcp": 2864.8571999999995,
+        "cls": 0,
+        "tbt": 56,
+        "performance": 0.95,
+        "accessibility": 1,
+        "bestPractices": 1,
+        "bytes": 341424
+      }
+    ],
+    "acceptance": [
+      {
+        "route": "overview",
+        "mobileMedianLcpMs": 2652.4322999999995,
+        "mobileLcpTargetMet": false
+      },
+      {
+        "route": "evolution",
+        "mobileMedianLcpMs": 2498.2909,
+        "mobileLcpTargetMet": true
+      },
+      {
+        "route": "settings",
+        "mobileMedianLcpMs": 2493.0115,
+        "mobileLcpTargetMet": true
+      }
+    ],
+    "transferredResources": [
+      {
+        "route": "overview",
+        "scriptBytes": 333161,
+        "stylesheetBytes": 10989
+      },
+      {
+        "route": "evolution",
+        "scriptBytes": 333161,
+        "stylesheetBytes": 10989
+      },
+      {
+        "route": "settings",
+        "scriptBytes": 242991,
+        "stylesheetBytes": 10989
+      }
+    ],
+    "preRemediationOverviewMedianLcpMs": 2867.5826,
+    "preRemediationInpRangeMs": [
+      56,
+      72
+    ],
+    "previousRemediationInpRangeMs": [
+      64,
+      80
+    ],
+    "superseded2000msMobileLcpMedians": {
+      "overview": 2789.35425,
+      "evolution": 2708.55465,
+      "settings": 2714.441
+    },
+    "caveat": "Different feature snapshots and observation windows; not controlled causal comparisons."
+  },
+  "validation": {
+    "initial": [
+      {
+        "label": "unit",
+        "command": "node_modules/.bin/vitest",
+        "args": [
+          "run",
+          "--config",
+          "vitest.web-quality.config.mts"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "early-access",
+        "command": "node_modules/.bin/vitest",
+        "args": [
+          "run",
+          "--config",
+          "vitest.config.mts"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "typecheck-dashboard",
+        "command": "node_modules/.bin/tsc",
+        "args": [
+          "--noEmit",
+          "-p",
+          "apps/dashboard/tsconfig.json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "typecheck-react",
+        "command": "node_modules/.bin/tsc",
+        "args": [
+          "--noEmit",
+          "-p",
+          "packages/react/tsconfig.json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "typecheck-website",
+        "command": "node_modules/.bin/tsc",
+        "args": [
+          "--noEmit",
+          "-p",
+          "apps/website/tsconfig.json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "typecheck-sso",
+        "command": "node_modules/.bin/tsc",
+        "args": [
+          "--noEmit",
+          "-p",
+          "apps/sso/tsconfig.json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "typecheck-mobile",
+        "command": "node_modules/.bin/tsc",
+        "args": [
+          "--noEmit",
+          "-p",
+          "apps/mobile/tsconfig.json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "build-website",
+        "command": "node",
+        "args": [
+          "node_modules/.pnpm/next@16.3.5_@babel+core@7.29.7_@playwright+test@1.63.0_@types+node@20.19.43_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/bin/next",
+          "build"
+        ],
+        "cwd": "apps/website",
+        "fixtureEnv": {
+          "NEXT_PUBLIC_DOCS_URL": "http://127.0.0.1:3104",
+          "NEXT_PUBLIC_SSO_URL": "http://127.0.0.1:3102",
+          "NEXT_PUBLIC_DASHBOARD_URL": "http://127.0.0.1:3101",
+          "NEXT_PUBLIC_WEBSITE_URL": "http://127.0.0.1:3100",
+          "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+        },
+        "exitCode": 0
+      },
+      {
+        "label": "build-sso",
+        "command": "node",
+        "args": [
+          "node_modules/.pnpm/next@16.3.5_@babel+core@7.29.7_@playwright+test@1.63.0_@types+node@20.19.43_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/bin/next",
+          "build"
+        ],
+        "cwd": "apps/sso",
+        "fixtureEnv": {
+          "NEXT_PUBLIC_DOCS_URL": "http://127.0.0.1:3104",
+          "NEXT_PUBLIC_SSO_URL": "http://127.0.0.1:3102",
+          "NEXT_PUBLIC_DASHBOARD_URL": "http://127.0.0.1:3101",
+          "NEXT_PUBLIC_WEBSITE_URL": "http://127.0.0.1:3100",
+          "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA"
+        },
+        "exitCode": 0
+      },
+      {
+        "label": "build-mobile",
+        "command": "apps/mobile/node_modules/.bin/vite",
+        "args": [
+          "build"
+        ],
+        "cwd": "apps/mobile",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "dependency-audit",
+        "command": "pnpm",
+        "args": [
+          "audit",
+          "--prod",
+          "--json"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "biome",
+        "command": "node_modules/.bin/biome",
+        "args": [
+          "lint",
+          "apps/dashboard/app/layout.tsx",
+          "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.tsx",
+          "apps/dashboard/app/lib/views/dashboard-view/dashboard-view.tsx",
+          "apps/dashboard/app/lib/views/index.ts",
+          "apps/dashboard/next.config.ts",
+          "apps/dashboard/package.json",
+          "apps/dashboard/tsconfig.paths.json",
+          "apps/website/src/components/website-header.tsx",
+          "package.json",
+          "packages/react/package.json",
+          "packages/react/src/styles.css",
+          "packages/react/src/ui/agent-orb/agent-orb.tsx",
+          "packages/react/src/ui/product-vision-curve/product-vision-curve.css",
+          "packages/react/src/ui/product-vision-curve/product-vision-curve.tsx",
+          "packages/react/src/ui/theme-toggle/theme-toggle.tsx",
+          "packages/react/src/utilities/index.ts",
+          "packages/react/src/vendors/shadcn/tooltip.tsx",
+          "packages/react/src/vendors/smoothui/figma-comment.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-product-area/default.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-product-area/error.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-product-area/loading.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-product-area/not-found.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-team/default.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-team/error.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-team/loading.tsx",
+          "apps/dashboard/app/(evolution)/drift-by-team/not-found.tsx",
+          "apps/dashboard/app/(evolution)/drift-events/default.tsx",
+          "apps/dashboard/app/(evolution)/drift-events/error.tsx",
+          "apps/dashboard/app/(evolution)/drift-events/loading.tsx",
+          "apps/dashboard/app/(evolution)/drift-events/not-found.tsx",
+          "apps/dashboard/app/(evolution)/drift-graph/default.tsx",
+          "apps/dashboard/app/(evolution)/drift-graph/error.tsx",
+          "apps/dashboard/app/(evolution)/drift-graph/loading.tsx",
+          "apps/dashboard/app/(evolution)/drift-graph/not-found.tsx",
+          "apps/dashboard/app/(evolution)/drift-timeline/default.tsx",
+          "apps/dashboard/app/(evolution)/drift-timeline/error.tsx",
+          "apps/dashboard/app/(evolution)/drift-timeline/loading.tsx",
+          "apps/dashboard/app/(evolution)/drift-timeline/not-found.tsx",
+          "apps/dashboard/app/(evolution)/intentional-drift/default.tsx",
+          "apps/dashboard/app/(evolution)/intentional-drift/error.tsx",
+          "apps/dashboard/app/(evolution)/intentional-drift/loading.tsx",
+          "apps/dashboard/app/(evolution)/intentional-drift/not-found.tsx",
+          "apps/dashboard/app/(evolution)/unexplained-drift/default.tsx",
+          "apps/dashboard/app/(evolution)/unexplained-drift/error.tsx",
+          "apps/dashboard/app/(evolution)/unexplained-drift/loading.tsx",
+          "apps/dashboard/app/(evolution)/unexplained-drift/not-found.tsx",
+          "apps/dashboard/app/(evolution)/vision-baseline/default.tsx",
+          "apps/dashboard/app/(evolution)/vision-baseline/error.tsx",
+          "apps/dashboard/app/(evolution)/vision-baseline/loading.tsx",
+          "apps/dashboard/app/(evolution)/vision-baseline/not-found.tsx",
+          "apps/dashboard/app/(menu)/decisions/default.tsx",
+          "apps/dashboard/app/(menu)/decisions/error.tsx",
+          "apps/dashboard/app/(menu)/decisions/loading.tsx",
+          "apps/dashboard/app/(menu)/decisions/not-found.tsx",
+          "apps/dashboard/app/(menu)/evidence/default.tsx",
+          "apps/dashboard/app/(menu)/evidence/error.tsx",
+          "apps/dashboard/app/(menu)/evidence/loading.tsx",
+          "apps/dashboard/app/(menu)/evidence/not-found.tsx",
+          "apps/dashboard/app/(menu)/evolution/default.tsx",
+          "apps/dashboard/app/(menu)/evolution/error.tsx",
+          "apps/dashboard/app/(menu)/evolution/loading.tsx",
+          "apps/dashboard/app/(menu)/evolution/not-found.tsx",
+          "apps/dashboard/app/(menu)/overview/default.tsx",
+          "apps/dashboard/app/(menu)/overview/error.tsx",
+          "apps/dashboard/app/(menu)/overview/loading.tsx",
+          "apps/dashboard/app/(menu)/overview/not-found.tsx",
+          "apps/dashboard/app/(menu)/people/default.tsx",
+          "apps/dashboard/app/(menu)/people/error.tsx",
+          "apps/dashboard/app/(menu)/people/loading.tsx",
+          "apps/dashboard/app/(menu)/people/not-found.tsx",
+          "apps/dashboard/app/(menu)/reports/default.tsx",
+          "apps/dashboard/app/(menu)/reports/error.tsx",
+          "apps/dashboard/app/(menu)/reports/loading.tsx",
+          "apps/dashboard/app/(menu)/reports/not-found.tsx",
+          "apps/dashboard/app/(menu)/settings/default.tsx",
+          "apps/dashboard/app/(menu)/settings/error.tsx",
+          "apps/dashboard/app/(menu)/settings/loading.tsx",
+          "apps/dashboard/app/(menu)/settings/not-found.tsx",
+          "apps/dashboard/app/(reports)/drift-report/default.tsx",
+          "apps/dashboard/app/(reports)/drift-report/error.tsx",
+          "apps/dashboard/app/(reports)/drift-report/loading.tsx",
+          "apps/dashboard/app/(reports)/drift-report/not-found.tsx",
+          "apps/dashboard/app/default.tsx",
+          "apps/dashboard/app/error.tsx",
+          "apps/dashboard/app/global-error.tsx",
+          "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+          "apps/dashboard/app/lib/components/dashboard-shell/overlay-dialog.tsx",
+          "apps/dashboard/app/lib/components/route-state/dashboard-not-found.tsx",
+          "apps/dashboard/app/lib/components/route-state/dashboard-page-gate.tsx",
+          "apps/dashboard/app/lib/components/route-state/dashboard-page-skeleton.tsx",
+          "apps/dashboard/app/lib/components/route-state/dashboard-route-error.tsx",
+          "apps/dashboard/app/lib/components/route-state/route-state.test.tsx",
+          "apps/dashboard/app/lib/i18n/actions.ts",
+          "apps/dashboard/app/lib/i18n/config.ts",
+          "apps/dashboard/app/lib/i18n/language-settings.tsx",
+          "apps/dashboard/app/lib/i18n/locale.test.tsx",
+          "apps/dashboard/app/lib/i18n/messages/en.ts",
+          "apps/dashboard/app/lib/i18n/messages/index.ts",
+          "apps/dashboard/app/lib/i18n/messages/ja.ts",
+          "apps/dashboard/app/lib/i18n/messages/pt-br.ts",
+          "apps/dashboard/app/lib/i18n/messages/zh-hant.ts",
+          "apps/dashboard/app/lib/i18n/request.ts",
+          "apps/dashboard/app/lib/i18n/route-state.messages.ts",
+          "apps/dashboard/app/lib/i18n/shell.messages.ts",
+          "apps/dashboard/app/lib/state/atoms/account-menu-open.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/classification.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/group-by.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/index.ts",
+          "apps/dashboard/app/lib/state/atoms/notifications-open.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/product-menu-open.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/range.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/select-product.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/selected-point.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/selected-product.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/theme.atom.ts",
+          "apps/dashboard/app/lib/state/atoms/voice-open.atom.ts",
+          "apps/dashboard/app/lib/state/domain/dashboard-locale.domain.ts",
+          "apps/dashboard/app/lib/state/domain/dashboard-range.domain.ts",
+          "apps/dashboard/app/lib/state/domain/dashboard-section.domain.ts",
+          "apps/dashboard/app/lib/state/domain/dashboard-theme.domain.ts",
+          "apps/dashboard/app/lib/state/domain/evolution-classification.domain.ts",
+          "apps/dashboard/app/lib/state/domain/evolution-group.domain.ts",
+          "apps/dashboard/app/lib/state/domain/index.ts",
+          "apps/dashboard/app/loading.tsx",
+          "apps/dashboard/app/not-found.tsx",
+          "packages/react/src/ui/classification-text.ts",
+          "packages/react/src/ui/language-switcher/index.ts",
+          "packages/react/src/ui/language-switcher/language-switcher.test.tsx",
+          "packages/react/src/ui/language-switcher/language-switcher.tsx",
+          "packages/react/src/ui/product-vision-curve/product-vision-chart.tsx",
+          "packages/react/src/ui/product-vision-curve/product-vision-curve.test.tsx",
+          "packages/react/src/utilities/after-paint.ts",
+          "packages/react/src/vendors/shadcn/tooltip.test.tsx",
+          "packages/react/src/vendors/smoothui/skeleton-loader.test.tsx",
+          "packages/react/src/vendors/smoothui/skeleton-loader.tsx",
+          "vitest.web-quality.config.mts"
+        ],
+        "cwd": ".",
+        "fixtureEnv": {},
+        "exitCode": 0
+      },
+      {
+        "label": "build-dashboard",
+        "command": "node",
+        "args": [
+          "node_modules/.pnpm/next@16.3.5_@babel+core@7.29.7_@playwright+test@1.63.0_@types+node@20.19.43_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/bin/next",
+          "build"
+        ],
+        "cwd": "apps/dashboard",
+        "fixtureEnv": {},
+        "exitCode": 0
+      }
+    ],
+    "final": {
+      "snapshot": ".audits/runs/dashboard-independent-1s-2026-09-26/snapshot.json",
+      "previousChecks": ".audits/runs/dashboard-independent-2026-09-26/validation.json",
+      "checks": [
+        {
+          "command": "node_modules/.bin/vitest run --config vitest.web-quality.config.mts",
+          "cwd": ".",
+          "exitCode": 0,
+          "testFiles": 7,
+          "tests": 31
+        },
+        {
+          "command": "node_modules/.bin/biome lint apps/dashboard/app/lib/components/route-state/dashboard-page-gate.tsx apps/dashboard/app/lib/components/route-state/route-state.test.tsx apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+          "cwd": ".",
+          "exitCode": 0,
+          "files": 3
+        },
+        {
+          "command": "node node_modules/next/dist/bin/next build",
+          "cwd": "apps/dashboard",
+          "exitCode": 0,
+          "includesTypeScript": true
+        }
+      ],
+      "changedSource": [
+        "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+        "apps/dashboard/app/lib/components/route-state/dashboard-page-gate.tsx",
+        "apps/dashboard/app/lib/components/route-state/route-state.test.tsx"
+      ],
+      "unchangedEvidencePolicy": "Previous 2-second-snapshot accessibility, reliability and consumer evidence is retained with source-hash continuity, not relabelled as a fresh final-snapshot run. Performance is remeasured in full. Targeted browser regressions are rechecked after the isolated performance series."
+    },
+    "tests": {
+      "webQuality": 31,
+      "earlyAccess": 42
+    },
+    "dependencyAudit": {
+      "productionDependencies": 650,
+      "reportedAdvisories": 0
+    },
+    "finalTargetedProbes": [
+      {
+        "name": "1000 ms gate, 320px skeleton and reduce motion",
+        "probeStatus": "completed",
+        "productOutcome": "finding-reproduced"
+      },
+      {
+        "name": "1000 ms gate, 320px skeleton and no-preference motion",
+        "probeStatus": "completed",
+        "productOutcome": "finding-reproduced"
+      },
+      {
+        "name": "Focused tooltip persists when pointer leaves",
+        "probeStatus": "completed",
+        "productOutcome": "finding-reproduced"
+      },
+      {
+        "name": "Four locales preserve document and selected application/language state",
+        "probeStatus": "completed",
+        "productOutcome": "pass"
+      },
+      {
+        "name": "Dark mobile navigation and voice dialogs: axe and modal state",
+        "probeStatus": "completed",
+        "productOutcome": "new-failure"
+      },
+      {
+        "name": "Restored chart download can recover using route Try again",
+        "probeStatus": "completed",
+        "productOutcome": "finding-reproduced"
+      }
+    ],
+    "confirmationStatus": "completed",
+    "sourceContinuity": {
+      "checkedAt": "2026-09-26T08:33:56.926Z",
+      "snapshotDate": "2026-09-26T08:28:10.333Z",
+      "snapshotHead": "5769cbe29e0b85baa322e2a7ca7eeb92e8fde98a",
+      "currentHead": "5769cbe29e0b85baa322e2a7ca7eeb92e8fde98a",
+      "files": 141,
+      "differences": []
+    }
+  },
+  "limits": [
+    "No field data or production telemetry",
+    "No physical-device/Safari/Firefox runs",
+    "No native browser zoom or screen-reader speech",
+    "No global-error/root-provider fault injection",
+    "No named parallel slots, so default-slot runtime test not applicable",
+    "No real dropped locale-action connection; negative outcomes unit-tested",
+    "No module-level before/after bundle attribution",
+    "No deployed TLS/HSTS/CSP or backend/authentication assessment"
+  ],
+  "rawEvidenceCaveats": [
+    "Initial theme/loading false positives superseded by settled scans",
+    "Initial Website label/case probe errors corrected",
+    "Initial locale mapping race corrected inbp-confirm.json",
+    "Final chart request log includes later explicit reload; primitive before-reload alert/chart observations are authoritative",
+    "Snapshot checker corrected deleted-file null-tombstone handling; product source unchanged"
+  ],
+  "auditFindingsFixed": false,
+  "productionFrozenAfterSnapshot": true
+}

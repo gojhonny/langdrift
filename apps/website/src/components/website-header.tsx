@@ -1,14 +1,15 @@
 'use client'
 
 import { Brand } from '@repo/react/ui/brand'
+import { LanguageSwitcher } from '@repo/react/ui/language-switcher'
 import { useAtom } from 'jotai'
 import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 
-import { websiteLinks } from '../app/app-links'
-import { Link, usePathname, useRouter } from '../i18n/navigation'
-import { themeAtom } from '../state'
+import { websiteLinks } from '@/app/app-links'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
+import { themeAtom } from '@/state'
 
 import './website-header.css'
 
@@ -76,23 +77,25 @@ function LanguagePill({ fromDrawer = false }: { fromDrawer?: boolean }) {
   }
 
   return (
-    <nav aria-label={t('language')} className="website-locale-pill">
-      {languages.map((language) => (
+    <LanguageSwitcher
+      className={fromDrawer ? '[&_a]:min-h-11' : undefined}
+      currentLocale={locale}
+      label={t('language')}
+      options={languages.map((language) => ({
+        locale: language.locale,
+        label: language.label,
+        name: t(`languages.${language.name}`),
+        href: `${pathname}${urlSuffix}`
+      }))}
+      renderLink={(language, linkProps) => (
         <Link
-          aria-current={locale === language.locale ? 'page' : undefined}
-          aria-label={t(`languages.${language.name}`)}
-          className="website-locale-link"
-          href={`${pathname}${urlSuffix}`}
-          hrefLang={language.locale}
-          key={language.locale}
+          {...linkProps}
           locale={language.locale}
           onClick={(event) => selectLanguage(event, language.locale)}
           scroll={false}
-        >
-          {language.label}
-        </Link>
-      ))}
-    </nav>
+        />
+      )}
+    />
   )
 }
 

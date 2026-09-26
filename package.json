@@ -17,6 +17,7 @@
     "lint": "biome lint . --files-ignore-unknown=true",
     "typecheck": "turbo run typecheck",
     "test:early-access": "vitest run --config vitest.config.mts",
+    "test:web-quality": "vitest run --config vitest.web-quality.config.mts",
     "coverage:early-access": "vitest run --config vitest.config.mts --coverage",
     "website": "./cli/drift dev website",
     "docs": "./cli/drift dev docs",

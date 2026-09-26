@@ -13,188 +13,136 @@ import {
   type VisionDriftEvent,
   type VisionPoint
 } from '@repo/react/ui/product-vision-curve'
+import { classificationText } from '@repo/react/ui/classification-text'
 import { ThemeToggle } from '@repo/react/ui/theme-toggle'
 import { AnimatedAvatarGroup, FigmaComment } from '@repo/react/vendors/smoothui'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import Image from 'next/image'
+import Link from 'next/link'
+import { useFormatter, useTranslations } from 'next-intl'
 
 import {
   classificationAtom,
-  type EvolutionClassification,
-  type EvolutionGroup,
   groupByAtom,
   rangeAtom,
   selectedPointAtom,
   selectedProductAtom,
   themeAtom
-} from '@state/state'
+} from '@atoms'
+import type {
+  DashboardSection,
+  EvolutionClassification,
+  EvolutionGroup
+} from '@domain'
+import { DashboardPageGate } from '@components/route-state/dashboard-page-gate'
+import { DashboardLanguageSettings } from '@i18n/language-settings'
 import { Card, cx, Kicker } from '@template/ui'
 
-export type DashboardSection =
-  | 'decisions'
-  | 'drift-by-product-area'
-  | 'drift-by-team'
-  | 'drift-events'
-  | 'drift-graph'
-  | 'drift-report'
-  | 'drift-timeline'
-  | 'evidence'
-  | 'evolution'
-  | 'intentional-drift'
-  | 'overview'
-  | 'people'
-  | 'reports'
-  | 'settings'
-  | 'unexplained-drift'
-  | 'vision-baseline'
-
-const visionPoints: VisionPoint[] = [
-  {
-    label: 'Apr',
-    value: 91,
-    event: {
-      actors: [
-        {
-          initials: 'MR',
-          name: 'Marina Reis',
-          src: aiAvatars.marina,
-          team: 'Leadership'
-        }
-      ],
-      classification: 'baseline',
-      date: 'Apr 02',
-      decision: 'Vision baseline recorded',
-      delta: 0,
-      id: 'baseline',
-      productArea: 'Vision',
-      reason:
-        'Leadership recorded the product direction used as the reference for this period.',
-      title: 'Vision baseline approved'
+function useVisionPoints(): VisionPoint[] {
+  const t = useTranslations('view')
+  return [
+    {
+      label: t('months.apr'),
+      value: 91,
+      event: {
+        actors: [
+          {
+            initials: 'MR',
+            name: 'Marina Reis',
+            src: aiAvatars.marina,
+            team: t('teams.leadership')
+          }
+        ],
+        classification: 'baseline',
+        date: t('dates.baseline'),
+        decision: t('events.baseline.decision'),
+        delta: 0,
+        id: 'baseline',
+        productArea: t('areas.vision'),
+        reason: t('events.baseline.reason'),
+        title: t('events.baseline.title')
+      }
+    },
+    { label: t('months.may'), value: 88 },
+    {
+      label: t('months.jun'),
+      value: 84,
+      event: {
+        actors: [
+          {
+            initials: 'AN',
+            name: 'Ana',
+            src: aiAvatars.ana,
+            team: t('teams.product')
+          },
+          {
+            initials: 'CA',
+            name: 'Carlos',
+            src: aiAvatars.carlos,
+            team: t('teams.platform')
+          }
+        ],
+        classification: 'intentional',
+        date: t('dates.pricing'),
+        decision: t('events.pricing.decision'),
+        delta: -9,
+        id: 'pricing',
+        productArea: t('areas.pricing'),
+        reason: t('events.pricing.reason'),
+        title: t('events.pricing.title')
+      }
+    },
+    {
+      label: t('months.jul'),
+      value: 79,
+      event: {
+        actors: [
+          {
+            initials: 'CA',
+            name: 'Carlos',
+            src: aiAvatars.carlos,
+            team: t('teams.platform')
+          }
+        ],
+        classification: 'unexplained',
+        date: t('dates.authentication'),
+        decision: t('events.authentication.decision'),
+        delta: -6,
+        id: 'authentication',
+        productArea: t('areas.authentication'),
+        reason: t('events.authentication.reason'),
+        title: t('events.authentication.title')
+      }
+    },
+    {
+      label: t('months.aug'),
+      value: 73,
+      event: {
+        actors: [
+          {
+            initials: 'AN',
+            name: 'Ana',
+            src: aiAvatars.ana,
+            team: t('teams.product')
+          }
+        ],
+        classification: 'review',
+        date: t('dates.exports'),
+        decision: t('events.exports.decision'),
+        delta: -3,
+        id: 'exports',
+        productArea: t('areas.exports'),
+        reason: t('events.exports.reason'),
+        title: t('events.exports.title')
+      }
     }
-  },
-  { label: 'May', value: 88 },
-  {
-    label: 'Jun',
-    value: 84,
-    event: {
-      actors: [
-        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' },
-        {
-          initials: 'CA',
-          name: 'Carlos',
-          src: aiAvatars.carlos,
-          team: 'Platform'
-        }
-      ],
-      classification: 'intentional',
-      date: 'Jun 28',
-      decision: 'Decision recorded',
-      delta: -9,
-      id: 'pricing',
-      productArea: 'Pricing',
-      reason: 'Enterprise customers required a different packaging model.',
-      title: 'Pricing strategy changed'
-    }
-  },
-  {
-    label: 'Jul',
-    value: 79,
-    event: {
-      actors: [
-        {
-          initials: 'CA',
-          name: 'Carlos',
-          src: aiAvatars.carlos,
-          team: 'Platform'
-        }
-      ],
-      classification: 'unexplained',
-      date: 'Jul 22',
-      decision: 'Decision not found',
-      delta: -6,
-      id: 'authentication',
-      productArea: 'Authentication',
-      reason: 'No matching product decision was found.',
-      title: 'Authentication redesigned'
-    }
-  },
-  {
-    label: 'Aug',
-    value: 73,
-    event: {
-      actors: [
-        { initials: 'AN', name: 'Ana', src: aiAvatars.ana, team: 'Product' }
-      ],
-      classification: 'review',
-      date: 'Aug 20',
-      decision: 'Review pending',
-      delta: -3,
-      id: 'exports',
-      productArea: 'Exports',
-      reason: 'Evidence exists, but the product rationale is still incomplete.',
-      title: 'Export behavior changed'
-    }
-  }
-]
-
-const driftEvents = visionPoints.flatMap((point) =>
-  point.event ? [point.event] : []
-)
-
-const titles: Record<DashboardSection, [string, string]> = {
-  decisions: [
-    'Decisions',
-    'Why product direction changed, who approved it, and what it affected.'
-  ],
-  'drift-by-product-area': [
-    'Evolution',
-    'Product-area grouping of Product Vision movement.'
-  ],
-  'drift-by-team': ['Evolution', 'Team grouping of Product Vision movement.'],
-  'drift-events': [
-    'Evolution',
-    'Important Product Vision events and their classifications.'
-  ],
-  'drift-graph': ['Evolution', 'How Product Vision moved over time.'],
-  'drift-report': ['Reports', 'Executive explanations over a selected period.'],
-  'drift-timeline': ['Evolution', 'Product evolution in chronological order.'],
-  evidence: ['Evidence', 'Contextual proof behind product conclusions.'],
-  evolution: [
-    'Evolution',
-    'See the curve, filter movement, and inspect the baseline.'
-  ],
-  'intentional-drift': [
-    'Evolution',
-    'Intentional Evolution filtered from the same product history.'
-  ],
-  overview: [
-    'Overview',
-    'Where we are now, why we moved, and what needs attention.'
-  ],
-  people: [
-    'People',
-    'Ownership, decisions, implementation, and review participation.'
-  ],
-  reports: [
-    'Reports',
-    'Executive summaries of Product Vision movement and attention items.'
-  ],
-  settings: [
-    'Settings',
-    'Workspace appearance and deterministic product context.'
-  ],
-  'unexplained-drift': [
-    'Evolution',
-    'Unexplained movement filtered from the same product history.'
-  ],
-  'vision-baseline': [
-    'Evolution',
-    'Auditable provenance for the current Vision baseline.'
   ]
 }
 
 function Heading({ section }: { section: DashboardSection }) {
-  const [title, description] = titles[section]
+  const t = useTranslations('view')
+  const title = t(`sections.${section}.title`)
+  const description = t(`sections.${section}.description`)
   return (
     <div className="mb-[22px] flex items-end justify-between max-sm:flex-col max-sm:items-start max-sm:gap-2">
       <div className="grid min-w-0 gap-[3px]">
@@ -215,29 +163,24 @@ function ClassificationPill({
   className?: string
   classification: VisionDriftEvent['classification']
 }) {
-  const labels = {
-    baseline: 'Baseline',
-    intentional: 'Intentional Evolution',
-    review: 'Under Review',
-    unexplained: 'Unexplained Drift'
-  }
+  const t = useTranslations('view')
   return (
     <span
       className={cx(
         'rounded-full border border-hairline px-1.5 py-1 text-[8px]',
         className,
-        classification === 'intentional' && 'text-intentional',
-        classification === 'unexplained' && 'text-unexplained',
-        classification === 'review' && 'text-review',
-        classification === 'baseline' && 'text-muted'
+        classificationText[classification]
       )}
     >
-      {labels[classification]}
+      {t(`classifications.${classification}`)}
     </span>
   )
 }
 
 function VisionPanel() {
+  const t = useTranslations('view')
+  const format = useFormatter()
+  const visionPoints = useVisionPoints()
   const [selectedPoint, setSelectedPoint] = useAtom(selectedPointAtom)
   const [range, setRange] = useAtom(rangeAtom)
   const selectedEventId = visionPoints[selectedPoint]?.event?.id ?? 'exports'
@@ -253,20 +196,19 @@ function VisionPanel() {
     <Card className="relative mb-2.5 p-4">
       <div className="mb-1 flex items-start justify-between gap-2.5 max-sm:flex-wrap">
         <div className="grid min-w-0 gap-[5px]">
-          <Kicker>Product Vision</Kicker>
+          <Kicker>{t('vision.product')}</Kicker>
           <strong className="text-[28px] font-medium tracking-[-0.045em]">
             73%
           </strong>
-          <small className="text-[8px] text-muted">
-            ↓ 18 from the selected baseline
-          </small>
+          <small className="text-[8px] text-muted">{t('vision.delta')}</small>
         </div>
         <fieldset
-          aria-label="Time range"
+          aria-label={t('vision.timeRange')}
           className="m-0 inline-flex min-w-0 rounded-md border-0 bg-subtle p-0.5"
         >
           {(['30d', '90d', '1y', 'all'] as const).map((item) => (
             <button
+              aria-pressed={range === item}
               className={cx(
                 'min-h-6 cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
                 range === item &&
@@ -276,13 +218,33 @@ function VisionPanel() {
               onClick={() => setRange(item)}
               type="button"
             >
-              {item}
+              {t(`range.${item}`)}
             </button>
           ))}
         </fieldset>
       </div>
       <ProductVisionCurve
         data={visionPoints}
+        formatNumber={(value) => format.number(value)}
+        labels={{
+          classifications: {
+            baseline: t('classifications.baseline'),
+            intentional: t('classifications.intentional'),
+            review: t('classifications.review'),
+            unexplained: t('classifications.unexplained')
+          },
+          describeEvent: (event) =>
+            t('vision.describeEvent', {
+              title: event.title,
+              date: event.date,
+              delta: format.number(event.delta),
+              classification: t(`classifications.${event.classification}`)
+            }),
+          loading: t('vision.loading'),
+          product: t('teams.product'),
+          summary: t('vision.summary'),
+          why: t('vision.why')
+        }}
         onSelectEvent={selectEvent}
         selectedEventId={selectedEventId}
       />
@@ -290,9 +252,10 @@ function VisionPanel() {
         <FigmaComment
           author="Ana"
           initials="AN"
-          message="Pricing was intentional. Authentication remains unexplained and exports are still under review."
+          label={t('vision.commentLabel', { author: 'Ana' })}
+          message={t('vision.comment')}
           src={aiAvatars.ana}
-          timestamp="Aug 20"
+          timestamp={t('dates.exports')}
         />
       </div>
     </Card>
@@ -300,20 +263,21 @@ function VisionPanel() {
 }
 
 function MovementList() {
-  const rows = driftEvents.filter(
-    (event) => event.classification !== 'baseline'
-  )
+  const t = useTranslations('view')
+  const rows = useVisionPoints()
+    .flatMap((point) => (point.event ? [point.event] : []))
+    .filter((event) => event.classification !== 'baseline')
   return (
     <Card className="mb-2.5 p-4">
       <div className="mb-3 flex items-end justify-between gap-4 max-sm:flex-wrap max-sm:items-start max-sm:gap-2.5">
         <div className="grid min-w-0 gap-[5px]">
-          <Kicker>Why did Product Vision move?</Kicker>
+          <Kicker>{t('movement.why')}</Kicker>
           <h2 className="m-0 text-[17px] font-medium">
-            Three movements explain the current state.
+            {t('movement.summary')}
           </h2>
         </div>
         <span className="font-mono text-[8px] text-muted">
-          14 intentional · 4 unexplained
+          {t('movement.totals')}
         </span>
       </div>
       <div className="border-t border-hairline">
@@ -348,6 +312,7 @@ function MovementList() {
 }
 
 function Attention() {
+  const t = useTranslations('view')
   return (
     <section className="grid grid-cols-1 gap-2.5 min-[881px]:grid-cols-2">
       <Card as="article" className="grid min-h-[170px] gap-[7px] p-4">
@@ -356,35 +321,36 @@ function Attention() {
           className="text-unexplained"
           size={18}
         />
-        <Kicker>Needs attention</Kicker>
+        <Kicker>{t('attention.heading')}</Kicker>
         <strong className="text-sm leading-snug font-medium">
-          Authentication lacks a recorded product decision.
+          {t('attention.authentication')}
         </strong>
         <p className="m-0 text-[9px] leading-snug text-muted">
-          Classified as Unexplained Drift · Carlos · Platform
+          {t('attention.classification')}
         </p>
-        <a className="self-end text-[9px] no-underline" href="/decisions">
-          Review decision context →
-        </a>
+        <Link className="self-end text-[9px] no-underline" href="/decisions">
+          {t('attention.reviewDecision')} →
+        </Link>
       </Card>
       <Card as="article" className="grid min-h-[170px] gap-[7px] p-4">
         <ShieldCheck aria-hidden="true" className="text-review" size={18} />
-        <Kicker>Under review</Kicker>
+        <Kicker>{t('classifications.review')}</Kicker>
         <strong className="text-sm leading-snug font-medium">
-          Export behavior changed without final classification.
+          {t('attention.exports')}
         </strong>
         <p className="m-0 text-[9px] leading-snug text-muted">
-          Evidence exists, but the product rationale is still incomplete.
+          {t('events.exports.reason')}
         </p>
-        <a className="self-end text-[9px] no-underline" href="/evolution">
-          Inspect evolution →
-        </a>
+        <Link className="self-end text-[9px] no-underline" href="/evolution">
+          {t('attention.inspectEvolution')} →
+        </Link>
       </Card>
     </section>
   )
 }
 
 function Overview() {
+  const t = useTranslations('view')
   const product = useAtomValue(selectedProductAtom)
   const range = useAtomValue(rangeAtom)
   return (
@@ -394,15 +360,19 @@ function Overview() {
           as="article"
           className="grid min-h-[132px] gap-[5px] p-4 min-[621px]:col-span-2 min-[881px]:col-span-1"
         >
-          <Kicker>Product Vision</Kicker>
+          <Kicker>{t('vision.product')}</Kicker>
           <strong className="text-5xl leading-none font-medium tracking-[-0.055em]">
             73%
           </strong>
           <p className="m-0 text-[10px] text-muted">
-            ↓ 18 from Vision Baseline v1.0
+            {t('vision.baselineDelta')}
           </p>
           <div className="mt-auto flex items-center gap-2">
-            {[product, range.toUpperCase(), 'Baseline v1.0'].map((item) => (
+            {[
+              product,
+              t(`range.${range}`).toUpperCase(),
+              t('vision.baselineTag')
+            ].map((item) => (
               <span
                 className="rounded-full border border-hairline px-1.5 py-1 text-[8px] text-muted"
                 key={item}
@@ -416,24 +386,28 @@ function Overview() {
           as="article"
           className="grid min-h-[132px] content-end gap-[5px] p-4"
         >
-          <span className="text-[9px] text-muted">Intentional Evolution</span>
+          <span className="text-[9px] text-muted">
+            {t('classifications.intentional')}
+          </span>
           <strong className="text-[30px] font-medium text-intentional">
             14
           </strong>
           <small className="text-[8px] leading-snug text-muted">
-            points explained by recorded decisions
+            {t('overview.intentionalPoints')}
           </small>
         </Card>
         <Card
           as="article"
           className="grid min-h-[132px] content-end gap-[5px] p-4"
         >
-          <span className="text-[9px] text-muted">Unexplained Drift</span>
+          <span className="text-[9px] text-muted">
+            {t('classifications.unexplained')}
+          </span>
           <strong className="text-[30px] font-medium text-unexplained">
             4
           </strong>
           <small className="text-[8px] leading-snug text-muted">
-            points still requiring product context
+            {t('overview.unexplainedPoints')}
           </small>
         </Card>
       </section>
@@ -454,24 +428,27 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 function BaselineProvenance() {
+  const t = useTranslations('view')
   const facts = [
-    ['Approved at', 'Apr 02'],
-    ['Approved by', 'Marina Reis · CEO'],
-    ['Source artifacts', 'PRD-001 · Product Strategy v3'],
-    ['Scope', 'Atlas Home Hub · Core product'],
-    ['Product areas', 'Pricing · Authentication · Onboarding · Exports'],
-    ['Supersedes', 'Initial founder intent snapshot'],
-    ['Reason', 'First organization-approved product reference.']
+    [t('baseline.approvedAt'), t('dates.baseline')],
+    [t('baseline.approvedBy'), 'Marina Reis · CEO'],
+    [t('baseline.sources'), t('baseline.sourceValue')],
+    [t('baseline.scope'), t('baseline.scopeValue')],
+    [t('baseline.areas'), t('baseline.areasValue')],
+    [t('baseline.supersedes'), t('baseline.supersedesValue')],
+    [t('baseline.reason'), t('baseline.reasonValue')]
   ]
   return (
     <Card className="mt-2.5 p-4">
       <div className="flex items-center justify-between">
         <div>
-          <Kicker>Current reference</Kicker>
-          <h2 className="m-0 mt-1 text-lg font-medium">Vision Baseline v1.0</h2>
+          <Kicker>{t('baseline.reference')}</Kicker>
+          <h2 className="m-0 mt-1 text-lg font-medium">
+            {t('baseline.title')}
+          </h2>
         </div>
-        <span className="rounded-full border border-aligned px-[7px] py-1 text-[8px] text-aligned">
-          Current
+        <span className="rounded-full border border-aligned px-[7px] py-1 text-[8px] text-green-700 dark:text-green-400">
+          {t('baseline.current')}
         </span>
       </div>
       <dl className="mt-4 mb-2.5 grid grid-cols-1 min-[621px]:grid-cols-2">
@@ -484,29 +461,31 @@ function BaselineProvenance() {
 }
 
 function EvolutionControls() {
+  const t = useTranslations('view')
   const [classification, setClassification] = useAtom(classificationAtom)
   const [groupBy, setGroupBy] = useAtom(groupByAtom)
 
   const classifications: Array<[EvolutionClassification, string]> = [
-    ['all', 'All'],
-    ['intentional', 'Intentional'],
-    ['unexplained', 'Unexplained'],
-    ['review', 'Under Review']
+    ['all', t('filters.all')],
+    ['intentional', t('filters.intentional')],
+    ['unexplained', t('filters.unexplained')],
+    ['review', t('classifications.review')]
   ]
   const groups: Array<[EvolutionGroup, string]> = [
-    ['event', 'Event'],
-    ['product-area', 'Product Area'],
-    ['team', 'Team']
+    ['event', t('groups.event')],
+    ['product-area', t('groups.productArea')],
+    ['team', t('groups.team')]
   ]
 
   return (
     <div className="mb-2.5 flex items-end justify-between gap-3 max-[880px]:flex-col max-[880px]:items-stretch">
-      <fieldset className="m-0 flex min-w-0 items-center gap-[3px] rounded-lg border border-hairline bg-surface p-1">
+      <fieldset className="m-0 flex min-w-0 flex-wrap items-center gap-[3px] rounded-lg border border-hairline bg-surface p-1">
         <legend className="px-1 text-[7px] text-muted uppercase">
-          Classification
+          {t('filters.classification')}
         </legend>
         {classifications.map(([value, label]) => (
           <button
+            aria-pressed={classification === value}
             className={cx(
               'min-h-[26px] cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
               classification === value && 'bg-subtle font-semibold text-ink'
@@ -521,10 +500,11 @@ function EvolutionControls() {
       </fieldset>
       <fieldset className="m-0 flex min-w-0 items-center gap-[3px] rounded-lg border border-hairline bg-surface p-1">
         <legend className="px-1 text-[7px] text-muted uppercase">
-          Group by
+          {t('groups.label')}
         </legend>
         {groups.map(([value, label]) => (
           <button
+            aria-pressed={groupBy === value}
             className={cx(
               'min-h-[26px] cursor-pointer rounded-[5px] border-0 bg-transparent px-2 text-[8px] text-muted',
               groupBy === value && 'bg-subtle font-semibold text-ink'
@@ -542,6 +522,10 @@ function EvolutionControls() {
 }
 
 function GroupedEvolution() {
+  const t = useTranslations('view')
+  const driftEvents = useVisionPoints().flatMap((point) =>
+    point.event ? [point.event] : []
+  )
   const classification = useAtomValue(classificationAtom)
   const groupBy = useAtomValue(groupByAtom)
   const filtered = driftEvents.filter(
@@ -575,9 +559,21 @@ function GroupedEvolution() {
 
   if (groupBy === 'team') {
     const teams = [
-      ['Product', 'Pricing · Exports', '2 decisions'],
-      ['Platform', 'Pricing · Authentication', '1 decision · 1 unexplained'],
-      ['Leadership', 'Baseline approval', '1 approval']
+      [
+        t('teams.product'),
+        t('teamGroups.productAreas'),
+        t('teamGroups.productDetail')
+      ],
+      [
+        t('teams.platform'),
+        t('teamGroups.platformAreas'),
+        t('teamGroups.platformDetail')
+      ],
+      [
+        t('teams.leadership'),
+        t('teamGroups.leadershipAreas'),
+        t('teamGroups.leadershipDetail')
+      ]
     ]
     return (
       <Card className="mb-2.5 px-3.5">
@@ -618,9 +614,7 @@ function GroupedEvolution() {
         </article>
       ))}
       {filtered.length === 0 ? (
-        <p className="py-[22px] text-[10px] text-muted">
-          No events match this filter.
-        </p>
+        <p className="py-[22px] text-[10px] text-muted">{t('filters.empty')}</p>
       ) : null}
     </Card>
   )
@@ -638,25 +632,26 @@ function Evolution() {
 }
 
 function Decisions() {
+  const t = useTranslations('view')
   const decisions = [
     {
-      date: 'Jun 28',
-      evidence: ['PRD-014', 'Decision note', 'Review by Marina'],
-      impact: 'Pricing · −9',
-      people: 'Ana proposed · Marina approved · Carlos implemented',
-      title: 'Enterprise packaging model'
+      date: t('dates.pricing'),
+      evidence: ['PRD-014', t('decisions.note'), t('decisions.reviewMarina')],
+      impact: `${t('areas.pricing')} · −9`,
+      people: t('decisions.pricingPeople'),
+      title: t('decisions.pricingTitle')
     },
     {
-      date: 'Jul 22',
+      date: t('dates.authentication'),
       evidence: [
         'PR #821',
         'ADR-042',
-        'Review by Ana',
-        'No matching product decision'
+        t('decisions.reviewAna'),
+        t('decisions.noDecision')
       ],
-      impact: 'Authentication · −6',
-      people: 'Carlos implemented · Ana reviewed',
-      title: 'Authentication redesign'
+      impact: `${t('areas.authentication')} · −6`,
+      people: t('decisions.authenticationPeople'),
+      title: t('decisions.authenticationTitle')
     }
   ]
   return (
@@ -678,7 +673,7 @@ function Decisions() {
           <strong className="mt-auto text-[10px]">{decision.impact}</strong>
           <details className="mt-3 border-t border-hairline pt-2.5">
             <summary className="cursor-pointer text-[9px]">
-              Why do we believe this?
+              {t('decisions.why')}
             </summary>
             <ul className="mt-2 list-disc pl-4 text-[8px] leading-relaxed text-muted">
               {decision.evidence.map((item) => (
@@ -693,26 +688,17 @@ function Decisions() {
 }
 
 function People() {
+  const t = useTranslations('view')
   const people = [
-    [
-      aiAvatars.ana,
-      'Ana',
-      'Product Director',
-      '5 decisions · 3 approvals · owns Pricing'
-    ],
+    [aiAvatars.ana, 'Ana', t('people.anaRole'), t('people.anaDetail')],
     [
       aiAvatars.carlos,
       'Carlos',
-      'Engineering Lead',
-      '4 implementations · 2 reviews · owns Authentication'
+      t('people.carlosRole'),
+      t('people.carlosDetail')
     ],
-    [aiAvatars.marina, 'Marina', 'CEO', '3 approvals · Vision owner'],
-    [
-      aiAvatars.lia,
-      'Lia',
-      'Design Lead',
-      '3 proposals · owns product navigation'
-    ]
+    [aiAvatars.marina, 'Marina', 'CEO', t('people.marinaDetail')],
+    [aiAvatars.lia, 'Lia', t('people.liaRole'), t('people.liaDetail')]
   ]
 
   return (
@@ -746,17 +732,16 @@ function People() {
 }
 
 function Reports() {
+  const t = useTranslations('view')
   return (
     <div className="grid grid-cols-1 gap-2.5 min-[901px]:grid-cols-[2fr_1fr_1fr]">
       <Card className="min-h-60 p-5">
-        <Kicker>Weekly executive digest</Kicker>
+        <Kicker>{t('reports.digest')}</Kicker>
         <h2 className="my-3.5 max-w-[520px] text-[32px] leading-none font-medium tracking-[-0.04em] max-sm:text-[27px]">
-          Product Vision moved from 79 to 73.
+          {t('reports.title')}
         </h2>
         <p className="max-w-[520px] text-[11px] leading-relaxed text-muted">
-          Authentication was the largest unresolved contributor. Export behavior
-          remains under review. Pricing movement is linked to an approved
-          decision.
+          {t('reports.summary')}
         </p>
       </Card>
       <Card className="flex min-h-60 flex-col items-start justify-end gap-[7px] p-[18px]">
@@ -765,8 +750,12 @@ function Reports() {
           className="text-intentional"
           size={20}
         />
-        <strong className="text-[26px] font-medium">14 points</strong>
-        <span className="text-[9px] text-muted">intentional evolution</span>
+        <strong className="text-[26px] font-medium">
+          {t('reports.points', { count: 14 })}
+        </strong>
+        <span className="text-[9px] text-muted">
+          {t('classifications.intentional')}
+        </span>
       </Card>
       <Card className="flex min-h-60 flex-col items-start justify-end gap-[7px] p-[18px]">
         <WarningDiamond
@@ -774,39 +763,47 @@ function Reports() {
           className="text-unexplained"
           size={20}
         />
-        <strong className="text-[26px] font-medium">4 points</strong>
-        <span className="text-[9px] text-muted">unexplained drift</span>
+        <strong className="text-[26px] font-medium">
+          {t('reports.points', { count: 4 })}
+        </strong>
+        <span className="text-[9px] text-muted">
+          {t('classifications.unexplained')}
+        </span>
       </Card>
     </div>
   )
 }
 
 function Evidence() {
+  const t = useTranslations('view')
   return (
     <Card className="overflow-x-auto max-sm:overflow-x-auto">
       <div className="border-b border-hairline px-3 py-3 text-[9px] text-muted">
-        Evidence is a contextual drill-down, not a primary executive
-        destination.
+        {t('evidence.context')}
       </div>
       <table className="w-full min-w-[560px] border-collapse text-[9px]">
         <thead>
           <tr>
             <th className="border-b border-hairline px-3 py-2.5 text-left text-[8px] font-medium text-muted">
-              Artifact
+              {t('evidence.artifact')}
             </th>
             <th className="border-b border-hairline px-3 py-2.5 text-left text-[8px] font-medium text-muted">
-              Observation
+              {t('evidence.observation')}
             </th>
             <th className="border-b border-hairline px-3 py-2.5 text-left text-[8px] font-medium text-muted">
-              Status
+              {t('evidence.status')}
             </th>
           </tr>
         </thead>
         <tbody>
           {[
-            ['PR #821', 'Authentication implementation changed', 'Linked'],
-            ['ADR-042', 'Enterprise authentication strategy', 'Linked'],
-            ['exports-roadmap.md', 'Export behavior changed', 'Under Review']
+            ['PR #821', t('evidence.authentication'), t('evidence.linked')],
+            ['ADR-042', t('evidence.strategy'), t('evidence.linked')],
+            [
+              'exports-roadmap.md',
+              t('events.exports.title'),
+              t('classifications.review')
+            ]
           ].map((row) => (
             <tr className="[&:last-child>td]:border-b-0" key={row[0]}>
               {row.map((cell) => (
@@ -826,27 +823,34 @@ function Evidence() {
 }
 
 function Settings() {
+  const t = useTranslations('view')
   const [theme, setTheme] = useAtom(themeAtom)
 
   return (
     <Card className="px-3.5">
       <div className="flex min-h-[68px] items-center justify-between border-b border-hairline max-sm:flex-col max-sm:items-start max-sm:gap-2.5 max-sm:py-3">
         <span className="grid gap-[3px]">
-          <strong className="text-[10px]">Appearance</strong>
+          <strong className="text-[10px]">{t('settings.appearance')}</strong>
           <small className="text-[8px] text-muted">
-            Light and dark are first-class product themes.
+            {t('settings.appearanceDescription')}
           </small>
         </span>
         <ThemeToggle
+          label={t(
+            theme === 'light' ? 'settings.switchDark' : 'settings.switchLight'
+          )}
           onToggle={() => setTheme(theme === 'light' ? 'dark' : 'light')}
           theme={theme}
         />
       </div>
+      <div className="border-b border-hairline py-3">
+        <DashboardLanguageSettings />
+      </div>
       <div className="flex min-h-[68px] items-center justify-between max-sm:flex-col max-sm:items-start max-sm:gap-2.5 max-sm:py-3">
         <span className="grid gap-[3px]">
-          <strong className="text-[10px]">Executive Voice</strong>
+          <strong className="text-[10px]">{t('settings.voice')}</strong>
           <small className="text-[8px] text-muted">
-            Voice stays focused on structured product context.
+            {t('settings.voiceDescription')}
           </small>
         </span>
       </div>
@@ -866,7 +870,7 @@ function LegacyEvolution({
 
 export function DashboardView({ section }: { section: DashboardSection }) {
   return (
-    <>
+    <DashboardPageGate section={section}>
       <Heading section={section} />
       {section === 'overview' ? <Overview /> : null}
       {section === 'evolution' ? <Evolution /> : null}
@@ -890,6 +894,6 @@ export function DashboardView({ section }: { section: DashboardSection }) {
         <LegacyEvolution classification="unexplained" />
       ) : null}
       {section === 'evidence' ? <Evidence /> : null}
-    </>
+    </DashboardPageGate>
   )
 }

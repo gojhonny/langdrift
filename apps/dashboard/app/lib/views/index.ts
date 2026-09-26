@@ -1,4 +1,1 @@
-export {
-  DashboardView,
-  type DashboardSection
-} from './dashboard-view/dashboard-view'
+export { DashboardView } from './dashboard-view/dashboard-view'

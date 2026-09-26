@@ -1,0 +1,909 @@
+{
+  "scope": "Dashboard and affected shared React components; not an SDD phase transition",
+  "tools": {
+    "node": "v26.9.0",
+    "next": "16.3.5",
+    "react": "19.2.4",
+    "lighthouse": "13.5.0",
+    "axe": "4.13.0",
+    "webVitals": "6.2.2",
+    "playwright": "1.63.0",
+    "vitest": "5.0.1",
+    "chromium": "153.0.8010.12"
+  },
+  "conditions": {
+    "origin": "http://127.0.0.1:3101",
+    "mobile": {
+      "mobile": true,
+      "width": 412,
+      "height": 823,
+      "deviceScaleFactor": 1.75,
+      "disabled": false
+    },
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.5600000000002,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "method": "simulate",
+    "cache": "fresh cold browser for each Lighthouse run",
+    "interaction": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dpr": 1.75,
+      "cpu": 4,
+      "latencyMs": 150,
+      "downloadBytesPerSecond": 209715.2,
+      "uploadBytesPerSecond": 86400
+    }
+  },
+  "snapshot": {
+    "head": "5769cbe29e0b85baa322e2a7ca7eeb92e8fde98a",
+    "date": "2026-09-26T07:49:19.285Z",
+    "files": [
+      {
+        "file": "apps/dashboard/app/layout.tsx",
+        "sha256": "664c6b898723de79a5c2ef6cbe37b4bfcee4dae59d6985dca571cfd9c03e6f24"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.test.tsx",
+        "sha256": "ebd20350ef979d9f0a7f1fe9cc2b76e93a572ecbc6b4547c93f6616ebc1900b9"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/dashboard-shell.tsx",
+        "sha256": "eb320e025ce561ed0d6e36f78101b98806376b57de4f7bfbf2932e53a24075cc"
+      },
+      {
+        "file": "apps/dashboard/app/lib/components/dashboard-shell/overlay-dialog.tsx",
+        "sha256": "1852139173cc2bf6d3f5856db16a5e9f989ecafa9a60cd61e40b8cb63fe9175d"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/account-menu-open.atom.ts",
+        "sha256": "ee6ca9376d65e01e580951a331bf16c26a75f44a2300be4e65f86bc69f373087"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/classification.atom.ts",
+        "sha256": "09526b1e4765c513b669fd18079abbfba37356b7f5e3f1cfc36b546a01986299"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/group-by.atom.ts",
+        "sha256": "702dce6b3fa8a05ef41d5d394be53879bc2014aecf3baa190a1500084a261014"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/index.ts",
+        "sha256": "5f60ece082b4da6a0a425efd0be8109c74c17fd30a5f46927d284045fb6b8641"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/notifications-open.atom.ts",
+        "sha256": "ab47bdeec89255bcc120cabfaeee295dc64ee6d808c6be9bdb6fbae39150ceb6"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/product-menu-open.atom.ts",
+        "sha256": "f3f6e884c6100d507f01744c09d5013426bc19da358e13efc15f7d9ef8318f20"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/range.atom.ts",
+        "sha256": "3e73c6ebb94ae127298c98985a7789dbbeeb7ec72ea40d06df958eef1413df05"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/select-product.atom.ts",
+        "sha256": "841281d60904b215d13df5c4f772e1587d12cfb382556db93326a7deb4793e14"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/selected-point.atom.ts",
+        "sha256": "35a75561d9cebe1db9dd240b4011fc0aeb866a9a9ef8f06a64533bf4ecacb7a3"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/selected-product.atom.ts",
+        "sha256": "63a55f30bccd36f5582b3fdfb95e5b969a259288ceda6fa363e1e18133932e21"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/theme.atom.ts",
+        "sha256": "1037e26d87c767abc19183ec4e0f18b416abea7aaff0748c8aba2d4699bbc4d0"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/atoms/voice-open.atom.ts",
+        "sha256": "25d3bdc320a13744a09676fe7800458b77d50fc26e57c77304edf79b14947de4"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-range.domain.ts",
+        "sha256": "b1c45ec8a2236e606fe33a6cd6c5596c4052bc97fa3a5f1d2cb267cc089542b1"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-section.domain.ts",
+        "sha256": "092984a1c25520538c7feda7868928e65f5a259c827f63458389fdf311a6d0cb"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/dashboard-theme.domain.ts",
+        "sha256": "a57a8dde8d669e296e4e66f02aa1696fe04f54c16e083c5497117a2a4deae104"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/evolution-classification.domain.ts",
+        "sha256": "8d4d39f6754a415e05933daa07e19c6aebd16576f969d8694f256c14fe2755bc"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/evolution-group.domain.ts",
+        "sha256": "d71e603ce6833802ff448d6accadb93896afe6589748e430d90f68105c7fa13d"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/domain/index.ts",
+        "sha256": "c65f27d26526660171210ddbfa93a1cfb86014b1e0e67f589757a6af31fcc96f"
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/state-logger.tsx",
+        "sha256": null
+      },
+      {
+        "file": "apps/dashboard/app/lib/state/state.ts",
+        "sha256": null
+      },
+      {
+        "file": "apps/dashboard/app/lib/views/dashboard-view/dashboard-view.tsx",
+        "sha256": "acd9d86b5cb6826b87815be47beac1d054cd138d1fedb093b2d66dfc21ff5aa4"
+      },
+      {
+        "file": "apps/dashboard/app/lib/views/index.ts",
+        "sha256": "630ef5cf80ccf00ccfe7692f7b1367d6d536f0836b913995efa30dc223db2c39"
+      },
+      {
+        "file": "apps/dashboard/next.config.ts",
+        "sha256": "c0636f7363e2f82296c802e80703954fd64ffbfd85d758866c616399d0ed2e45"
+      },
+      {
+        "file": "apps/dashboard/tsconfig.paths.json",
+        "sha256": "8e1b4458bd774924612bbb36f664aee05d40d00351bdddf228904f9de042df33"
+      },
+      {
+        "file": "package.json",
+        "sha256": "23b0b0704eca8c91e8ebf0eac031ac402a8459a12bd5aa827b046dd63c58a5ad"
+      },
+      {
+        "file": "packages/react/package.json",
+        "sha256": "44e8f4cd81c9ccce9d38012dddb5e7ab7b2e595447f63fca7f13ddcd71526782"
+      },
+      {
+        "file": "packages/react/src/styles.css",
+        "sha256": "b7c88772c0c2f0ccba2bc1e052f1ebc2a98af17baa64a6f756aa5271d4cec0b6"
+      },
+      {
+        "file": "packages/react/src/ui/agent-orb/agent-orb.tsx",
+        "sha256": "288eda8785613e641fc211739448ce9e172bd5bc76a6ce7a97fe561915f90c72"
+      },
+      {
+        "file": "packages/react/src/ui/classification-text.ts",
+        "sha256": "b37dcd610533c298314603f65e7c8f54a0698957f85901e8884d91a66328ae76"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-chart.tsx",
+        "sha256": "aa6bedf48760b21b1c16d3e83c4f0f9c8be51b6eece955a56156ba6f0ddd272e"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.css",
+        "sha256": "40aefe6681f0bb43f44ee6983c195f23fb1416418fb8fe06338b48bfe1fdd6c3"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.test.tsx",
+        "sha256": "957afcf85f1a128b20fd1229e062b0d79515a830cacd744abb5603bfeae18cb3"
+      },
+      {
+        "file": "packages/react/src/ui/product-vision-curve/product-vision-curve.tsx",
+        "sha256": "88365634c8a51af629b118d2550c6a828cf11d17f9236d421a15ba420076a6ff"
+      },
+      {
+        "file": "packages/react/src/ui/theme-toggle/theme-toggle.css",
+        "sha256": null
+      },
+      {
+        "file": "packages/react/src/ui/theme-toggle/theme-toggle.tsx",
+        "sha256": "874e952f56b08c61725f85896752550091f3c3f1ba31ca3bae9ad23fd3f8f16f"
+      },
+      {
+        "file": "packages/react/src/utilities/after-paint.ts",
+        "sha256": "147ac690e8149d769eacb1cceef21034ba0152fbd811f08990e7b3f3c1874cfc"
+      },
+      {
+        "file": "packages/react/src/utilities/index.ts",
+        "sha256": "00f8c1f6b456f196ccb878c7273e0f56f2e90e0eb6a78863222d49c4e3aa66b1"
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.css",
+        "sha256": null
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.test.tsx",
+        "sha256": "cc0b4740a4d5ddfaac4ad12c21df4697ce3ea37f81dccab986742f162bfb5fe4"
+      },
+      {
+        "file": "packages/react/src/vendors/shadcn/tooltip.tsx",
+        "sha256": "dcc3000b292e9186496036034d58e62018a808913149e8351ef60ec44d943e8d"
+      },
+      {
+        "file": "packages/react/src/vendors/smoothui/figma-comment.tsx",
+        "sha256": "0864036affaf7f8a62d8d20127a3636ec81c27595e4d98bdb5f4243f210f4bf3"
+      },
+      {
+        "file": "vitest.web-quality.config.mts",
+        "sha256": "cf36e568bad14a7eb6ff3c6ea20bc22d5b6ff18fec3aa6c4ed28c631e1cabf8c"
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "route": "evolution",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2862.13065,
+      "cls": 0,
+      "tbt": 73.5,
+      "performance": 0.95,
+      "accessibility": 0.9,
+      "bestPractices": 1,
+      "bytes": 344950
+    },
+    {
+      "route": "overview",
+      "profile": "desktop",
+      "sample": 1,
+      "lcp": 594.768,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 1,
+      "accessibility": 0.9,
+      "bestPractices": 1,
+      "bytes": 347359
+    },
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2969.885,
+      "cls": 0,
+      "tbt": 91,
+      "performance": 0.89,
+      "accessibility": 0.9,
+      "bestPractices": 1,
+      "bytes": 347359
+    },
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 2,
+      "lcp": 2812.1094000000003,
+      "cls": 0,
+      "tbt": 143,
+      "performance": 0.94,
+      "accessibility": 0.9,
+      "bestPractices": 1,
+      "bytes": 347359
+    },
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 3,
+      "lcp": 2867.5825999999997,
+      "cls": 0,
+      "tbt": 92,
+      "performance": 0.95,
+      "accessibility": 0.9,
+      "bestPractices": 1,
+      "bytes": 347359
+    },
+    {
+      "route": "settings",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2864.8571999999995,
+      "cls": 0,
+      "tbt": 56,
+      "performance": 0.95,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 341424
+    }
+  ],
+  "after": [
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2741.3205000000007,
+      "cls": 0,
+      "tbt": 105,
+      "performance": 0.95,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 359988,
+      "failures": [
+        "unused-javascript",
+        "forced-reflow-insight",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 2,
+      "lcp": 2648.6875999999993,
+      "cls": 0,
+      "tbt": 68.5,
+      "performance": 0.96,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 359988,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "overview",
+      "profile": "mobile",
+      "sample": 3,
+      "lcp": 2652.4322999999995,
+      "cls": 0,
+      "tbt": 82.5,
+      "performance": 0.96,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 359988,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "overview",
+      "profile": "desktop",
+      "sample": 1,
+      "lcp": 589.7189999999998,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 1,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 377032,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight"
+      ]
+    },
+    {
+      "route": "evolution",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2563.9582,
+      "cls": 0,
+      "tbt": 59,
+      "performance": 0.97,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 357577,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "evolution",
+      "profile": "mobile",
+      "sample": 2,
+      "lcp": 2492.0992,
+      "cls": 0,
+      "tbt": 67,
+      "performance": 0.97,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 357577,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "evolution",
+      "profile": "mobile",
+      "sample": 3,
+      "lcp": 2498.2909,
+      "cls": 0,
+      "tbt": 72.5,
+      "performance": 0.97,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 357577,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "evolution",
+      "profile": "desktop",
+      "sample": 1,
+      "lcp": 546.5541,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 1,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 374621,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight"
+      ]
+    },
+    {
+      "route": "settings",
+      "profile": "mobile",
+      "sample": 1,
+      "lcp": 2491.6351,
+      "cls": 0,
+      "tbt": 35,
+      "performance": 0.98,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 263833,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "settings",
+      "profile": "mobile",
+      "sample": 2,
+      "lcp": 2493.0115,
+      "cls": 0,
+      "tbt": 37,
+      "performance": 0.98,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 263833,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "settings",
+      "profile": "mobile",
+      "sample": 3,
+      "lcp": 2495.1652,
+      "cls": 0,
+      "tbt": 38,
+      "performance": 0.98,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 263833,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight",
+        "render-blocking-insight"
+      ]
+    },
+    {
+      "route": "settings",
+      "profile": "desktop",
+      "sample": 1,
+      "lcp": 547.2115,
+      "cls": 0,
+      "tbt": 0,
+      "performance": 1,
+      "accessibility": 1,
+      "bestPractices": 1,
+      "bytes": 280877,
+      "failures": [
+        "unused-javascript",
+        "legacy-javascript-insight",
+        "network-dependency-tree-insight"
+      ]
+    }
+  ],
+  "checks": {
+    "axe": [
+      {
+        "state": "overview:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "overview:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "evolution:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "evolution:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "decisions:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "decisions:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "people:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "people:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "reports:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "reports:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "settings:desktop:light",
+        "findings": []
+      },
+      {
+        "state": "settings:desktop:dark",
+        "findings": []
+      },
+      {
+        "state": "overview:320px:navigation",
+        "findings": []
+      },
+      {
+        "state": "overview:320px:voice",
+        "findings": []
+      },
+      {
+        "state": "overview:320px:notifications",
+        "findings": []
+      },
+      {
+        "state": "overview:320px:account",
+        "findings": []
+      },
+      {
+        "state": "overview:320px:products",
+        "findings": []
+      },
+      {
+        "state": "evolution:320px:dark:reduced-motion",
+        "findings": []
+      }
+    ],
+    "keyboard": [
+      "desktop voice nonmodal, initial focus, Escape",
+      "mobile navigation modal, Tab/Shift+Tab containment, Escape, restoration",
+      "mobile voice modal, Tab containment, Escape",
+      "client navigation preserves product, filter/range states",
+      "curve event focus/Enter selection and selected state"
+    ],
+    "reflow": [
+      {
+        "state": "overview:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "overview:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "evolution:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "evolution:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "decisions:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "decisions:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "people:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "people:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "reports:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "reports:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "settings:320px",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "settings:320px:tooltip",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "overview:320px:navigation",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "overview:320px:voice",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "evolution:320px:dark:reduced-motion",
+        "width": 320,
+        "scrollWidth": 320
+      },
+      {
+        "state": "evolution:200%-equivalent-viewport",
+        "width": 720,
+        "scrollWidth": 720
+      }
+    ],
+    "errors": [],
+    "headers": {
+      "x-content-type-options": "nosniff",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "x-powered-by": null
+    },
+    "vitals": [
+      {
+        "route": "overview",
+        "sample": 1,
+        "metrics": {
+          "LCP": 656,
+          "CLS": 0,
+          "INP": 64
+        }
+      },
+      {
+        "route": "overview",
+        "sample": 2,
+        "metrics": {
+          "LCP": 660,
+          "CLS": 0,
+          "INP": 64
+        }
+      },
+      {
+        "route": "overview",
+        "sample": 3,
+        "metrics": {
+          "LCP": 708,
+          "CLS": 0,
+          "INP": 64
+        }
+      },
+      {
+        "route": "evolution",
+        "sample": 1,
+        "metrics": {
+          "LCP": 652,
+          "CLS": 0,
+          "INP": 72
+        }
+      },
+      {
+        "route": "evolution",
+        "sample": 2,
+        "metrics": {
+          "LCP": 648,
+          "CLS": 0,
+          "INP": 64
+        }
+      },
+      {
+        "route": "evolution",
+        "sample": 3,
+        "metrics": {
+          "LCP": 648,
+          "CLS": 0,
+          "INP": 80
+        }
+      }
+    ]
+  },
+  "keyboardExtra": {
+    "curve": "focus and Enter update selection with aria-pressed",
+    "voice": "Escape restores Ask LangDrift trigger"
+  },
+  "consumers": [
+    {
+      "app": "website",
+      "url": "http://127.0.0.1:3100/",
+      "blocked": "ERR_TOO_MANY_REDIRECTS on local production routes / and /en; HTTP 307 points back to /."
+    },
+    {
+      "app": "sso",
+      "url": "http://127.0.0.1:3102/sign-in",
+      "status": 200,
+      "themeBefore": "light",
+      "themeAfter": "dark",
+      "orbs": 0,
+      "errors": []
+    },
+    {
+      "app": "mobile",
+      "url": "http://127.0.0.1:3103/",
+      "status": 200,
+      "themeBefore": "light",
+      "themeAfter": "dark",
+      "orbs": 1,
+      "errors": []
+    }
+  ],
+  "validation": [
+    {
+      "check": "biome",
+      "exitCode": 0
+    },
+    {
+      "check": "unit",
+      "exitCode": 0
+    },
+    {
+      "check": "early-access",
+      "exitCode": 0
+    },
+    {
+      "check": "typecheck-dashboard",
+      "exitCode": 0
+    },
+    {
+      "check": "typecheck-react",
+      "exitCode": 0
+    },
+    {
+      "check": "typecheck-website",
+      "exitCode": 0
+    },
+    {
+      "check": "typecheck-sso",
+      "exitCode": 0
+    },
+    {
+      "check": "typecheck-mobile",
+      "exitCode": 0
+    },
+    {
+      "check": "build-dashboard",
+      "exitCode": 0
+    },
+    {
+      "check": "build-website",
+      "exitCode": 0
+    },
+    {
+      "check": "build-sso",
+      "exitCode": 0
+    },
+    {
+      "check": "build-mobile",
+      "exitCode": 0
+    },
+    {
+      "check": "dependency-audit",
+      "exitCode": 0
+    }
+  ],
+  "tests": {
+    "webQuality": 13,
+    "earlyAccess": 42
+  },
+  "dependencyAudit": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencies": 650,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 650
+  },
+  "unverified": [
+    "CrUX/field p75",
+    "deployed TLS/HSTS/CSP/Trusted Types",
+    "VoiceOver/NVDA/real-device accessibility",
+    "actual native-browser 200% zoom (viewport equivalence checked)",
+    "Website rendered smoke test blocked by redirect loop"
+  ],
+  "unmet": [
+    "Overview mobile median LCP > 2500 ms"
+  ],
+  "transferredResources": [
+    {
+      "route": "overview",
+      "scriptBytes": 333161,
+      "stylesheetBytes": 10989
+    },
+    {
+      "route": "evolution",
+      "scriptBytes": 333161,
+      "stylesheetBytes": 10989
+    },
+    {
+      "route": "settings",
+      "scriptBytes": 242991,
+      "stylesheetBytes": 10989
+    }
+  ],
+  "overviewTrace": {
+    "stylesheetRenderBlockingDurationMs": 153,
+    "lcpBreakdown": [
+      {
+        "subpart": "timeToFirstByte",
+        "durationMs": 5.437
+      },
+      {
+        "subpart": "elementRenderDelay",
+        "durationMs": 64.913
+      }
+    ]
+  },
+  "acceptance": [
+    {
+      "route": "overview",
+      "mobileMedianLcpMs": 2652.4322999999995,
+      "mobileLcpTargetMet": false
+    },
+    {
+      "route": "evolution",
+      "mobileMedianLcpMs": 2498.2909,
+      "mobileLcpTargetMet": true
+    },
+    {
+      "route": "settings",
+      "mobileMedianLcpMs": 2493.0115,
+      "mobileLcpTargetMet": true
+    }
+  ]
+}
